@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Color Palette for Imam-AL-Majsid -->
+    <color name="emerald_primary">#007F5F</color>
+    <color name="off_white_primary">#FAF9F6</color>
+
+    <!-- Emerald Green Variants -->
+    <color name="emerald_light">#2BB08D</color>
+    <color name="emerald_dark">#004D3A</color>
+    <color name="emerald_very_light">#B2E2D6</color>
+    <color name="emerald_surface_highlight">#0A8C6A</color>
+    <color name="emerald_surface_shadow">#006B50</color>
+    <color name="emerald_alpha_20">#33007F5F</color>
+    <color name="emerald_alpha_50">#80007F5F</color>
+
+    <!-- Off-White Variants -->
+    <color name="off_white_light">#FDFDFB</color>
+    <color name="off_white_dark">#EBEAE5</color>
+    <color name="off_white_surface_highlight">#FDFCF9</color>
+    <color name="off_white_surface_shadow">#ECEAE3</color>
+    <color name="off_white_accent">#F3F2EE</color>
+    <color name="off_white_grayish">#DEDDDA</color>
+
+    <!-- Error Color Variant -->
+    <color name="error_red">#D32F2F</color>
+    <color name="error_red_light">#FFCDD2</color>
+
+    <!-- For Clay-morphism shadows (Strictly variants of primary colors with transparency) -->
+    <color name="clay_light_shadow">#80FDFCF9</color> <!-- 50% Alpha Off-White Highlight -->
+    <color name="clay_dark_shadow">#40004D3A</color>  <!-- 25% Alpha Emerald Dark Shadow -->
+    
+    <!-- Functional variants -->
+    <color name="input_placeholder">#969591</color>
+    <color name="input_active">#007F5F</color>
+    <color name="text_primary">#004D3A</color>
+    <color name="text_secondary">#7B7F85</color>
+    <color name="text_inverse">#FAF9F6</color>
+</resources>

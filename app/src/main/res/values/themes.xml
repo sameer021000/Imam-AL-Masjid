@@ -1,0 +1,18 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.ImamALMasjid" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Main branding colors -->
+        <item name="colorPrimary">@color/emerald_primary</item>
+        <item name="colorOnPrimary">@color/off_white_primary</item>
+        <item name="android:windowBackground">@color/off_white_primary</item>
+        <item name="android:statusBarColor">@color/off_white_primary</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- Splash Screen Theme -->
+    <style name="Theme.ImamALMasjid.Splash" parent="Base.Theme.ImamALMasjid">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="Theme.ImamALMasjid" parent="Base.Theme.ImamALMasjid" />
+</resources>
