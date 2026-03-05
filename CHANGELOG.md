@@ -11,6 +11,7 @@ All notable changes to **Imam AL Masjid** will be documented in this file.
 - **Responsive Layout Scaling** using custom utility for consistent UI across screen sizes.
 - **Dynamic Text Scaling** to maintain readability on different Android devices.
 - **Clean Modern UI** built using Material components and ConstraintLayout.
+- **Added Dark Theme**
 
 ### 🎨 Improved
 - **Optimized Layout Structure** for better performance and responsiveness.
