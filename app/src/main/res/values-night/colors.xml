@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark Mode Overrides for Clay-morphism shadows (Requirement #6) -->
+    <!-- These are matched to the dark background #2B2E33 -->
+    <color name="clay_light_shadow">#20F5F6F7</color> <!-- Soft highlight using color1 -->
+    <color name="clay_dark_shadow">#801A1D21</color>  <!-- Deep dark shadow -->
+
+    <!-- Secondary Overrides -->
+    <color name="off_white_primary">@color/dark_background</color>
+    <color name="off_white_surface_highlight">#3D4148</color> <!-- Subtle edge for dark clay -->
+    <color name="emerald_primary">@color/dark_accent_primary</color>
+    <color name="emerald_dark">@color/dark_accent_secondary</color>
+</resources>

@@ -11,7 +11,7 @@
 
     <!-- Splash Screen Theme -->
     <style name="Theme.ImamALMasjid.Splash" parent="Base.Theme.ImamALMasjid">
-        <item name="android:windowFullscreen">true</item>
+        <!-- Status bar is now visible and matches the off-white background -->
     </style>
 
     <style name="Theme.ImamALMasjid" parent="Base.Theme.ImamALMasjid" />

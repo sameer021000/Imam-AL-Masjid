@@ -35,4 +35,16 @@
     <color name="text_primary">#004D3A</color>
     <color name="text_secondary">#7B7F85</color>
     <color name="text_inverse">#FAF9F6</color>
+
+    <!-- Dark Theme Palette (Requirement #1) -->
+    <color name="dark_background">#2B2E33</color> <!-- color4 -->
+    <color name="dark_surface">#373B42</color>    <!-- variant of color4 -->
+    <color name="dark_text_primary">#F5F6F7</color> <!-- color1 -->
+    <color name="dark_text_secondary">#F1F1F1</color> <!-- color5 -->
+    <color name="dark_accent_primary">#C1C4C8</color> <!-- color2 -->
+    <color name="dark_accent_secondary">#7B7F85</color> <!-- color3 -->
+
+    <!-- Clay-morphism shadows for Dark Theme -->
+    <color name="clay_dark_shadow_night">#801A1D21</color> <!-- Darker variant for depth -->
+    <color name="clay_light_shadow_night">#20F5F6F7</color> <!-- Soft highlight -->
 </resources>

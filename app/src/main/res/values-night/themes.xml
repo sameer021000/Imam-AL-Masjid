@@ -1,7 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme for Dark Mode -->
     <style name="Base.Theme.ImamALMasjid" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Main branding colors (Requirement #1 - Dark Theme Palette) -->
+        <item name="colorPrimary">@color/dark_accent_primary</item>
+        <item name="colorOnPrimary">@color/dark_text_primary</item>
+        <item name="android:windowBackground">@color/dark_background</item>
+        
+        <!-- Status Bar Customization for Dark Mode -->
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="android:windowLightStatusBar">false</item> <!-- Light icons on dark background -->
     </style>
 </resources>
