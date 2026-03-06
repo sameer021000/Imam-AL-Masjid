@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:isScrollContainer="true"
+    android:background="@color/off_white_primary"
+    tools:context=".LoginActivity">
+
+    <LinearLayout
+        android:id="@+id/login_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- Madina Logo -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/logo_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:id="@+id/img_logo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/madina"
+                android:scaleType="fitCenter" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/txt_login_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Imaam Login"
+            android:textColor="@color/emerald_primary"
+            android:fontFamily="@font/saleha_font"
+            android:gravity="center" />
+
+        <!-- Main Login Card (Claymorphic) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/login_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:id="@+id/login_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <!-- Full Name Input -->
+                <EditText
+                    android:id="@+id/edt_full_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Full Name"
+                    android:fontFamily="@font/janna_it_bold_font"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/emerald_primary"
+                    android:textColorHint="@color/input_placeholder"
+                    android:textCursorDrawable="@null"
+                    android:background="@android:color/transparent" />
+
+                <!-- Password Area Container -->
+                <RelativeLayout
+                    android:id="@+id/password_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    
+                    <EditText
+                        android:id="@+id/edt_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password"
+                        android:fontFamily="@font/janna_it_bold_font"
+                        android:inputType="textPassword"
+                        android:textColor="@color/emerald_primary"
+                        android:textColorHint="@color/input_placeholder"
+                        android:textCursorDrawable="@null"
+                        android:background="@android:color/transparent" />
+
+                    <ImageView
+                        android:id="@+id/btn_toggle_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_eye_hidden"
+                        android:contentDescription="Show/Hide Password" />
+                </RelativeLayout>
+
+                <!-- Masjid Dropdown Selection -->
+                <TextView
+                    android:id="@+id/dropdown_masjid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Select Masjid"
+                    android:fontFamily="@font/janna_it_bold_font"
+                    android:textColor="@color/emerald_primary"
+                    android:gravity="center_vertical"
+                    android:background="@android:color/transparent"
+                    android:drawableEnd="@android:drawable/arrow_down_float" />
+
+                <!-- Error Message Display -->
+                <TextView
+                    android:id="@+id/txt_error_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Invalid Credentials"
+                    android:textColor="@color/error_red"
+                    android:fontFamily="@font/janna_it_bold_font"
+                    android:visibility="gone" />
+
+                <!-- Submit Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_submit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Submit"
+                    android:textAllCaps="false"
+                    android:fontFamily="@font/saleha_font"
+                    app:backgroundTint="@color/emerald_primary" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</ScrollView>

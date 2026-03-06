@@ -68,9 +68,9 @@ public class SplashActivity extends AppCompatActivity {
                 imgLogo.animate().scaleX(1.0f).scaleY(1.0f).setDuration(1200).start()
             ).start(), 2200);
 
-        // Transition to MainActivity (or next flow)
+        // Transition to LoginActivity (Phase 2)
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
             finish();
         }, 5000);
     }

@@ -16,44 +16,93 @@ public class ScalingUtils {
      * Strictly creates a ClayMorphic Background at runtime using screen percentages.
      * Every value (Radius, Shift, Inset) is dynamic to satisfy Requirement #4.
      */
-    public static Drawable createClayDrawable(Context context, float radiusPercent, float shadowPercent, float insetPercent, float strokePercent) {
-        
+    /**
+     * Creates an INSET (Concave) ClayMorphic background for Input Fields.
+     * This creates the "carved into surface" look.
+     */
+    /**
+     * Strictly creates an INSET (Concave) ClayMorphic background with custom colors.
+     */
+    public static Drawable createInsetClayDrawable(Context context, float radiusPercent, float shadowPercent, float insetPercent, int bodyColor, int shadowColor, int highlightColor) {
+        int radius = getScaledSize(context, radiusPercent);
+        int shadowOffset = getScaledSize(context, shadowPercent);
+        int innerInset = getScaledSize(context, insetPercent);
+
+        GradientDrawable darkShadow = new GradientDrawable();
+        darkShadow.setShape(GradientDrawable.RECTANGLE);
+        darkShadow.setCornerRadius(radius);
+        darkShadow.setColor(shadowColor);
+
+        GradientDrawable lightShadow = new GradientDrawable();
+        lightShadow.setShape(GradientDrawable.RECTANGLE);
+        lightShadow.setCornerRadius(radius);
+        lightShadow.setColor(highlightColor);
+
+        GradientDrawable mainBody = new GradientDrawable();
+        mainBody.setShape(GradientDrawable.RECTANGLE);
+        mainBody.setCornerRadius(radius);
+        mainBody.setColor(bodyColor);
+
+        Drawable[] layers = {darkShadow, lightShadow, mainBody};
+        LayerDrawable layerDrawable = new LayerDrawable(layers);
+
+        layerDrawable.setLayerInset(0, 0, 0, shadowOffset, shadowOffset); 
+        layerDrawable.setLayerInset(1, shadowOffset, shadowOffset, 0, 0);
+        layerDrawable.setLayerInset(2, innerInset, innerInset, innerInset, innerInset);
+
+        return layerDrawable;
+    }
+
+    public static Drawable createInsetClayDrawable(Context context, float radiusPercent, float shadowPercent, float insetPercent) {
+        return createInsetClayDrawable(context, radiusPercent, shadowPercent, insetPercent,
+                ContextCompat.getColor(context, R.color.off_white_primary),
+                ContextCompat.getColor(context, R.color.clay_dark_shadow),
+                ContextCompat.getColor(context, R.color.clay_light_shadow));
+    }
+
+    /**
+     * Strictly creates a CONVEX (Raised) ClayMorphic background with custom colors.
+     */
+    public static Drawable createClayDrawable(Context context, float radiusPercent, float shadowPercent, float insetPercent, float strokePercent, int bodyColor, int shadowColor, int highlightColor, int strokeColor) {
         int radius = getScaledSize(context, radiusPercent);
         int shadowOffset = getScaledSize(context, shadowPercent);
         int innerInset = getScaledSize(context, insetPercent);
         int strokeWidth = getScaledSize(context, strokePercent);
 
-        // 1. Dark Shadow (Bottom-Right)
         GradientDrawable darkShadow = new GradientDrawable();
         darkShadow.setShape(GradientDrawable.RECTANGLE);
         darkShadow.setCornerRadius(radius);
-        darkShadow.setColor(ContextCompat.getColor(context, R.color.clay_dark_shadow)); // Corrected Color ID
+        darkShadow.setColor(shadowColor);
 
-        // 2. Light Shadow (Top-Left)
         GradientDrawable lightShadow = new GradientDrawable();
         lightShadow.setShape(GradientDrawable.RECTANGLE);
         lightShadow.setCornerRadius(radius);
-        lightShadow.setColor(ContextCompat.getColor(context, R.color.clay_light_shadow));
+        lightShadow.setColor(highlightColor);
 
-        // 3. Main Body
         GradientDrawable mainBody = new GradientDrawable();
         mainBody.setShape(GradientDrawable.RECTANGLE);
         mainBody.setCornerRadius(radius);
-        mainBody.setColor(ContextCompat.getColor(context, R.color.off_white_primary));
-        mainBody.setStroke(strokeWidth, ContextCompat.getColor(context, R.color.off_white_surface_highlight));
+        mainBody.setColor(bodyColor);
+        if (strokeWidth > 0) {
+            mainBody.setStroke(strokeWidth, strokeColor);
+        }
 
         Drawable[] layers = {darkShadow, lightShadow, mainBody};
         LayerDrawable layerDrawable = new LayerDrawable(layers);
 
-        // Set dynamic insets (The "Scaling" logic)
-        // Dark Shadow shifted down-right
         layerDrawable.setLayerInset(0, shadowOffset, shadowOffset, 0, 0);
-        // Light Shadow shifted up-left
         layerDrawable.setLayerInset(1, 0, 0, shadowOffset, shadowOffset);
-        // Main Body centered in the middle
         layerDrawable.setLayerInset(2, innerInset, innerInset, innerInset, innerInset);
 
         return layerDrawable;
+    }
+
+    public static Drawable createClayDrawable(Context context, float radiusPercent, float shadowPercent, float insetPercent, float strokePercent) {
+        return createClayDrawable(context, radiusPercent, shadowPercent, insetPercent, strokePercent,
+                ContextCompat.getColor(context, R.color.off_white_primary),
+                ContextCompat.getColor(context, R.color.clay_dark_shadow),
+                ContextCompat.getColor(context, R.color.clay_light_shadow),
+                ContextCompat.getColor(context, R.color.off_white_surface_highlight));
     }
 
     /**
