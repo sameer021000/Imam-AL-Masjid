@@ -12,11 +12,11 @@ import androidx.core.content.ContextCompat;
 
 public class ScalingUtils {
 
-    /**
+    /*
      * Strictly creates a ClayMorphic Background at runtime using screen percentages.
      * Every value (Radius, Shift, Inset) is dynamic to satisfy Requirement #4.
      */
-    /**
+    /*
      * Creates an INSET (Concave) ClayMorphic background for Input Fields.
      * This creates the "carved into surface" look.
      */

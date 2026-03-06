@@ -23,7 +23,6 @@ import com.google.android.material.card.MaterialCardView;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private ImageView imgLogo;
     private TextView txtTitle;
     private MaterialCardView loginCard;
     private EditText edtFullName, edtPassword;
@@ -97,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
         float inputTextSize = 0.040f; 
         
         for (String masjid : masjids) {
-            TextView item = (TextView) getLayoutInflater().inflate(R.layout.dropdown_item, null);
+            TextView item = (TextView) getLayoutInflater().inflate(R.layout.dropdown_item, itemsContainer, false);
             item.setText(masjid);
             item.setTextSize(ScalingUtils.getScaledTextSize(this, inputTextSize));
             item.setTextColor(ContextCompat.getColor(this, R.color.emerald_primary));
@@ -139,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // 1. Morph Button to Loading State
         btnSubmit.setEnabled(false);
-        btnSubmit.setText("Loading...");
+        btnSubmit.setText(getString(R.string.login_loading));
         btnSubmit.setAlpha(0.7f);
 
         new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
@@ -151,11 +150,11 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 // Failure
                 btnSubmit.setEnabled(true);
-                btnSubmit.setText("Submit");
+                btnSubmit.setText(getString(R.string.submit));
                 btnSubmit.setAlpha(1.0f);
                 txtError.setVisibility(View.VISIBLE);
-                if (selectedMasjid.isEmpty()) txtError.setText("Please select a Masjid");
-                else txtError.setText("Invalid Full Name or Password");
+                if (selectedMasjid.isEmpty()) txtError.setText(getString(R.string.error_select_masjid));
+                else txtError.setText(getString(R.string.invalid_credentials));
             }
         }, 2000);
     }
@@ -193,7 +192,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        imgLogo = findViewById(R.id.img_logo);
         txtTitle = findViewById(R.id.txt_login_title);
         loginCard = findViewById(R.id.login_card);
         edtFullName = findViewById(R.id.edt_full_name);
