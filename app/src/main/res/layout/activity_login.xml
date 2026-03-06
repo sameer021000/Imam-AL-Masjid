@@ -30,7 +30,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/madina"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/cd_masjid_logo" />
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Title -->
@@ -38,7 +39,7 @@
             android:id="@+id/txt_login_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Imaam Login"
+            android:text="@string/login_title"
             android:textColor="@color/emerald_primary"
             android:fontFamily="@font/saleha_font"
             android:gravity="center" />
@@ -64,12 +65,13 @@
                     android:id="@+id/edt_full_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Full Name"
+                    android:hint="@string/full_name_hint"
                     android:fontFamily="@font/janna_it_bold_font"
                     android:inputType="textPersonName"
                     android:textColor="@color/emerald_primary"
                     android:textColorHint="@color/input_placeholder"
                     android:textCursorDrawable="@null"
+                    android:importantForAutofill="no"
                     android:background="@android:color/transparent" />
 
                 <!-- Password Area Container -->
@@ -82,12 +84,13 @@
                         android:id="@+id/edt_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Password"
+                        android:hint="@string/password_hint"
                         android:fontFamily="@font/janna_it_bold_font"
                         android:inputType="textPassword"
                         android:textColor="@color/emerald_primary"
                         android:textColorHint="@color/input_placeholder"
                         android:textCursorDrawable="@null"
+                        android:importantForAutofill="no"
                         android:background="@android:color/transparent" />
 
                     <ImageView
@@ -97,7 +100,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/ic_eye_hidden"
-                        android:contentDescription="Show/Hide Password" />
+                        android:contentDescription="@string/cd_toggle_password" />
                 </RelativeLayout>
 
                 <!-- Masjid Dropdown Selection -->
@@ -105,19 +108,19 @@
                     android:id="@+id/dropdown_masjid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Select Masjid"
+                    android:text="@string/select_masjid"
                     android:fontFamily="@font/janna_it_bold_font"
                     android:textColor="@color/emerald_primary"
                     android:gravity="center_vertical"
                     android:background="@android:color/transparent"
-                    android:drawableEnd="@android:drawable/arrow_down_float" />
+                    app:drawableEndCompat="@android:drawable/arrow_down_float" />
 
                 <!-- Error Message Display -->
                 <TextView
                     android:id="@+id/txt_error_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Invalid Credentials"
+                    android:text="@string/invalid_credentials"
                     android:textColor="@color/error_red"
                     android:fontFamily="@font/janna_it_bold_font"
                     android:visibility="gone" />
@@ -127,7 +130,7 @@
                     android:id="@+id/btn_submit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Submit"
+                    android:text="@string/submit"
                     android:textAllCaps="false"
                     android:fontFamily="@font/saleha_font"
                     app:backgroundTint="@color/emerald_primary" />

@@ -30,7 +30,7 @@
     <color name="clay_dark_shadow">#40004D3A</color>  <!-- 25% Alpha Emerald Dark Shadow -->
     
     <!-- Functional variants -->
-    <color name="input_placeholder">#969591</color>
+    <color name="input_placeholder">#8B8984</color>
     <color name="input_active">#007F5F</color>
     <color name="text_primary">#004D3A</color>
     <color name="text_secondary">#7B7F85</color>
