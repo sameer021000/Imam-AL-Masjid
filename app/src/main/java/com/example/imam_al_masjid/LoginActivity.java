@@ -276,7 +276,19 @@ public class LoginActivity extends AppCompatActivity {
         String name = edtFullName.getText().toString().trim();
         String pass = edtPassword.getText().toString().trim();
 
-        // Check if Masjid is selected
+        // Validation
+        if (name.isEmpty()) {
+            txtError.setText(getString(R.string.error_empty_name));
+            txtError.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        if (pass.isEmpty()) {
+            txtError.setText(getString(R.string.error_empty_password));
+            txtError.setVisibility(View.VISIBLE);
+            return;
+        }
+
         if (selectedMasjid.isEmpty()) {
             txtError.setText(getString(R.string.error_select_masjid));
             txtError.setVisibility(View.VISIBLE);
