@@ -4,5 +4,4 @@
     android:layout_height="wrap_content"
     android:textColor="@color/text_primary"
     android:fontFamily="@font/janna_it_bold_font"
-    android:gravity="center"
-    android:background="?attr/selectableItemBackground" />
+    android:gravity="center" />

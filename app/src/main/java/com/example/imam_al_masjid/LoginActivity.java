@@ -154,20 +154,28 @@ public class LoginActivity extends AppCompatActivity {
                         startX[0] = event.getX();
                         startY[0] = event.getY();
                         longPressHandler.postDelayed(longPressRunnable, 2000);
+                        
+                        // Tactile Feedback: Slight shrink and fade
+                        v1.animate().scaleX(0.97f).scaleY(0.97f).alpha(0.85f).setDuration(100).start();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float deltaX = Math.abs(event.getX() - startX[0]);
                         float deltaY = Math.abs(event.getY() - startY[0]);
                         if (deltaX > touchSlop || deltaY > touchSlop) {
                             longPressHandler.removeCallbacks(longPressRunnable);
+                            // Reset if finger moves away
+                            v1.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
                         }
                         break;
                     case MotionEvent.ACTION_UP:
                         v1.performClick();
                         longPressHandler.removeCallbacks(longPressRunnable);
+                        // Visual Release
+                        v1.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
                         break;
                     case MotionEvent.ACTION_CANCEL:
                         longPressHandler.removeCallbacks(longPressRunnable);
+                        v1.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
                         break;
                 }
                 return false; // Return false to allow Ripple effect to trigger
