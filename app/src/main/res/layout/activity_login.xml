@@ -115,6 +115,17 @@
                     android:background="@android:color/transparent"
                     app:drawableEndCompat="@android:drawable/arrow_down_float" />
 
+                <!-- Detail Tip Instruction -->
+                <TextView
+                    android:id="@+id/txt_masjid_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/masjid_details_hint"
+                    android:textColor="@color/text_secondary"
+                    android:fontFamily="@font/janna_it_bold_font"
+                    android:gravity="center"
+                    android:alpha="0.8" />
+
                 <!-- Error Message Display -->
                 <TextView
                     android:id="@+id/txt_error_message"

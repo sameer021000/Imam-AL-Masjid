@@ -12,6 +12,7 @@
     <string name="error_select_masjid">Please select a Masjid</string>
     <string name="error_empty_name">Please enter your Full Name</string>
     <string name="error_empty_password">Please enter your Password</string>
+    <string name="masjid_details_hint">Tip: Press &amp; Hold an option for Masjid details</string>
     <string name="cd_masjid_logo">Masjid Logo</string>
     <string name="cd_toggle_password">Show or Hide Password</string>
     <string name="address_alamgeer">India, Telangana, Hyderabad, 500086, Mehdipatnam, Suncity, Bandlaguda Jagir, P&amp;T Colony</string>

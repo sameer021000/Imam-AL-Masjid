@@ -43,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private ImageView btnTogglePassword;
 
     private TextView txtError;
+    private TextView txtMasjidHint;
     private String selectedMasjid = "";
     private ProgressBar progressLogin;
     private ViewGroup btnSubmitContainer;
@@ -360,6 +361,7 @@ public class LoginActivity extends AppCompatActivity {
         txtError = findViewById(R.id.txt_error_message);
         passwordContainer = findViewById(R.id.password_container);
         btnTogglePassword = findViewById(R.id.btn_toggle_password);
+        txtMasjidHint = findViewById(R.id.txt_masjid_hint);
         progressLogin = findViewById(R.id.progress_login);
         btnSubmitContainer = findViewById(R.id.btn_submit_container);
         
@@ -427,7 +429,11 @@ public class LoginActivity extends AppCompatActivity {
         // Scale Progress Bar (slightly smaller than button height)
         ScalingUtils.applyScaledLayout(progressLogin, 0.05f, 0.05f, 0, 0, 0, 0);
 
-        // 6. Error Text Scaling
+        // 6. Masjid Hint Scaling
+        txtMasjidHint.setTextSize(ScalingUtils.getScaledTextSize(this, 0.030f)); // Smaller than main text
+        ScalingUtils.applyScaledLayout(txtMasjidHint, -1, -1, 0.010f, 0, 0, 0);
+
+        // 7. Error Text Scaling
         txtError.setTextSize(ScalingUtils.getScaledTextSize(this, 0.040f));
         ScalingUtils.applyScaledLayout(txtError, -1, -1, 0.02f, 0.02f, 0, 0);
     }
