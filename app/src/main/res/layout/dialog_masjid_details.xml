@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/details_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/txt_details_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/masjid_details"
+        android:textColor="@color/emerald_primary"
+        android:fontFamily="@font/saleha_font"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/txt_masjid_name_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/emerald_dark"
+        android:fontFamily="@font/janna_it_bold_font"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/txt_masjid_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_primary"
+        android:fontFamily="@font/janna_it_bold_font"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:id="@+id/layout_details_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_copy_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/copy_address"
+            android:textAllCaps="false"
+            android:fontFamily="@font/janna_it_bold_font"
+            app:backgroundTint="@color/emerald_light" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_open_map"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/open_maps"
+            android:textAllCaps="false"
+            android:fontFamily="@font/janna_it_bold_font"
+            app:backgroundTint="@color/emerald_primary" />
+
+    </LinearLayout>
+
+</LinearLayout>

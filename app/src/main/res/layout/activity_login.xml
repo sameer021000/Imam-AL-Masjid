@@ -125,15 +125,29 @@
                     android:fontFamily="@font/janna_it_bold_font"
                     android:visibility="gone" />
 
-                <!-- Submit Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_submit"
+                <!-- Submit Button Area -->
+                <FrameLayout
+                    android:id="@+id/btn_submit_container"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/submit"
-                    android:textAllCaps="false"
-                    android:fontFamily="@font/saleha_font"
-                    app:backgroundTint="@color/emerald_primary" />
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_submit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/submit"
+                        android:textAllCaps="false"
+                        android:fontFamily="@font/saleha_font"
+                        app:backgroundTint="@color/emerald_primary" />
+
+                    <ProgressBar
+                        android:id="@+id/progress_login"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        android:indeterminateTint="@color/off_white_primary" />
+                </FrameLayout>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

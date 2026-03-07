@@ -5,16 +5,26 @@ import android.graphics.drawable.Drawable;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.core.content.res.ResourcesCompat;
+
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
+import android.view.MotionEvent;
+import android.view.ViewConfiguration;
+import android.os.Vibrator;
+import android.os.VibrationEffect;
+import android.os.Build;
 
 import android.content.Context;
 import android.view.inputmethod.InputMethodManager;
@@ -34,6 +44,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextView txtError;
     private String selectedMasjid = "";
+    private ProgressBar progressLogin;
+    private ViewGroup btnSubmitContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         edtPassword.setSelection(edtPassword.getText().length());
     }
 
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
     private void showMasjidDropdown() {
         // 1. DISMISS KEYBOARD (Crucial for visibility - P1)
         hideKeyboard();
@@ -108,6 +121,57 @@ public class LoginActivity extends AppCompatActivity {
                         highlightBody, highlightShadow, highlightLight));
             }
 
+            // Long Press (2s) for details (Requirement #3)
+            Handler longPressHandler = new Handler(Looper.getMainLooper());
+            Runnable longPressRunnable = () -> {
+                if (popup.isShowing()) {
+                    // Vibration Feedback (Premium feel)
+                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    if (v != null) {
+                        try {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                v.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                            } else {
+                                v.vibrate(50);
+                            }
+                        } catch (Exception e) {
+                            // Ignore vibration errors on devices without vibrator motors
+                        }
+                    }
+                    popup.dismiss();
+                    showMasjidDetails(masjid);
+                }
+            };
+
+            final float[] startX = new float[1];
+            final float[] startY = new float[1];
+            final int touchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
+
+            item.setOnTouchListener((v1, event) -> {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX[0] = event.getX();
+                        startY[0] = event.getY();
+                        longPressHandler.postDelayed(longPressRunnable, 2000);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float deltaX = Math.abs(event.getX() - startX[0]);
+                        float deltaY = Math.abs(event.getY() - startY[0]);
+                        if (deltaX > touchSlop || deltaY > touchSlop) {
+                            longPressHandler.removeCallbacks(longPressRunnable);
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v1.performClick();
+                        longPressHandler.removeCallbacks(longPressRunnable);
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                        longPressHandler.removeCallbacks(longPressRunnable);
+                        break;
+                }
+                return false; // Return false to allow Ripple effect to trigger
+            });
+
             item.setOnClickListener(v -> {
                 selectedMasjid = masjid;
                 dropdownMasjid.setText(masjid);
@@ -119,6 +183,82 @@ public class LoginActivity extends AppCompatActivity {
 
         popup.setElevation(ScalingUtils.getScaledSize(this, 0.02f));
         popup.showAsDropDown(dropdownMasjid);
+    }
+
+    private void showMasjidDetails(String name) {
+        String address = name.equals("Masjid-E-Alamgeer") ? getString(R.string.address_alamgeer) : getString(R.string.address_hajia);
+        String mapLink = name.equals("Masjid-E-Alamgeer") ? getString(R.string.map_link_alamgeer) : getString(R.string.map_link_hajia);
+
+        // Resolve layout parameters correctly by passing parent (Requirement #4 compliance)
+        ViewGroup root = findViewById(android.R.id.content);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_masjid_details, root, false);
+        
+        LinearLayout detailsRoot = dialogView.findViewById(R.id.details_root);
+        TextView txtTitle = dialogView.findViewById(R.id.txt_details_title);
+        TextView txtName = dialogView.findViewById(R.id.txt_masjid_name_details);
+        TextView txtAddress = dialogView.findViewById(R.id.txt_masjid_address);
+        MaterialButton btnCopy = dialogView.findViewById(R.id.btn_copy_address);
+        MaterialButton btnOpenMap = dialogView.findViewById(R.id.btn_open_map);
+
+        txtName.setText(name);
+        txtAddress.setText(address);
+
+        // --- STRICT DYNAMIC SCALING (Requirement #4) ---
+        txtTitle.setTextSize(ScalingUtils.getScaledTextSize(this, 0.050f));
+        txtName.setTextSize(ScalingUtils.getScaledTextSize(this, 0.045f));
+        txtAddress.setTextSize(ScalingUtils.getScaledTextSize(this, 0.038f));
+        
+        // Dynamic Gap between items (percentages of screen)
+        ScalingUtils.applyScaledLayout(txtName, -1, -1, 0.025f, 0, 0, 0); // 1.5% top gap
+        ScalingUtils.applyScaledLayout(txtAddress, -1, -1, 0.025f, 0, 0, 0); // 2.5% top gap
+        
+        View btnLayout = dialogView.findViewById(R.id.layout_details_buttons);
+        ScalingUtils.applyScaledLayout(btnLayout, -1, -1, 0.04f, 0, 0, 0); // 4% top gap
+        
+        // Gap between the two buttons (marginEnd on the first button)
+        ScalingUtils.applyScaledLayout(btnCopy, -1, -1, 0, 0, 0, 0.02f); // 2% side gap
+        
+        int padding = ScalingUtils.getScaledSize(this, 0.08f);
+        detailsRoot.setPadding(padding, padding, padding, padding);
+
+        // --- CLAYMORPHISM ---
+        dialogView.setBackground(ScalingUtils.createClayDrawable(this, 0.06f, 0.012f, 0.02f, 0.005f));
+        btnCopy.setBackground(ScalingUtils.createClayDrawable(this, 0.03f, 0.012f, 0.01f, 0,
+                ContextCompat.getColor(this, R.color.emerald_light),
+                ContextCompat.getColor(this, R.color.clay_dark_shadow),
+                ContextCompat.getColor(this, R.color.clay_light_shadow), 0));
+        btnOpenMap.setBackground(ScalingUtils.createClayDrawable(this, 0.03f, 0.012f, 0.01f, 0,
+                ContextCompat.getColor(this, R.color.emerald_primary),
+                ContextCompat.getColor(this, R.color.clay_dark_shadow),
+                ContextCompat.getColor(this, R.color.clay_light_shadow), 0));
+
+        android.widget.PopupWindow popup = new android.widget.PopupWindow(dialogView,
+                ScalingUtils.getScaledSize(this, 0.85f), ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        
+        popup.setElevation(ScalingUtils.getScaledSize(this, 0.05f));
+
+        btnCopy.setOnClickListener(v -> {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("Masjid Address", address);
+            clipboard.setPrimaryClip(clip);
+            popup.dismiss();
+        });
+
+        btnOpenMap.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(mapLink));
+            startActivity(intent);
+            popup.dismiss();
+        });
+
+        // Entrance Animation
+        dialogView.setAlpha(0f);
+        dialogView.setScaleX(0.8f);
+        dialogView.setScaleY(0.8f);
+        
+        popup.showAtLocation(findViewById(android.R.id.content), android.view.Gravity.CENTER, 0, 0);
+        
+        dialogView.animate().alpha(1f).scaleX(1.0f).scaleY(1.0f).setDuration(400)
+                .setInterpolator(new android.view.animation.OvershootInterpolator()).start();
     }
 
     private void hideKeyboard() {
@@ -136,25 +276,31 @@ public class LoginActivity extends AppCompatActivity {
         String name = edtFullName.getText().toString().trim();
         String pass = edtPassword.getText().toString().trim();
 
-        // 1. Morph Button to Loading State
+        // Check if Masjid is selected
+        if (selectedMasjid.isEmpty()) {
+            txtError.setText(getString(R.string.error_select_masjid));
+            txtError.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        // 1. Morph Button to Loading State (Requirement #4)
         btnSubmit.setEnabled(false);
-        btnSubmit.setText(getString(R.string.login_loading));
-        btnSubmit.setAlpha(0.7f);
+        btnSubmit.setText(""); 
+        progressLogin.setVisibility(View.VISIBLE);
 
         new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-            if (name.equals("Shaik Abuzer") && pass.equals("ABUZEr@786") && !selectedMasjid.isEmpty()) {
+            if (name.equals("Shaik Abuzer") && pass.equals("ABUZEr@786")) {
                 // Success
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();
             } else {
                 // Failure
+                progressLogin.setVisibility(View.GONE);
                 btnSubmit.setEnabled(true);
                 btnSubmit.setText(getString(R.string.submit));
-                btnSubmit.setAlpha(1.0f);
                 txtError.setVisibility(View.VISIBLE);
-                if (selectedMasjid.isEmpty()) txtError.setText(getString(R.string.error_select_masjid));
-                else txtError.setText(getString(R.string.invalid_credentials));
+                txtError.setText(getString(R.string.invalid_credentials));
             }
         }, 2000);
     }
@@ -202,6 +348,8 @@ public class LoginActivity extends AppCompatActivity {
         txtError = findViewById(R.id.txt_error_message);
         passwordContainer = findViewById(R.id.password_container);
         btnTogglePassword = findViewById(R.id.btn_toggle_password);
+        progressLogin = findViewById(R.id.progress_login);
+        btnSubmitContainer = findViewById(R.id.btn_submit_container);
         
         // Satisfy the 'decreased height' feedback by adding internal form padding
         // Ensure all inputs have vertical centering (P4 uniformity)
@@ -260,9 +408,12 @@ public class LoginActivity extends AppCompatActivity {
         btnTogglePassword.setPadding(toggleInnerPadding, 0, toggleInnerPadding, 0);
 
         // 5. Submit Button Scaling
-        ScalingUtils.applyScaledLayout(btnSubmit, 0.60f, -1, 0.06f, 0.05f, 0, 0);
+        ScalingUtils.applyScaledLayout(btnSubmitContainer, 0.60f, -1, 0.06f, 0.05f, 0, 0);
         btnSubmit.setTextSize(ScalingUtils.getScaledTextSize(this, 0.035f));
         btnSubmit.setCornerRadius(ScalingUtils.getScaledSize(this, 0.035f));
+
+        // Scale Progress Bar (slightly smaller than button height)
+        ScalingUtils.applyScaledLayout(progressLogin, 0.05f, 0.05f, 0, 0, 0, 0);
 
         // 6. Error Text Scaling
         txtError.setTextSize(ScalingUtils.getScaledTextSize(this, 0.040f));

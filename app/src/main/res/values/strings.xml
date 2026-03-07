@@ -10,7 +10,13 @@
     <string name="submit">Submit</string>
     <string name="invalid_credentials">Invalid Full Name or Password</string>
     <string name="error_select_masjid">Please select a Masjid</string>
-    <string name="login_loading">Loading...</string>
     <string name="cd_masjid_logo">Masjid Logo</string>
     <string name="cd_toggle_password">Show or Hide Password</string>
+    <string name="address_alamgeer">India, Telangana, Hyderabad, 500086, Mehdipatnam, Suncity, Bandlaguda Jagir, P&amp;T Colony</string>
+    <string name="map_link_alamgeer">https://maps.app.goo.gl/rC3SnE2qkjyJjk6A6</string>
+    <string name="address_hajia">India, Andhra Pradesh, Krishna District, 520001, Vijayawada, One Town, Panja Center, Gandhi Bomma Center</string>
+    <string name="map_link_hajia">https://maps.app.goo.gl/wUiksHN6vMExfA1E6</string>
+    <string name="copy_address">Copy Address</string>
+    <string name="open_maps">Open in Maps</string>
+    <string name="masjid_details">Masjid Details</string>
 </resources>
