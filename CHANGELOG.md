@@ -23,6 +23,11 @@ All notable changes to **Imam AL Masjid** will be documented in this file.
 - **Custom Dropdown Item** Layout for Masjid selection.
 - **Keyboard Auto-Dismiss** when opening dropdown menu.
 - **Navigation Flow** from Splash Screen → Login Screen → Main Dashboard.
+- **Masjid Details Viewer** – Press and hold a masjid in the dropdown list to view detailed information.
+- **Masjid Details Dialog** displaying masjid name and address.
+- **Copy Address Feature** allowing users to quickly copy the masjid address to clipboard.
+- **Open in Google Maps** button to launch map navigation for the selected masjid.
+- **Animated Dialog Popup** with scale and fade entrance animation.
 
 ### 🎨 Improved
 - **Optimized Layout Structure** for better performance and responsiveness.
@@ -30,6 +35,7 @@ All notable changes to **Imam AL Masjid** will be documented in this file.
 - **Claymorphic Design System** with raised and inset surfaces for inputs, cards, and buttons.
 - **Improved Input Field Alignment** and Spacing using dynamic layout scaling.
 - **Enhanced Visual Feedback** when interacting with login fields and dropdown selections.
+- **Login Loading Experience** improved using overlay ProgressBar instead of button text change.
 
 ### 🐞 Fixed
 - Minor layout alignment adjustments.
