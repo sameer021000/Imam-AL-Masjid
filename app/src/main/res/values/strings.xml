@@ -36,6 +36,7 @@
     <!-- ==== Fragments & Nav ====== -->
     <!-- ========================== -->
     <string name="title_dashboard">Dashboard</string>
+    <string name="title_profile">Imam Profile</string>
     <string name="subtitle_dashboard_preview">(Musalli Preview Mode)</string>
     <string name="title_edit_timings">Edit Timings</string>
     <string name="title_events">Events &amp; Announcements</string>

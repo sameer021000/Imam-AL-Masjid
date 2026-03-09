@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         setupNavigation();
         
-        // Load default fragment (Dashboard)
-        switchFragment(0);
+        // Load default fragment (Dashboard/Home)
+        switchFragment(2);
     }
 
     private void initViews() {
@@ -44,10 +44,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupNavigation() {
-        addNavItem(R.drawable.ic_home, "Home", 0);
-        addNavItem(R.drawable.ic_edit, "Edit", 1);
-        addNavItem(R.drawable.ic_calendar, "Events", 2);
-        addNavItem(R.drawable.ic_settings, "Settings", 3);
+        addNavItem(R.drawable.ic_profile, "Profile", 0);
+        addNavItem(R.drawable.ic_calendar, "Events", 1);
+        addNavItem(R.drawable.ic_home, "Home", 2);
+        addNavItem(R.drawable.ic_edit, "Edit", 3);
+        addNavItem(R.drawable.ic_settings, "Settings", 4);
     }
 
     private void addNavItem(int iconRes, String title, int index) {
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         navDock.addView(itemView);
         
-        if (index == 0) {
+        if (index == 2) {
             updateNavUI(itemView); // Initial selection
         }
     }
@@ -102,9 +103,10 @@ public class MainActivity extends AppCompatActivity {
     private void switchFragment(int index) {
         Fragment fragment;
         switch (index) {
-            case 1: fragment = new EditTimingsFragment(); break;
-            case 2: fragment = new EventsFragment(); break;
-            case 3: fragment = new SettingsFragment(); break;
+            case 0: fragment = new ProfileFragment(); break;
+            case 1: fragment = new EventsFragment(); break;
+            case 3: fragment = new EditTimingsFragment(); break;
+            case 4: fragment = new SettingsFragment(); break;
             default: fragment = new DashboardFragment(); break;
         }
 
