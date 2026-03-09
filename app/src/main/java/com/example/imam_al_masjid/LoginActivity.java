@@ -310,7 +310,7 @@ public class LoginActivity extends AppCompatActivity {
         progressLogin.setVisibility(View.VISIBLE);
 
         new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-            if (name.equals("Shaik Abuzer") && pass.equals("ABUZEr@786")) {
+            if (name.equals("S") && pass.equals("S")) {
                 // Success
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);

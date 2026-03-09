@@ -1,25 +1,50 @@
 <resources>
+    <!-- ========================= -->
+    <!-- ==== App & Resources ==== -->
+    <!-- ========================= -->
     <string name="app_name">Imam-AL-Masjid</string>
     <string name="arabic_name">إمام المسجد</string>
     
-    <!-- Login Screen Strings -->
+    <!-- ========================== -->
+    <!-- ======= Login Screen ====== -->
+    <!-- ========================== -->
     <string name="login_title">Imam Login</string>
     <string name="full_name_hint">Full Name</string>
     <string name="password_hint">Password</string>
     <string name="select_masjid">Select Masjid</string>
     <string name="submit">Submit</string>
+    <string name="masjid_details_hint">Tip: Press &amp; Hold an option for Masjid details</string>
+    
+    <!-- Errors / Validation -->
     <string name="invalid_credentials">Invalid Full Name or Password</string>
     <string name="error_select_masjid">Please select a Masjid</string>
     <string name="error_empty_name">Please enter your Full Name</string>
     <string name="error_empty_password">Please enter your Password</string>
-    <string name="masjid_details_hint">Tip: Press &amp; Hold an option for Masjid details</string>
-    <string name="cd_masjid_logo">Masjid Logo</string>
-    <string name="cd_toggle_password">Show or Hide Password</string>
+    
+    <!-- ========================== -->
+    <!-- ==== Masjid Details ======= -->
+    <!-- ========================== -->
+    <string name="masjid_details">Masjid Details</string>
     <string name="address_alamgeer">India, Telangana, Hyderabad, 500086, Mehdipatnam, Suncity, Bandlaguda Jagir, P&amp;T Colony</string>
     <string name="map_link_alamgeer">https://maps.app.goo.gl/rC3SnE2qkjyJjk6A6</string>
     <string name="address_hajia">India, Andhra Pradesh, Krishna District, 520001, Vijayawada, One Town, Panja Center, Gandhi Bomma Center</string>
     <string name="map_link_hajia">https://maps.app.goo.gl/wUiksHN6vMExfA1E6</string>
     <string name="copy_address">Copy Address</string>
     <string name="open_maps">Open in Maps</string>
-    <string name="masjid_details">Masjid Details</string>
+
+    <!-- ========================== -->
+    <!-- ==== Fragments & Nav ====== -->
+    <!-- ========================== -->
+    <string name="title_dashboard">Dashboard</string>
+    <string name="subtitle_dashboard_preview">(Musalli Preview Mode)</string>
+    <string name="title_edit_timings">Edit Timings</string>
+    <string name="title_events">Events &amp; Announcements</string>
+    <string name="title_settings">Settings</string>
+
+    <!-- ========================== -->
+    <!-- == Content Descriptions == -->
+    <!-- ========================== -->
+    <string name="cd_masjid_logo">Masjid Logo</string>
+    <string name="cd_toggle_password">Show or Hide Password</string>
+    <string name="nav_item_desc">Navigation Icon</string>
 </resources>

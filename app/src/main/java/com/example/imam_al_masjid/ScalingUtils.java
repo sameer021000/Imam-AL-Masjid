@@ -151,4 +151,24 @@ public class ScalingUtils {
         }
         view.setLayoutParams(params);
     }
+    /**
+     * Helper to apply Claymorphism to any view using percentages.
+     */
+    public static void applyClaymorphism(View view, float radiusPercent, boolean isInset, int bodyColor) {
+        Context context = view.getContext();
+        Drawable clay;
+        if (isInset) {
+            clay = createInsetClayDrawable(context, radiusPercent, 0.005f, 0.003f, 
+                    bodyColor, 
+                    ContextCompat.getColor(context, R.color.clay_dark_shadow), 
+                    ContextCompat.getColor(context, R.color.clay_light_shadow));
+        } else {
+            clay = createClayDrawable(context, radiusPercent, 0.008f, 0.005f, 0.002f, 
+                    bodyColor, 
+                    ContextCompat.getColor(context, R.color.clay_dark_shadow), 
+                    ContextCompat.getColor(context, R.color.clay_light_shadow),
+                    bodyColor); // No stroke by default
+        }
+        view.setBackground(clay);
+    }
 }
