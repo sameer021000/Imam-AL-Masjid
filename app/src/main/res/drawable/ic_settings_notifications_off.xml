@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24.0"
+    android:viewportHeight="24.0">
+    <!-- Notification bell OFF: bell with a diagonal strike-through -->
+    <path
+        android:fillColor="@color/text_secondary"
+        android:pathData="M3,3L1.5,4.5l5.16,5.16C6.24,10.36 6,11.16 6,12v5l-2,2v1h14.73l2,2L22,20.5 3,3zM12,23c1.1,0 2,-0.9 2,-2h-4c0,1.1 0.9,2 2,2zM20,15.73L9.27,5H12c0,-1.1 -0.9,-2 -2,-2S8,3.9 8,5H7.27L20,17.73V15.73z" />
+</vector>

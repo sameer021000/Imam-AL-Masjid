@@ -20,6 +20,7 @@
     <color name="off_white_surface_shadow">#ECEAE3</color>
     <color name="off_white_accent">#F3F2EE</color>
     <color name="off_white_grayish">#DEDDDA</color>
+    <color name="off_derived">#F3F2EE</color>
 
     <!-- Error Color Variant -->
     <color name="error_red">#D32F2F</color>
@@ -35,6 +36,7 @@
     <color name="text_primary">#004D3A</color>
     <color name="text_secondary">#7B7F85</color>
     <color name="text_inverse">#FAF9F6</color>
+    <color name="status_active">#007F5F</color>
 
     <!-- Dark Theme Palette (Requirement #1) -->
     <color name="dark_background">#2B2E33</color> <!-- color4 -->

@@ -1,6 +1,7 @@
 package com.example.imam_al_masjid;
 
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,9 +19,14 @@ public class MainActivity extends AppCompatActivity {
     private View activeNavView;
     private int currentNavIndex = -1;
 
+    private static final String KEY_NAV_INDEX = "active_nav_index";
+    private static final int DEFAULT_NAV_INDEX = 2; // Home/Dashboard
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Apply persisted theme BEFORE inflating any layout
+        ThemeManager.applyTheme(this, false);
         androidx.activity.EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         
@@ -31,10 +37,21 @@ public class MainActivity extends AppCompatActivity {
         });
         
         initViews();
-        setupNavigation();
         
-        // Load default fragment (Dashboard/Home)
-        switchFragment(2);
+        // Determine which nav item to highlight (restore after theme-change recreate)
+        int navIndex = DEFAULT_NAV_INDEX;
+        if (savedInstanceState != null) {
+            navIndex = savedInstanceState.getInt(KEY_NAV_INDEX, DEFAULT_NAV_INDEX);
+        }
+        
+        setupNavigation(navIndex);
+        switchFragment(navIndex);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_NAV_INDEX, currentNavIndex);
     }
 
     private void initViews() {
@@ -43,15 +60,15 @@ public class MainActivity extends AppCompatActivity {
         applyClaymorphism();
     }
 
-    private void setupNavigation() {
-        addNavItem(R.drawable.ic_profile, "Profile", 0);
-        addNavItem(R.drawable.ic_calendar, "Events", 1);
-        addNavItem(R.drawable.ic_home, "Home", 2);
-        addNavItem(R.drawable.ic_edit, "Edit", 3);
-        addNavItem(R.drawable.ic_settings, "Settings", 4);
+    private void setupNavigation(int initialNavIndex) {
+        addNavItem(R.drawable.ic_profile, "Profile", 0, initialNavIndex);
+        addNavItem(R.drawable.ic_calendar, "Events", 1, initialNavIndex);
+        addNavItem(R.drawable.ic_home, "Home", 2, initialNavIndex);
+        addNavItem(R.drawable.ic_edit, "Edit", 3, initialNavIndex);
+        addNavItem(R.drawable.ic_settings, "Settings", 4, initialNavIndex);
     }
 
-    private void addNavItem(int iconRes, String title, int index) {
+    private void addNavItem(int iconRes, String title, int index, int initialNavIndex) {
         View itemView = getLayoutInflater().inflate(R.layout.nav_item, navDock, false);
         ImageView icon = itemView.findViewById(R.id.nav_icon);
         android.widget.TextView titleView = itemView.findViewById(R.id.nav_title);
@@ -95,8 +112,9 @@ public class MainActivity extends AppCompatActivity {
 
         navDock.addView(itemView);
         
-        if (index == 2) {
-            updateNavUI(itemView); // Initial selection
+        // Highlight the restored/initial nav item
+        if (index == initialNavIndex) {
+            updateNavUI(itemView);
         }
     }
 

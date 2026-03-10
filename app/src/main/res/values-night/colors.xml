@@ -10,4 +10,8 @@
     <color name="off_white_surface_highlight">#3D4148</color> <!-- Subtle edge for dark clay -->
     <color name="emerald_primary">@color/dark_accent_primary</color>
     <color name="emerald_dark">@color/dark_accent_secondary</color>
+    <color name="off_derived">#24272B</color>
+
+    <!-- Functional variants -->
+    <color name="status_active">#2B2E33</color>
 </resources>

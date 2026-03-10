@@ -43,9 +43,51 @@
     <string name="title_settings">Settings</string>
 
     <!-- ========================== -->
+    <!-- ====== Settings Screen ==== -->
+    <!-- ========================== -->
+    <!-- Section Labels -->
+    <string name="settings_label_appearance">Appearance</string>
+    <string name="settings_label_preferences">Preferences</string>
+    <string name="settings_label_data">Data Management</string>
+
+    <!-- Theme Switcher -->
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+
+    <!-- Push Notifications -->
+    <string name="settings_notifications_title">Push Notifications</string>
+    <string name="settings_notifications_subtitle">Allow important alerts from the app</string>
+
+    <!-- Vibration -->
+    <string name="settings_vibration_title">Vibration</string>
+    <string name="settings_vibration_subtitle">Vibrate on interactions &amp; alerts</string>
+
+    <!-- Sound -->
+    <string name="settings_sound_title">Sound Effects</string>
+    <string name="settings_sound_subtitle">Play sounds on alerts &amp; actions</string>
+
+    <!-- Data Management -->
+    <string name="settings_sync_title">Cloud Sync Status</string>
+    <string name="settings_sync_status_live">Live</string>
+    <string name="settings_sync_status_offline">Not Synced</string>
+    <string name="settings_backup_title">Download JSON Backup</string>
+
+    <!-- Version -->
+    <string name="settings_version">Version 1.0.0</string>
+
+    <!-- ========================== -->
     <!-- == Content Descriptions == -->
     <!-- ========================== -->
     <string name="cd_masjid_logo">Masjid Logo</string>
     <string name="cd_toggle_password">Show or Hide Password</string>
     <string name="nav_item_desc">Navigation Icon</string>
+    <string name="cd_notifications_icon">Notifications Icon</string>
+    <string name="cd_notifications_switch">Toggle Push Notifications</string>
+    <string name="cd_vibration_icon">Vibration Icon</string>
+    <string name="cd_vibration_switch">Toggle Vibration</string>
+    <string name="cd_sound_icon">Sound Icon</string>
+    <string name="cd_sound_switch">Toggle Sound</string>
+    <string name="cd_sync_icon">Cloud Sync Icon</string>
+    <string name="cd_backup_icon">Backup Icon</string>
 </resources>

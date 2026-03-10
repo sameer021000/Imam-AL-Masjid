@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeManager.applyTheme(this, true);
         setContentView(R.layout.activity_login);
 
         initViews();
@@ -442,7 +443,7 @@ public class LoginActivity extends AppCompatActivity {
         ScalingUtils.applyScaledLayout(txtMasjidHint, -1, -1, 0.010f, 0, 0, 0);
 
         // 7. Error Text Scaling
-        txtError.setTextSize(ScalingUtils.getScaledTextSize(this, 0.040f));
+        txtError.setTextSize(ScalingUtils.getScaledTextSize(this, 0.030f));
         ScalingUtils.applyScaledLayout(txtError, -1, -1, 0.02f, 0.02f, 0, 0);
     }
 

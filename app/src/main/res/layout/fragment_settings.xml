@@ -3,15 +3,357 @@
     android:id="@+id/settings_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:orientation="vertical">
 
+    <!-- ============================== -->
+    <!-- SECTION HEADER: Screen Title   -->
+    <!-- (Fixed at the top)             -->
+    <!-- ============================== -->
     <TextView
-        android:id="@+id/txt_settings_title"
+        android:id="@+id/settings_screen_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title_settings"
-        android:textColor="@color/emerald_primary"
-        android:fontFamily="@font/saleha_font" />
+        android:fontFamily="@font/saleha_font"
+        android:textColor="@color/emerald_primary" />
 
+    <ScrollView
+        android:id="@+id/settings_scroll_root"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/settings_content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- ============================== -->
+            <!-- CARD 1: Appearance / Theme     -->
+            <!-- ============================== -->
+            <LinearLayout
+                android:id="@+id/settings_card_theme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/settings_label_theme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_label_appearance"
+                    android:textColor="@color/emerald_primary"
+                    android:fontFamily="@font/janna_it_bold_font" />
+
+                <!-- 3-segment horizontal theme toggle
+                     height is match_parent so tabs fill the inset container vertically -->
+                <LinearLayout
+                    android:id="@+id/settings_theme_toggle_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/settings_theme_system"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/settings_theme_system"
+                        android:gravity="center"
+                        android:fontFamily="@font/janna_it_bold_font" />
+
+                    <TextView
+                        android:id="@+id/settings_theme_light"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/settings_theme_light"
+                        android:gravity="center"
+                        android:fontFamily="@font/janna_it_bold_font" />
+
+                    <TextView
+                        android:id="@+id/settings_theme_dark"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/settings_theme_dark"
+                        android:gravity="center"
+                        android:fontFamily="@font/janna_it_bold_font" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- ============================== -->
+            <!-- CARD 2: Preferences            -->
+            <!-- ============================== -->
+            <LinearLayout
+                android:id="@+id/settings_card_preferences"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/settings_label_preferences"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_label_preferences"
+                    android:textColor="@color/emerald_primary"
+                    android:fontFamily="@font/janna_it_bold_font" />
+
+                <!-- Push Notifications Row -->
+                <LinearLayout
+                    android:id="@+id/settings_row_notifications"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/settings_text_notifications"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_notifications_title"
+                            android:textColor="@color/emerald_primary"
+                            android:fontFamily="@font/janna_it_bold_font" />
+
+                        <TextView
+                            android:id="@+id/settings_subtext_notifications"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_notifications_subtitle"
+                            android:fontFamily="@font/chillax_medium_font"
+                            android:textColor="@color/text_secondary" />
+                    </LinearLayout>
+
+                    <!-- Icon-based ON/OFF toggle for notifications -->
+                    <ImageView
+                        android:id="@+id/settings_toggle_notifications"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_settings_notifications"
+                        android:contentDescription="@string/cd_notifications_switch" />
+
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:id="@+id/settings_divider_notif_vibration"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/off_white_grayish" />
+
+                <!-- Vibration Row -->
+                <LinearLayout
+                    android:id="@+id/settings_row_vibration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/settings_text_vibration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_vibration_title"
+                            android:textColor="@color/emerald_primary"
+                            android:fontFamily="@font/janna_it_bold_font" />
+
+                        <TextView
+                            android:id="@+id/settings_subtext_vibration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_vibration_subtitle"
+                            android:fontFamily="@font/chillax_medium_font"
+                            android:textColor="@color/text_secondary" />
+                    </LinearLayout>
+
+                    <!-- Icon-based ON/OFF toggle for vibration -->
+                    <ImageView
+                        android:id="@+id/settings_toggle_vibration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_settings_vibration_on"
+                        android:contentDescription="@string/cd_vibration_switch" />
+
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:id="@+id/settings_divider_vibration_sound"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/off_white_grayish" />
+
+                <!-- Sound Row -->
+                <LinearLayout
+                    android:id="@+id/settings_row_sound"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/settings_text_sound"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_sound_title"
+                            android:textColor="@color/emerald_primary"
+                            android:fontFamily="@font/janna_it_bold_font" />
+
+                        <TextView
+                            android:id="@+id/settings_subtext_sound"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_sound_subtitle"
+                            android:fontFamily="@font/chillax_medium_font"
+                            android:textColor="@color/text_secondary" />
+                    </LinearLayout>
+
+                    <!-- Icon-based ON/OFF toggle for sound -->
+                    <ImageView
+                        android:id="@+id/settings_toggle_sound"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_settings_sound_on"
+                        android:contentDescription="@string/cd_sound_switch" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- ============================== -->
+            <!-- CARD 3: Data Management        -->
+            <!-- ============================== -->
+            <LinearLayout
+                android:id="@+id/settings_card_data_management"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/settings_label_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_label_data"
+                    android:textColor="@color/emerald_primary"
+                    android:fontFamily="@font/janna_it_bold_font" />
+
+                <!-- Cloud Sync Status Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/settings_icon_sync"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_settings_sync"
+                        android:contentDescription="@string/cd_sync_icon" />
+
+                    <TextView
+                        android:id="@+id/settings_text_sync"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/settings_sync_title"
+                        android:textColor="@color/emerald_primary"
+                        android:fontFamily="@font/janna_it_bold_font" />
+
+                    <!-- Status Pill -->
+                    <LinearLayout
+                        android:id="@+id/settings_sync_status_pill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <View
+                            android:id="@+id/settings_sync_status_dot"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/settings_sync_status_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_sync_status_live"
+                            android:textColor="@color/emerald_primary"
+                            android:fontFamily="@font/janna_it_bold_font" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:id="@+id/settings_divider_sync_backup"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/off_white_grayish" />
+
+                <!-- Manual Backup Button -->
+                <LinearLayout
+                    android:id="@+id/settings_button_backup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/settings_icon_backup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_settings_backup"
+                        android:contentDescription="@string/cd_backup_icon" />
+
+                    <TextView
+                        android:id="@+id/settings_text_backup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_backup_title"
+                        android:textColor="@color/emerald_primary"
+                        android:fontFamily="@font/janna_it_bold_font" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- ============================== -->
+            <!-- SECTION: App Version           -->
+            <!-- ============================== -->
+            <TextView
+                android:id="@+id/settings_version_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_version"
+                android:fontFamily="@font/saleha_font"
+                android:textColor="@color/emerald_primary"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center" />
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
