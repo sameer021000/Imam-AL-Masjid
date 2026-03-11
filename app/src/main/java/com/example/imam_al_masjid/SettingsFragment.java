@@ -2,6 +2,7 @@ package com.example.imam_al_masjid;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -38,6 +39,7 @@ public class SettingsFragment extends BaseFragment {
     @Override
     protected int getLayoutId() { return R.layout.fragment_settings; }
 
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
     @Override
     protected void initViews(View view) {
         if (getContext() == null) return;
@@ -91,10 +93,25 @@ public class SettingsFragment extends BaseFragment {
         // === Mock Sync Status (design) ===
         setSyncStatus();
 
-        // === Backup button (sink-on-touch animation) ===
-        backupButton.setOnClickListener(v -> v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(120).withEndAction(() ->
-                v.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
-        ).start());
+        // === Backup button (Tactile feedback matching Login dropdown) ===
+        backupButton.setOnClickListener(v -> {
+            // Placeholder for backup logic
+        });
+        backupButton.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.97f).scaleY(0.97f).alpha(0.85f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        v.performClick();
+                    }
+                    break;
+            }
+            return true;
+        });
     }
 
     // ================================================================
