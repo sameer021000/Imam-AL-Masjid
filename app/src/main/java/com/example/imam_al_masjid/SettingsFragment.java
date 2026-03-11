@@ -24,9 +24,9 @@ public class SettingsFragment extends BaseFragment {
     // Icon toggles (Design only – ON/OFF state shown via icon)
     private ImageView toggleNotifications, toggleVibration, toggleSound;
 
-    private boolean notifOn = true;
-    private boolean vibOn   = true;
-    private boolean soundOn = true;
+    private static boolean notifOn = true;
+    private static boolean vibOn   = true;
+    private static boolean soundOn = true;
 
     // Data management
     private LinearLayout syncStatusPill, backupButton;
@@ -79,16 +79,15 @@ public class SettingsFragment extends BaseFragment {
         });
         toggleVibration.setOnClickListener(v -> {
             vibOn = !vibOn;
-            toggleVibration.setImageResource(vibOn
-                    ? R.drawable.ic_settings_vibration_on
-                    : R.drawable.ic_settings_vibration_off);
+            updateVibIcon();
         });
         toggleSound.setOnClickListener(v -> {
             soundOn = !soundOn;
-            toggleSound.setImageResource(soundOn
-                    ? R.drawable.ic_settings_sound_on
-                    : R.drawable.ic_settings_sound_off);
+            updateSoundIcon();
         });
+
+        // Initialize icons based on current state (persisted across theme changes)
+        updateAllToggleIcons();
 
         // === Mock Sync Status (design) ===
         setSyncStatus();
@@ -169,6 +168,24 @@ public class SettingsFragment extends BaseFragment {
         toggleNotifications.setImageResource(notifOn
                 ? R.drawable.ic_settings_notifications
                 : R.drawable.ic_settings_notifications_off);
+    }
+
+    private void updateVibIcon() {
+        toggleVibration.setImageResource(vibOn
+                ? R.drawable.ic_settings_vibration_on
+                : R.drawable.ic_settings_vibration_off);
+    }
+
+    private void updateSoundIcon() {
+        toggleSound.setImageResource(soundOn
+                ? R.drawable.ic_settings_sound_on
+                : R.drawable.ic_settings_sound_off);
+    }
+
+    private void updateAllToggleIcons() {
+        updateNotifIcon();
+        updateVibIcon();
+        updateSoundIcon();
     }
 
     // ================================================================
