@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     private ImageView btnTogglePassword;
 
     private TextView txtError;
+    private View errorMessageContainer;
     private TextView txtMasjidHint;
     private String selectedMasjid = "";
     private ProgressBar progressLogin;
@@ -389,6 +390,7 @@ public class LoginActivity extends AppCompatActivity {
         btnSubmit = findViewById(R.id.btn_submit);
         logoContainer = findViewById(R.id.logo_container);
         txtError = findViewById(R.id.txt_error_message);
+        errorMessageContainer = findViewById(R.id.error_message_container);
         passwordContainer = findViewById(R.id.password_container);
         btnTogglePassword = findViewById(R.id.btn_toggle_password);
         txtMasjidHint = findViewById(R.id.txt_masjid_hint);
@@ -454,7 +456,8 @@ public class LoginActivity extends AppCompatActivity {
         btnTogglePassword.setPadding(toggleInnerPadding, 0, toggleInnerPadding, 0);
 
         // 5. Submit Button Scaling
-        ScalingUtils.applyScaledLayout(btnSubmitContainer, 0.60f, -1, 0.06f, 0.05f, 0, 0);
+        // Reduced top margin as the error container handles most of the gap
+        ScalingUtils.applyScaledLayout(btnSubmitContainer, 0.60f, -1, 0.02f, 0.05f, 0, 0);
         btnSubmit.setTextSize(ScalingUtils.getScaledTextSize(this, 0.035f));
         btnSubmit.setCornerRadius(ScalingUtils.getScaledSize(this, 0.035f));
 
@@ -466,8 +469,9 @@ public class LoginActivity extends AppCompatActivity {
         ScalingUtils.applyScaledLayout(txtMasjidHint, -1, -1, 0.010f, 0, 0, 0);
 
         // 7. Error Text Scaling
-        txtError.setTextSize(ScalingUtils.getScaledTextSize(this, 0.030f));
-        ScalingUtils.applyScaledLayout(txtError, -1, -1, 0.02f, 0.02f, 0, 0);
+        txtError.setTextSize(ScalingUtils.getScaledTextSize(this, 0.035f));
+        // Error container with fixed height (5% of screen) to ensure vertical centering in the gap
+        ScalingUtils.applyScaledLayout(errorMessageContainer, -1, 0.05f, 0.02f, 0.03f, 0, 0);
     }
 
     private void applyInputScaling(View view, float paddingPercent, float marginTopPercent, float heightPercent) {
