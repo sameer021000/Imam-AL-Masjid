@@ -33,7 +33,8 @@ import com.google.android.material.card.MaterialCardView;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private TextView txtTitle;
+    private View layoutLoginTitle;
+    private TextView txtTitleImam, txtTitleLogin;
     private MaterialCardView loginCard;
     private EditText edtFullName, edtPassword;
     private TextView dropdownMasjid;
@@ -330,10 +331,28 @@ public class LoginActivity extends AppCompatActivity {
     private void setupAnimations() {
         // Entrance Animations (Requirement #2 style)
         android.view.animation.Animation slideDown = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
-        android.view.animation.Animation slideUp = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.anim_slide_up);
 
         logoContainer.startAnimation(slideDown);
-        txtTitle.startAnimation(slideUp);
+        
+        // --- SPLIT ENTRANCE ANIMATION (Requirement) ---
+        // 'Imam' comes from left, 'Login' comes from right.
+        float screenWidth = getResources().getDisplayMetrics().widthPixels;
+        
+        txtTitleImam.setTranslationX(-screenWidth);
+        txtTitleLogin.setTranslationX(screenWidth);
+        
+        txtTitleImam.animate()
+                .translationX(0)
+                .setDuration(1000)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                .start();
+                
+        txtTitleLogin.animate()
+                .translationX(0)
+                .setDuration(1000)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                .start();
+        // ----------------------------------------------
         
         // Sequential fade-in for form elements
         loginCard.setAlpha(0f);
@@ -360,7 +379,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        txtTitle = findViewById(R.id.txt_login_title);
+        layoutLoginTitle = findViewById(R.id.layout_login_title);
+        txtTitleImam = findViewById(R.id.txt_title_imam);
+        txtTitleLogin = findViewById(R.id.txt_title_login);
         loginCard = findViewById(R.id.login_card);
         edtFullName = findViewById(R.id.edt_full_name);
         edtPassword = findViewById(R.id.edt_password);
@@ -404,8 +425,10 @@ public class LoginActivity extends AppCompatActivity {
         ScalingUtils.applyScaledLayout(logoContainer, 0.30f, 0.30f, 0.1f, 0, 0, 0);
 
         // 2. Title - 2% gap
-        txtTitle.setTextSize(ScalingUtils.getScaledTextSize(this, 0.050f));
-        ScalingUtils.applyScaledLayout(txtTitle, -1, -1, 0.02f, 0, 0, 0);
+        float titleTextSize = ScalingUtils.getScaledTextSize(this, 0.050f);
+        txtTitleImam.setTextSize(titleTextSize);
+        txtTitleLogin.setTextSize(titleTextSize);
+        ScalingUtils.applyScaledLayout(layoutLoginTitle, -1, -1, 0.02f, 0, 0, 0);
 
         // 3. Login Card - 88% width, 4% top gap, 12% bottom gap (Pushed down more)
         ScalingUtils.applyScaledLayout(loginCard, 0.88f, -1, 0.04f, 0.12f, 0, 0);

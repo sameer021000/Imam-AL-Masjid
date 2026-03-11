@@ -35,14 +35,29 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Title -->
-        <TextView
-            android:id="@+id/txt_login_title"
+        <LinearLayout
+            android:id="@+id/layout_login_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/login_title"
-            android:textColor="@color/emerald_primary"
-            android:fontFamily="@font/saleha_font"
-            android:gravity="center" />
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txt_title_imam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_title_imam"
+                android:textColor="@color/emerald_primary"
+                android:fontFamily="@font/saleha_font" />
+
+            <TextView
+                android:id="@+id/txt_title_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_title_login"
+                android:textColor="@color/emerald_primary"
+                android:fontFamily="@font/saleha_font" />
+        </LinearLayout>
 
         <!-- Main Login Card (Claymorphic) -->
         <com.google.android.material.card.MaterialCardView
