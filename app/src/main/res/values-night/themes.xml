@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme for Dark Mode -->
     <style name="Base.Theme.ImamALMasjid" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Main branding colors (Requirement #1 - Dark Theme Palette) -->
+        <!-- Main branding colors (Dark Theme Palette) -->
         <item name="colorPrimary">@color/dark_accent_primary</item>
         <item name="colorOnPrimary">@color/dark_text_primary</item>
         <item name="android:windowBackground">@color/dark_background</item>
