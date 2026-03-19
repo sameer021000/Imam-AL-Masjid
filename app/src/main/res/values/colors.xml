@@ -53,6 +53,8 @@
     <color name="glass_white_alpha_10">#1AFFFFFF</color>
     <color name="glass_white_alpha_20">#33FFFFFF</color>
     <color name="emerald_glow_highlight">#4D2BB08D</color>
+    <color name="celestial_gold_alpha_15">#26FFD23F</color>
+    <color name="emerald_alpha_10">#1A007F5F</color>
 
     <!-- Clay-morphism shadows for Dark Theme -->
     <color name="clay_dark_shadow_night">#801A1D21</color> <!-- Darker variant for depth -->
