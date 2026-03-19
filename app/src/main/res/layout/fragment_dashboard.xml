@@ -297,8 +297,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:paddingVertical="12dp"
-                        android:background="@drawable/bg_dashboard_address_layered_papyrus">
+                        android:paddingVertical="12dp">
 
                         <ImageView
                             android:id="@+id/img_location_pin"

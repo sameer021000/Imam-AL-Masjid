@@ -1,6 +1,8 @@
 package com.example.imam_al_masjid;
-
+ 
 import android.content.Context;
+
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -108,6 +110,63 @@ public class ScalingUtils {
     /**
      * Calculates a value based on a percentage of screen width or height.
      */
+    /**
+     * Strictly creates the Layered Papyrus background (used for Address bar) using percentages.
+     */
+    public static Drawable createLayeredPapyrusDrawable(Context context) {
+        float baseRadius = getScaledSize(context, 0.035f); // ~14dp
+        float offsetMajor = getScaledSize(context, 0.015f); // ~6dp
+        float offsetMinor = getScaledSize(context, 0.0075f); // ~3dp
+        float smallGap = getScaledSize(context, 0.01f); // ~4dp
+
+        // Layer 3: Bottom shadow layer
+        GradientDrawable shadow = new GradientDrawable();
+        shadow.setShape(GradientDrawable.RECTANGLE);
+        shadow.setCornerRadius(baseRadius);
+        shadow.setColor(Color.parseColor("#0D000000"));
+
+        // Layer 2: Middle stacked paper layer
+        GradientDrawable middle = new GradientDrawable();
+        middle.setShape(GradientDrawable.RECTANGLE);
+        middle.setCornerRadius(baseRadius);
+        middle.setColor(ContextCompat.getColor(context, R.color.off_white_dark));
+        middle.setStroke(getScaledSize(context, 0.0025f), ContextCompat.getColor(context, R.color.off_white_grayish));
+
+        // Layer 1: Top main papyrus layer
+        GradientDrawable top = new GradientDrawable();
+        top.setShape(GradientDrawable.RECTANGLE);
+        top.setCornerRadius(baseRadius);
+        top.setColor(ContextCompat.getColor(context, R.color.off_white_primary));
+        top.setStroke(getScaledSize(context, 0.0035f), ContextCompat.getColor(context, R.color.emerald_alpha_20));
+
+        // Accent: The 'folded' edge highlight (Ivory-Emerald)
+        GradientDrawable accent = new GradientDrawable(
+            GradientDrawable.Orientation.TL_BR,
+            new int[]{Color.parseColor("#10007F5F"), Color.TRANSPARENT}
+        );
+        accent.setShape(GradientDrawable.RECTANGLE);
+        accent.setCornerRadius(baseRadius);
+
+        Drawable[] layers = {shadow, middle, top, accent};
+        LayerDrawable ld = new LayerDrawable(layers);
+
+        // Mirroring the exact inset logic from the XML for visual fidelity
+        // setLayerInset(index, left, top, right, bottom)
+        
+        // Shadow (index 0): android:top="6dp" android:left="4dp"
+        ld.setLayerInset(0, (int)smallGap, (int)offsetMajor, 0, 0);
+        
+        // Middle (index 1): top="3dp" left="2dp" right="2dp" bottom="3dp"
+        int mI = (int)offsetMinor;
+        ld.setLayerInset(1, mI/2, mI, mI/2, mI);
+        
+        // Top & Accent (index 2 & 3): bottom="6dp" right="4dp"
+        ld.setLayerInset(2, 0, 0, (int)smallGap, (int)offsetMajor);
+        ld.setLayerInset(3, 0, 0, (int)smallGap, (int)offsetMajor);
+
+        return ld;
+    }
+
     public static int getScaledSize(Context context, float percentage, boolean useHeight) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         float base = useHeight ? metrics.heightPixels : metrics.widthPixels;

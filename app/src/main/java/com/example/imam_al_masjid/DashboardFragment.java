@@ -131,6 +131,9 @@ public class DashboardFragment extends BaseFragment {
         chronosDial = view.findViewById(R.id.view_chronos_dial);
         btnEditLocation = view.findViewById(R.id.btn_edit_location);
         layoutAddressPapyrus = view.findViewById(R.id.layout_address_papyrus_surface);
+        if (layoutAddressPapyrus != null && getContext() != null) {
+            layoutAddressPapyrus.setBackground(ScalingUtils.createLayeredPapyrusDrawable(getContext()));
+        }
 
         // Tap-away logic to reset Dial state
         if (panelWaqtDetails != null) {
