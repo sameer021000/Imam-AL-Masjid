@@ -116,5 +116,5 @@
     <string name="cd_masjid_location">Open Masjid Location</string>
     <string name="cd_my_location">My Current Location</string>
     <string name="dashboard_current_date_placeholder">Wed 11 Mar 2026</string>
-    <string name="dashboard_detecting_location">Detecting current location...</string>
+    <string name="dashboard_detecting_location">Detecting current location…</string>
 </resources>
