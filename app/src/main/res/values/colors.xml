@@ -3,6 +3,7 @@
     <!-- Base Color Palette for Imam-AL-Majsid -->
     <color name="emerald_primary">#007F5F</color>
     <color name="off_white_primary">#FAF9F6</color>
+    <color name="lunar_moon_white">#AAB8C2</color> <!-- Visible silver-blue for Light Theme -->
 
     <!-- Emerald Green Variants -->
     <color name="emerald_light">#2BB08D</color>
@@ -46,7 +47,46 @@
     <color name="dark_accent_primary">#C1C4C8</color> <!-- color2 -->
     <color name="dark_accent_secondary">#7B7F85</color> <!-- color3 -->
 
+    <!-- Home Screen V2 Premium Accents -->
+    <color name="celestial_gold">#FFD23F</color>
+    <color name="celestial_gold_alpha">#40FFD23F</color>
+    <color name="glass_white_alpha_10">#1AFFFFFF</color>
+    <color name="glass_white_alpha_20">#33FFFFFF</color>
+    <color name="emerald_glow_highlight">#4D2BB08D</color>
+
     <!-- Clay-morphism shadows for Dark Theme -->
     <color name="clay_dark_shadow_night">#801A1D21</color> <!-- Darker variant for depth -->
     <color name="clay_light_shadow_night">#20F5F6F7</color> <!-- Soft highlight -->
+    <!-- Concept 1: Celestial Axis Colors -->
+    <color name="silver_lunar">#C4DFDF</color>
+    <color name="dashboard_top_accent_bg">#F0F7F4</color>
+
+    <color name="silver_lunar_alpha">#40C4DFDF</color>
+    <color name="celestial_solar_glow">#40FFD23F</color>
+
+    <!-- Semantic Prayer Card Colors (Concept 2/V2) -->
+    <color name="prayer_card_bg_inactive">@android:color/transparent</color>
+    <color name="prayer_card_name_text">@color/emerald_dark</color>
+    <color name="prayer_card_sub_text">@color/text_secondary</color>
+    <color name="prayer_card_bg_active">@color/emerald_primary</color>
+    <color name="prayer_card_border_active">@color/celestial_gold</color>
+    <color name="prayer_card_border_inactive">@color/emerald_dark</color>
+    <color name="prayer_card_active_primary_text">@color/off_white_primary</color>
+    <color name="prayer_card_active_secondary_text">@color/off_white_light</color>
+    <color name="prayer_card_active_moon_color">@color/off_white_primary</color> 
+
+    <!-- Dashboard V3 Redesign Tokens -->
+    <color name="tab_switcher_track">@color/off_white_dark</color>
+    <color name="tab_switcher_pill">@color/status_active</color>
+    <color name="tab_text_active">@color/text_inverse</color>
+    <color name="tab_text_inactive">@color/text_secondary</color>
+
+    <!-- Chronos Dial Segment Colors -->
+    <color name="chronos_fajr">#2BB08D</color>    <!-- Dawn Teal -->
+    <color name="chronos_sunrise">#FFD23F</color> <!-- Morning Gold -->
+    <color name="chronos_zuhr">#FAF9F6</color>    <!-- Noon White -->
+    <color name="chronos_asr">#B2E2D6</color>     <!-- Afternoon Mint -->
+    <color name="chronos_maghrib">#F39C12</color> <!-- Sunset Orange -->
+    <color name="chronos_isha">#34495E</color>    <!-- Night Blue-Emerald -->
+    <color name="chronos_current_aura">#80FFD23F</color>
 </resources>

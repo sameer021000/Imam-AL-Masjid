@@ -24,9 +24,10 @@ public class SettingsFragment extends BaseFragment {
     // Icon toggles (Design only – ON/OFF state shown via icon)
     private ImageView toggleNotifications, toggleVibration, toggleSound;
 
-    private static boolean notifOn = true;
-    private static boolean vibOn   = true;
-    private static boolean soundOn = true;
+    private static final String PREFS_NAME = "imam_app_settings_prefs";
+    private static final String KEY_NOTIF = "pref_notif";
+    private static final String KEY_VIB = "pref_vib";
+    private static final String KEY_SOUND = "pref_sound";
 
     // Data management
     private LinearLayout syncStatusPill, backupButton;
@@ -74,15 +75,18 @@ public class SettingsFragment extends BaseFragment {
 
         // === Icon toggle clicks ===
         toggleNotifications.setOnClickListener(v -> {
-            notifOn = !notifOn;
+            boolean mode = !isSettingOn(KEY_NOTIF);
+            saveSetting(KEY_NOTIF, mode);
             updateNotifIcon();
         });
         toggleVibration.setOnClickListener(v -> {
-            vibOn = !vibOn;
+            boolean mode = !isSettingOn(KEY_VIB);
+            saveSetting(KEY_VIB, mode);
             updateVibIcon();
         });
         toggleSound.setOnClickListener(v -> {
-            soundOn = !soundOn;
+            boolean mode = !isSettingOn(KEY_SOUND);
+            saveSetting(KEY_SOUND, mode);
             updateSoundIcon();
         });
 
@@ -162,22 +166,35 @@ public class SettingsFragment extends BaseFragment {
     }
 
     // ================================================================
+    //  PERSISTENCE HELPERS
+    // ================================================================
+    private boolean isSettingOn(String key) {
+        if (getContext() == null) return true;
+        return getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(key, true);
+    }
+
+    private void saveSetting(String key, boolean value) {
+        if (getContext() == null) return;
+        getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putBoolean(key, value).apply();
+    }
+
+    // ================================================================
     //  NOTIFICATION ICON
     // ================================================================
     private void updateNotifIcon() {
-        toggleNotifications.setImageResource(notifOn
+        toggleNotifications.setImageResource(isSettingOn(KEY_NOTIF)
                 ? R.drawable.ic_settings_notifications
                 : R.drawable.ic_settings_notifications_off);
     }
 
     private void updateVibIcon() {
-        toggleVibration.setImageResource(vibOn
+        toggleVibration.setImageResource(isSettingOn(KEY_VIB)
                 ? R.drawable.ic_settings_vibration_on
                 : R.drawable.ic_settings_vibration_off);
     }
 
     private void updateSoundIcon() {
-        toggleSound.setImageResource(soundOn
+        toggleSound.setImageResource(isSettingOn(KEY_SOUND)
                 ? R.drawable.ic_settings_sound_on
                 : R.drawable.ic_settings_sound_off);
     }

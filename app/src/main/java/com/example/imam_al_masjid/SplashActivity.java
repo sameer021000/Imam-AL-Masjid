@@ -64,15 +64,17 @@ public class SplashActivity extends AppCompatActivity {
         txtArabicName.startAnimation(slideUp);
 
         // EXTRA: Subtle continuous pulse for 'Excellent' animation effect
+        // Started earlier (600ms instead of 2200ms) to fit in the shorter splash duration
         new Handler(Looper.getMainLooper()).postDelayed(() -> 
-            imgLogo.animate().scaleX(1.1f).scaleY(1.1f).setDuration(1200).withEndAction(() -> 
-                imgLogo.animate().scaleX(1.0f).scaleY(1.0f).setDuration(1200).start()
-            ).start(), 2200);
+            imgLogo.animate().scaleX(1.1f).scaleY(1.1f).setDuration(700).withEndAction(() -> 
+                imgLogo.animate().scaleX(1.0f).scaleY(1.0f).setDuration(700).start()
+            ).start(), 600);
 
         // Transition to LoginActivity (Phase 2)
+        // Reduced from 5000ms to 2000ms for faster startup
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             startActivity(new Intent(SplashActivity.this, LoginActivity.class));
             finish();
-        }, 5000);
+        }, 2000);
     }
 }

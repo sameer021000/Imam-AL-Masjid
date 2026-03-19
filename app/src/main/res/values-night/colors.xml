@@ -8,10 +8,42 @@
     <!-- Secondary Overrides -->
     <color name="off_white_primary">@color/dark_background</color>
     <color name="off_white_surface_highlight">#3D4148</color> <!-- Subtle edge for dark clay -->
+    <color name="off_white_surface_shadow">#1A1D21</color>  <!-- Darker depth for night clay -->
+    <color name="off_white_grayish">#3D4148</color>         <!-- Matching border for dark theme -->
+
     <color name="emerald_primary">@color/dark_accent_primary</color>
-    <color name="emerald_dark">@color/dark_accent_secondary</color>
+    <color name="emerald_dark">@color/emerald_very_light</color>
+    <color name="silver_lunar_alpha">#4D2BB08D</color> <!-- Stronger green glow for dark mode -->
     <color name="off_derived">#24272B</color>
 
     <!-- Functional variants -->
     <color name="status_active">#2B2E33</color>
+    <color name="dashboard_top_accent_bg">#1E2B27</color>
+
+
+    <!-- Semantic Prayer Card Colors (Night Mode) -->
+    <color name="prayer_card_bg_inactive">@android:color/transparent</color>
+    <color name="prayer_card_name_text">@color/dark_accent_primary</color>
+    <color name="prayer_card_sub_text">@color/dark_accent_secondary</color>
+    <color name="prayer_card_bg_active">#FAF9F6</color>
+    <color name="prayer_card_border_active">#FFD23F</color>
+    <color name="prayer_card_border_inactive">@color/dark_accent_secondary</color>
+
+    <color name="prayer_card_active_primary_text">#004D3A</color>
+    <color name="prayer_card_active_secondary_text">#7B7F85</color>
+    <color name="prayer_card_active_moon_color">#004030</color> <!-- Deep dark green for contrast on white active card -->
+
+    <!-- Moon/Celestial Night Override -->
+    <color name="lunar_moon_white">#E8F1F2</color>
+
+    <!-- Dashboard V3 Redesign Tokens (Night) -->
+    <color name="tab_switcher_track">@color/off_white_surface_shadow</color>
+    <color name="tab_switcher_pill">@color/dark_accent_primary</color>
+    <color name="tab_text_active">@color/dark_background</color>
+    <color name="tab_text_inactive">@color/dark_accent_secondary</color>
+
+    <!-- Chronos Dial Night Aura -->
+    <color name="chronos_zuhr">#5D6D7E</color> <!-- Duller Noon for Night Mode -->
+    <color name="chronos_current_aura">#60C1C4C8</color>
+
 </resources>

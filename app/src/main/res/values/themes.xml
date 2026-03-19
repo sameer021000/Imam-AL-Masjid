@@ -12,6 +12,7 @@
     <!-- Splash Screen Theme -->
     <style name="Theme.ImamALMasjid.Splash" parent="Base.Theme.ImamALMasjid">
         <!-- Status bar is now visible and matches the off-white background -->
+        <item name="android:windowSplashScreenBackground" tools:targetApi="31">@color/off_white_primary</item>
     </style>
 
     <style name="Theme.ImamALMasjid" parent="Base.Theme.ImamALMasjid" />
