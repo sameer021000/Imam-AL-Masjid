@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Dark Mode Overrides for Clay-morphism shadows (Requirement #6) -->
+    <!-- Dark Mode Overrides for Clay-morphism shadows -->
     <!-- These are matched to the dark background #2B2E33 -->
     <color name="clay_light_shadow">#20F5F6F7</color> <!-- Soft highlight using color1 -->
     <color name="clay_dark_shadow">#801A1D21</color>  <!-- Deep dark shadow -->
@@ -20,7 +20,6 @@
     <color name="status_active">#2B2E33</color>
     <color name="dashboard_top_accent_bg">#1E2B27</color>
 
-
     <!-- Semantic Prayer Card Colors (Night Mode) -->
     <color name="prayer_card_bg_inactive">@android:color/transparent</color>
     <color name="prayer_card_name_text">@color/dark_accent_primary</color>
@@ -36,7 +35,7 @@
     <!-- Moon/Celestial Night Override -->
     <color name="lunar_moon_white">#E8F1F2</color>
 
-    <!-- Dashboard V3 Redesign Tokens (Night) -->
+    <!-- Dashboard (Night) -->
     <color name="tab_switcher_track">@color/off_white_surface_shadow</color>
     <color name="tab_switcher_pill">@color/dark_accent_primary</color>
     <color name="tab_text_active">@color/dark_background</color>
