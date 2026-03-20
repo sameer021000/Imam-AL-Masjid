@@ -17,8 +17,6 @@ public class CelestialWaqtEngine {
         public Date asr;
         public Date maghrib;
         public Date isha;
-        public Date lastThird;
-        public Date middleNight;
 
         public PrecisePrayerTimes() {}
     }
@@ -34,11 +32,8 @@ public class CelestialWaqtEngine {
         double jd = getJulianDay(year, month, day);
         double t = (jd - 2451545.0) / 36525.0;
 
-        // Solar elements
-        double L0 = 280.46646 + t * (36000.76983 + t * 0.0003032);
-        L0 %= 360;
-        double M = 357.52911 + t * (35999.05029 - 0.0001537 * t);
-        M %= 360;
+        double L0 = (280.46646 + t * (36000.76983 + t * 0.0003032)) % 360;
+        double M = (357.52911 + t * (35999.05029 - 0.0001537 * t)) % 360;
         double e = 0.016708634 - t * (0.000042037 + 0.0000001267 * t);
         
         double C = (1.914602 - t * (0.004817 + 0.000014 * t)) * Math.sin(Math.toRadians(M))
@@ -46,16 +41,11 @@ public class CelestialWaqtEngine {
                 + 0.000289 * Math.sin(Math.toRadians(3 * M));
         
         double lonSun = L0 + C;
-        double v = M + C;
-        // double r = (1.000001018 * (1 - e * e)) / (1 + e * Math.cos(Math.toRadians(v)));
         
         double omega = 125.04 - 1934.136 * t;
         double lambda = lonSun - 0.00569 - 0.00478 * Math.sin(Math.toRadians(omega));
         double epsilon0 = 23.4392911 - t * (46.8150 / 3600 + t * (0.00059 / 3600 - t * 0.001813 / 3600));
         double epsilon = epsilon0 + 0.00256 * Math.cos(Math.toRadians(omega));
-        
-        double alpha = Math.toDegrees(Math.atan2(Math.cos(Math.toRadians(epsilon)) * Math.sin(Math.toRadians(lambda)), Math.cos(Math.toRadians(lambda))));
-        alpha = (alpha + 360) % 360;
         
         double delta = Math.toDegrees(Math.asin(Math.sin(Math.toRadians(epsilon)) * Math.sin(Math.toRadians(lambda))));
         
@@ -66,22 +56,15 @@ public class CelestialWaqtEngine {
                 - 0.5 * varY * varY * Math.sin(Math.toRadians(4 * L0))
                 - 1.25 * e * e * Math.sin(Math.toRadians(2 * M)));
 
-        // Solar Noon in UTC decimal hours
         double solarNoon = (720 - 4 * lon - eqTime) / 60.0;
-        
         PrecisePrayerTimes pt = new PrecisePrayerTimes();
-        
-        // Sun Altitude at Horizon (Atmospheric refraction included as 0.833 deg)
         double h_horizon = -0.833; 
         
         pt.dhuhr = getDateFromUtcHours(date, solarNoon);
         pt.sunrise = getDateFromUtcHours(date, solarNoon - getHourAngle(lat, delta, h_horizon) / 15.0);
         pt.maghrib = getDateFromUtcHours(date, solarNoon + getHourAngle(lat, delta, h_horizon) / 15.0);
-        
         pt.fajr = getDateFromUtcHours(date, solarNoon - getHourAngle(lat, delta, -fajrAngle) / 15.0);
         pt.isha = getDateFromUtcHours(date, solarNoon + getHourAngle(lat, delta, -ishaAngle) / 15.0);
-        
-        // Asr (Standard Method: Shadow factor 1)
         double asrAltitude = Math.toDegrees(Math.atan(1.0 / (1.0 + Math.tan(Math.toRadians(Math.abs(lat - delta))))));
         pt.asr = getDateFromUtcHours(date, solarNoon + getHourAngle(lat, delta, asrAltitude) / 15.0);
 
