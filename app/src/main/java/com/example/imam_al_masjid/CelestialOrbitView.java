@@ -10,6 +10,7 @@ import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
@@ -17,7 +18,6 @@ import androidx.core.content.ContextCompat;
  * A custom view that illustrates the celestial orbit (Sun/Moon position) for prayer times.
  */
 public class CelestialOrbitView extends View {
-
     private Paint ringPaint;
     private Paint nodePaint;
     private Paint glowPaint;
@@ -28,6 +28,11 @@ public class CelestialOrbitView extends View {
     private int accentColor;
     private int moonColor;
     private int activeMoonColor;
+    
+    // Shader Caching (Performance Optimization)
+    private RadialGradient glowShader;
+    private final int[] glowColors = new int[2];
+    private boolean isShaderDirty = true;
 
     public CelestialOrbitView(Context context) {
         super(context);
@@ -49,6 +54,8 @@ public class CelestialOrbitView extends View {
             moonColor = ContextCompat.getColor(context, R.color.lunar_moon_white);
             activeMoonColor = ContextCompat.getColor(context, R.color.prayer_card_active_moon_color);
         }
+        
+        glowColors[1] = Color.TRANSPARENT;
         
         ringPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         ringPaint.setStyle(Paint.Style.STROKE);
@@ -79,11 +86,11 @@ public class CelestialOrbitView extends View {
         // Ensure the moon's orbit is solid enough to see on any background (especially white active card in dark mode)
         ringPaint.setAlpha(isNightEmblem ? (isActive ? 180 : 100) : 120); 
         nodePaint.setColor(finalColor);
+        
+        glowColors[0] = finalColor;
+        isShaderDirty = true;
         invalidate();
     }
-
-
-
 
     public void setPulse(float alpha) {
         this.pulseAlpha = alpha;
@@ -91,7 +98,7 @@ public class CelestialOrbitView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
 
         float centerX = getWidth() / 2f;
@@ -114,10 +121,13 @@ public class CelestialOrbitView extends View {
 
         // 3. Draw Pulse Glow (if active)
         if (pulseAlpha < 1.0f || pulseAlpha > 0.0f) {
-            // Use the determined accentColor (which is moonColor if isNightMode is true) for the glow aura
-            glowPaint.setShader(new RadialGradient(nodeX, nodeY, nodeSize * 2.5f,
-                    new int[]{accentColor, Color.TRANSPARENT},
-                    null, Shader.TileMode.CLAMP));
+            if (isShaderDirty || glowShader == null) {
+                glowShader = new RadialGradient(nodeX, nodeY, nodeSize * 2.5f,
+                        glowColors, null, Shader.TileMode.CLAMP);
+                isShaderDirty = false;
+            }
+            
+            glowPaint.setShader(glowShader);
             glowPaint.setAlpha((int) (150 * pulseAlpha));
             canvas.drawCircle(nodeX, nodeY, nodeSize * 2.5f, glowPaint);
         }
@@ -143,5 +153,4 @@ public class CelestialOrbitView extends View {
         moonPath.op(innerCircle, Path.Op.DIFFERENCE);
         canvas.drawPath(moonPath, moonPaint);
     }
-
 }
