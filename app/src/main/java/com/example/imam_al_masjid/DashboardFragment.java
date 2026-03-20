@@ -43,8 +43,9 @@ public class DashboardFragment extends BaseFragment {
     private View headerSection, cardPrayerTimings, panelAnnouncements;
     private View dateContainer, dividerDates;
     private View headerContainer, headerHorizonBackdrop, layoutTopAccent;
-    private View dotAxisTop, dotAxisBottom;
-    private ImageView imgHeaderLocation;
+    private View dotAxisTop, dotAxisBottom, containerAxisGroup;
+    private ImageView imgHeaderLocation, imgAddressLocation;
+    private View layoutHeaderAddressGroup;
 
     // V3 Tab System
     private View tabTrack, tabPill;
@@ -113,14 +114,16 @@ public class DashboardFragment extends BaseFragment {
         headerSection = view.findViewById(R.id.dashboard_header_section);
         headerContainer = view.findViewById(R.id.dashboard_header_container);
         headerHorizonBackdrop = view.findViewById(R.id.header_horizon_backdrop);
+        layoutHeaderAddressGroup = view.findViewById(R.id.layout_header_address_group);
+        imgAddressLocation = view.findViewById(R.id.img_location_pin);
 
-        cardPrayerTimings = view.findViewById(R.id.card_prayer_timings);
         dateContainer = view.findViewById(R.id.container_dashboard_dates);
         dividerDates = view.findViewById(R.id.divider_dates);
         panelAnnouncements = view.findViewById(R.id.panel_announcements);
         imgHeaderLocation = view.findViewById(R.id.img_header_location);
         dotAxisTop = view.findViewById(R.id.dot_axis_top);
         dotAxisBottom = view.findViewById(R.id.dot_axis_bottom);
+        containerAxisGroup = view.findViewById(R.id.container_axis_group);
 
         // V3 Tab Binding
         tabTrack = view.findViewById(R.id.layout_tab_switcher);
@@ -128,6 +131,7 @@ public class DashboardFragment extends BaseFragment {
         tabWaqt = view.findViewById(R.id.tab_waqt_details);
         panelMasjidTimes = view.findViewById(R.id.panel_masjid_times);
         panelWaqtDetails = view.findViewById(R.id.panel_waqt_details);
+        cardPrayerTimings = panelMasjidTimes;
         chronosDial = view.findViewById(R.id.view_chronos_dial);
         btnEditLocation = view.findViewById(R.id.btn_edit_location);
         layoutAddressPapyrus = view.findViewById(R.id.layout_address_papyrus_surface);
@@ -222,6 +226,77 @@ public class DashboardFragment extends BaseFragment {
 
         // 9. Initialize Animations (Sets initial states of unrolled elements)
         setupAnimations();
+
+        // 10. Finalize Dynamic Scaling (Requirement #4)
+        applyGlobalScaling(view);
+    }
+
+    private void applyGlobalScaling(View view) {
+        if (getContext() == null) return;
+
+        // Top Accent Container
+        ScalingUtils.applyScaledLayout(layoutTopAccent, -1, -1, 0, 0, 0, 0);
+        layoutTopAccent.setPadding(0, 0, 0, ScalingUtils.getScaledSize(getContext(), 0.012f));
+
+        // Header Inner Group
+        ScalingUtils.applyScaledLayout(headerSection, -1, -1, 0, 0, 0, 0);
+        headerSection.setPadding(0, 0, 0, ScalingUtils.getScaledSize(getContext(), 0.03f));
+        ScalingUtils.applyScaledLayout(layoutHeaderAddressGroup, -1, -1, 0.005f, 0, 0, 0); // ~2dp
+        ScalingUtils.applyScaledLayout(imgHeaderLocation, 0.06f, 0.06f, 0, 0, 0.02f, 0); // ~24dp + 8dp margin
+
+        // Text Sizes
+        txtMasjidName.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.06f));
+        txtMasjidAddress.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.032f));
+        txtHijriDate.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.035f));
+        txtCurrentDate.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.035f));
+        txtAnnouncementsTitle.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.03f));
+        txtAnnouncementContent.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.033f));
+        txtDeviceAddress.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.033f));
+
+        // Date container margins & divider
+        ScalingUtils.applyScaledLayout(dateContainer, -1, -1, 0.01f, 0, 0, 0);
+        ScalingUtils.applyScaledLayout(containerAxisGroup, -1, -1, 0, 0, 0.02f, 0.02f); // ~8dp margins
+        ScalingUtils.applyScaledLayout(dividerDates, 0.004f, 0.06f, 0, 0, 0, 0);
+        ScalingUtils.applyScaledLayout(dotAxisTop, 0.012f, 0.012f, 0, 0, 0, 0);
+        ScalingUtils.applyScaledLayout(dotAxisBottom, 0.012f, 0.012f, 0, 0, 0, 0);
+
+        // Date chips padding
+        int hPad = ScalingUtils.getScaledSize(getContext(), 0.04f);
+        int vPad = ScalingUtils.getScaledSize(getContext(), 0.012f);
+        txtHijriDate.setPadding(hPad, vPad, hPad, vPad);
+        txtCurrentDate.setPadding(hPad, vPad, hPad, vPad);
+        
+        // Tab Switcher
+        ScalingUtils.applyScaledLayout(tabTrack, -1, 0.12f, 0, 0.03f, 0.06f, 0.06f);
+        
+        // Announcements Panel
+        panelAnnouncements.setPadding(
+            ScalingUtils.getScaledSize(getContext(), 0.06f), 
+            ScalingUtils.getScaledSize(getContext(), 0.02f),
+            ScalingUtils.getScaledSize(getContext(), 0.06f),
+            ScalingUtils.getScaledSize(getContext(), 0.02f)
+        );
+
+        // Sub-panels
+        ScalingUtils.applyScaledLayout(cardPrayerTimings, -1, -1, 0.01f, 0, 0.02f, 0.02f);
+        
+        // Address Bar Group
+        ScalingUtils.applyScaledLayout(view.findViewById(R.id.container_waqt_address), -1, -1, 0.015f, 0, 0, 0);
+        int paperShadowOffset = ScalingUtils.getScaledSize(getContext(), 0.015f); // The 6dp bottom inset in Layered Papyrus
+        layoutAddressPapyrus.setPadding(
+            ScalingUtils.getScaledSize(getContext(), 0.05f), 
+            ScalingUtils.getScaledSize(getContext(), 0.03f), 
+            ScalingUtils.getScaledSize(getContext(), 0.05f), 
+            ScalingUtils.getScaledSize(getContext(), 0.03f) + paperShadowOffset); // Compensate for background shadow
+        ScalingUtils.applyScaledLayout(imgAddressLocation, 0.06f, 0.06f, 0, 0, 0.015f, 0);
+        ScalingUtils.applyScaledLayout(txtDeviceAddress, -1, -1, 0, 0, 0.025f, 0.10f); // ~10dp start, ~40dp end (clearing EDIT button)
+        
+        // Edit Button
+        ScalingUtils.applyScaledLayout(btnEditLocation, 0.12f, 0.07f, 0.005f, 0, 0, 0.005f);
+        btnEditLocation.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.025f));
+
+        // Chronos Dial (The Centerpiece)
+        ScalingUtils.applyScaledLayout(chronosDial, -1, 0.8f, 0.01f, 0, 0, 0);
     }
 
     private void setupTabSwitcher() {
