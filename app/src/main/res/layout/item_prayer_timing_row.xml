@@ -3,8 +3,6 @@
     android:id="@+id/prayer_row_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="14dp"
-        android:paddingHorizontal="16dp"
         android:clipChildren="false"
         android:clipToPadding="false">
 
@@ -14,8 +12,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="12dp" />
+            android:layout_centerVertical="true" />
 
         <!-- Waqt Name (Next to Dial) -->
         <TextView
@@ -23,11 +20,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/view_celestial_orbit"
+            android:layout_toStartOf="@id/layout_waqt_text_group"
             android:layout_centerVertical="true"
-            android:text="FAJR"
+            android:text="@string/placeholder_waqt_name"
             android:textColor="@color/emerald_primary"
             android:fontFamily="@font/janna_it_bold_font"
-            android:letterSpacing="0.05" />
+            android:letterSpacing="0.05"
+            android:maxLines="1"
+            android:ellipsize="end" />
 
         <!-- Vertical Timing Stack (Center-Right) -->
         <LinearLayout
@@ -36,7 +36,6 @@
             android:layout_height="wrap_content"
             android:layout_toStartOf="@id/container_speaker_toggle"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
             android:orientation="vertical"
             android:gravity="end">
 
@@ -49,8 +48,7 @@
                     android:id="@+id/lbl_azan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="AZAN : "
-                    android:textSize="10sp"
+                    android:text="@string/label_azan"
                     android:textColor="@color/text_secondary"
                     android:alpha="0.8"
                     android:fontFamily="@font/chillax_medium_font" />
@@ -58,7 +56,7 @@
                     android:id="@+id/txt_azan_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="04:30 PM"
+                    android:text="@string/placeholder_waqt_time"
                     android:textColor="@color/text_secondary"
                     android:fontFamily="@font/chillax_medium_font" />
             </LinearLayout>
@@ -67,23 +65,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="1dp">
+                android:gravity="center_vertical">
                 <TextView
                     android:id="@+id/lbl_jamat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="JAMAT : "
-                    android:textSize="10sp"
+                    android:text="@string/label_jamat"
                     android:textColor="@color/text_secondary"
                     android:alpha="0.8"
                     android:fontFamily="@font/chillax_medium_font" />
                 <TextView
                     android:id="@+id/txt_jamat_time"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="06:30 PM"
+                    android:text="@string/placeholder_waqt_time"
                     android:textColor="@color/emerald_primary"
                     android:fontFamily="@font/janna_it_bold_font" />
             </LinearLayout>
@@ -108,9 +103,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_settings_sound_on"
-                android:padding="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Toggle Azan Sound" />
+                android:contentDescription="@string/cd_toggle_azan_sound" />
         </FrameLayout>
 
         <!-- Hidden Views (Maintain Backend Integrity) -->

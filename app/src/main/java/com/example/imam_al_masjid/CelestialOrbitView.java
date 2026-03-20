@@ -97,6 +97,9 @@ public class CelestialOrbitView extends View {
         float centerX = getWidth() / 2f;
         float centerY = getHeight() / 2f;
         float radius = (Math.min(getWidth(), getHeight()) / 2f) - ringPaint.getStrokeWidth();
+        
+        // Safety guard for layout preview (Requirement #4): if radius is 0, skip drawing to avoid RadialGradient exception
+        if (radius <= 0) return;
 
         // 1. Draw Orbit Ring
         canvas.drawCircle(centerX, centerY, radius, ringPaint);

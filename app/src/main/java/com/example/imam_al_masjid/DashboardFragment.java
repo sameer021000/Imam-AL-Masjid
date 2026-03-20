@@ -234,6 +234,9 @@ public class DashboardFragment extends BaseFragment {
     private void applyGlobalScaling(View view) {
         if (getContext() == null) return;
 
+        // --- 1. Global Page Structure ---
+        // ... (existing global scaling code)
+
         // Top Accent Container
         ScalingUtils.applyScaledLayout(layoutTopAccent, -1, -1, 0, 0, 0, 0);
         layoutTopAccent.setPadding(0, 0, 0, ScalingUtils.getScaledSize(getContext(), 0.012f));
@@ -295,8 +298,57 @@ public class DashboardFragment extends BaseFragment {
         ScalingUtils.applyScaledLayout(btnEditLocation, 0.12f, 0.07f, 0.005f, 0, 0, 0.005f);
         btnEditLocation.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.025f));
 
+        // ... (previous methods)
         // Chronos Dial (The Centerpiece)
         ScalingUtils.applyScaledLayout(chronosDial, -1, 0.8f, 0.01f, 0, 0, 0);
+
+        // --- 2. Recursive Row Scaling (Apply to all 5 Prayer Rows) ---
+        View[] rows = {rowFajr, rowZuhr, rowAsr, rowMaghrib, rowIsha};
+        for (View row : rows) {
+            scalePrayerRow(row);
+        }
+    }
+
+    private void scalePrayerRow(View row) {
+        if (row == null || getContext() == null) return;
+
+        // Row Container Padding
+        int hPad = ScalingUtils.getScaledSize(getContext(), 0.04f); // ~16dp
+        int vPad = ScalingUtils.getScaledSize(getContext(), 0.035f); // ~14dp
+        row.setPadding(hPad, vPad, hPad, vPad);
+
+        // Orbit View
+        View orbit = row.findViewById(R.id.view_celestial_orbit);
+        ScalingUtils.applyScaledLayout(orbit, 0.08f, 0.08f, 0, 0, 0, 0.03f);
+
+        // Prayer Name
+        TextView txtName = row.findViewById(R.id.txt_prayer_name);
+        txtName.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.045f));
+        ScalingUtils.applyScaledLayout(txtName, -1, -1, 0, 0, 0, 0.02f); // Added 0.02f marginEnd
+
+        // Waqt Text Group (Labels & Times)
+        View textGroup = row.findViewById(R.id.layout_waqt_text_group);
+        ScalingUtils.applyScaledLayout(textGroup, -1, -1, 0, 0, 0, 0.04f);
+
+        // Speaker Toggle Container
+        View speakerContainer = row.findViewById(R.id.container_speaker_toggle);
+        ScalingUtils.applyScaledLayout(speakerContainer, 0.10f, 0.10f, 0, 0, 0, 0);
+
+        // Inner Text Elements (Labels)
+        TextView lblAzan = row.findViewById(R.id.lbl_azan);
+        TextView txtAzan = row.findViewById(R.id.txt_azan_time);
+        TextView lblJamat = row.findViewById(R.id.lbl_jamat);
+        TextView txtJamat = row.findViewById(R.id.txt_jamat_time);
+
+        if (lblAzan != null) lblAzan.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.025f));
+        if (txtAzan != null) txtAzan.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.035f));
+        if (lblJamat != null) lblJamat.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.025f));
+        if (txtJamat != null) txtJamat.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.04f));
+
+        // Speaker Icon Padding
+        View speakerIcon = row.findViewById(R.id.img_azan_sound_toggle);
+        int iconPad = ScalingUtils.getScaledSize(getContext(), 0.025f);
+        if (speakerIcon != null) speakerIcon.setPadding(iconPad, iconPad, iconPad, iconPad);
     }
 
     private void setupTabSwitcher() {
