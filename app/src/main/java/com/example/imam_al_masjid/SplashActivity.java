@@ -23,7 +23,7 @@ public class SplashActivity extends AppCompatActivity {
         TextView txtAppName = findViewById(R.id.txt_app_name);
         com.google.android.material.card.MaterialCardView logoContainer = findViewById(R.id.logo_container);
 
-        // --- STRICT DYNAMIC SCALING (Requirement #4) ---
+        // --- STRICT DYNAMIC SCALING ---
         // Every component must increase/decrease depends on its parent or screen width/height.
         // Scaling with screen width is the safest way to maintain proportions.
         
@@ -54,7 +54,7 @@ public class SplashActivity extends AppCompatActivity {
         ScalingUtils.applyScaledLayout(txtArabicName, -1, -1, 0.015f, 0, 0, 0);
         // --- END STRICT DYNAMIC SCALING ---
 
-        // Load Animations (Requirement #2 - Excellent Animation)
+        // Load Animations (Excellent Animation)
         Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
         Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.anim_slide_up);
 
