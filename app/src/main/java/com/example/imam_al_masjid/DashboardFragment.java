@@ -687,6 +687,7 @@ public class DashboardFragment extends BaseFragment {
         if (getContext() == null || ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
 
         fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+            if (!isAdded() || getContext() == null) return;
             if (location != null) {
                 updateAddressFromLocation(location);
                 calculateLocationBasedWaqts(location.getLatitude(), location.getLongitude());
@@ -1055,6 +1056,7 @@ public class DashboardFragment extends BaseFragment {
     }
 
     private void updateAddressFromLocation(Location location) {
+        if (!isAdded() || getContext() == null) return;
 
         try {
             Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());

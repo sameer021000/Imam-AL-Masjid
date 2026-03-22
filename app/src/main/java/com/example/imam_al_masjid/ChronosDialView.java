@@ -48,6 +48,7 @@ public class ChronosDialView extends View {
     }
 
     private Paint arcPaint, linePaint, markerPaint, centerTextPaint, timerPaint;
+    private Paint handHourPaint, handMinutePaint, handSecondPaint, hubPaint;
     private List<WaqtSegment> segments = new ArrayList<>();
     private int activeSegmentIndex = -1;
     private int tappedSegmentIndex = -1;
@@ -92,6 +93,22 @@ public class ChronosDialView extends View {
         timerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         timerPaint.setTextAlign(Paint.Align.CENTER);
         timerPaint.setTypeface(jannaBold);
+
+        // Clock Hand Paints
+        handHourPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        handHourPaint.setStyle(Paint.Style.STROKE);
+        handHourPaint.setStrokeCap(Paint.Cap.ROUND);
+
+        handMinutePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        handMinutePaint.setStyle(Paint.Style.STROKE);
+        handMinutePaint.setStrokeCap(Paint.Cap.ROUND);
+
+        handSecondPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        handSecondPaint.setStyle(Paint.Style.STROKE);
+        handSecondPaint.setStrokeCap(Paint.Cap.ROUND);
+        
+        hubPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        hubPaint.setStyle(Paint.Style.FILL);
 
         // Animation now triggered manually via triggerEntrance() to sync with UI tabs
     }
@@ -165,6 +182,9 @@ public class ChronosDialView extends View {
         // 1. Draw Arcs and Partitions
         drawPartitions(canvas, cx, cy, rOuter, rInner);
 
+        // 1.5 Draw Celestial Trinity Hands (The "Home Screen" Sticks)
+        drawCelestialHands(canvas, cx, cy, rOuter);
+
         // 2. Draw Center Content
         drawCenterDisplay(canvas, cx, cy, rInner);
 
@@ -174,6 +194,9 @@ public class ChronosDialView extends View {
         } else {
             draw24hClockMarkers(canvas, cx, cy, rOuter);
         }
+
+        // Request next frame for smooth 60fps "Sweeping" second hand
+        postInvalidateOnAnimation();
     }
 
     private void drawPartitions(Canvas canvas, float cx, float cy, float rOuter, float rInner) {
@@ -220,20 +243,99 @@ public class ChronosDialView extends View {
         return (diff / 86400f) * 360f;
     }
 
+    private void drawCelestialHands(Canvas canvas, float cx, float cy, float rOuter) {
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        long nowMs = System.currentTimeMillis();
+        cal.setTimeInMillis(nowMs);
+        
+        int hour24 = cal.get(java.util.Calendar.HOUR_OF_DAY);
+        int minute = cal.get(java.util.Calendar.MINUTE);
+        int second = cal.get(java.util.Calendar.SECOND);
+        int millis = cal.get(java.util.Calendar.MILLISECOND);
+
+        // 1. Calculate Precise Sweep Angles
+        // Seconds: (0-60 in 1 minute)
+        float sAngle = ((second + millis / 1000f) / 60f) * 360f - 90f;
+        
+        // Minutes: (0-60 in 1 hour)
+        float mAngle = ((minute + second / 60f) / 60f) * 360f - 90f;
+        
+        // Hours: (0-24 in 1 day - Custom for 24h Spiritual Dial)
+        float hAngle = ((hour24 + minute / 60f + second / 3600f) / 24f) * 360f - 90f;
+
+        // 2. Dimension Tokens
+        float lenSec = rOuter * 0.95f;
+        float lenMin = rOuter * 0.85f;
+        float lenHour = rOuter * 0.65f;
+
+        // 3. Configure Paints for Current Theme
+        int primaryColor = ContextCompat.getColor(getContext(), R.color.emerald_primary);
+        int accentColor = ContextCompat.getColor(getContext(), R.color.emerald_light);
+        int ivory = ContextCompat.getColor(getContext(), R.color.off_white_primary);
+        
+        // Hour (Bold Guardian)
+        handHourPaint.setColor(primaryColor);
+        handHourPaint.setStrokeWidth(ScalingUtils.getScaledSize(getContext(), 0.012f));
+        handHourPaint.setAlpha(200);
+
+        // Minute (Crystal Ribbon)
+        handMinutePaint.setColor(primaryColor);
+        handMinutePaint.setStrokeWidth(ScalingUtils.getScaledSize(getContext(), 0.009f));
+        handMinutePaint.setAlpha(180);
+
+        // Second (Laser)
+        handSecondPaint.setColor(accentColor);
+        handSecondPaint.setStrokeWidth(ScalingUtils.getScaledSize(getContext(), 0.003f));
+        
+        // 4. Draw Hands
+        // Draw Hour Hand
+        canvas.save();
+        canvas.rotate(hAngle, cx, cy);
+        canvas.drawLine(cx, cy, cx + lenHour, cy, handHourPaint);
+        // Add a "Diamond" accent at the tip
+        handHourPaint.setStyle(Paint.Style.FILL);
+        canvas.drawCircle(cx + lenHour, cy, ScalingUtils.getScaledSize(getContext(), 0.006f), handHourPaint);
+        handHourPaint.setStyle(Paint.Style.STROKE);
+        canvas.restore();
+
+        // Draw Minute Hand
+        canvas.save();
+        canvas.rotate(mAngle, cx, cy);
+        canvas.drawLine(cx, cy, cx + lenMin, cy, handMinutePaint);
+        // Add solid tip
+        handMinutePaint.setAlpha(255);
+        canvas.drawCircle(cx + lenMin, cy, ScalingUtils.getScaledSize(getContext(), 0.005f), handMinutePaint);
+        canvas.restore();
+
+        // Draw Second Hand (Laser)
+        canvas.save();
+        canvas.rotate(sAngle, cx, cy);
+        canvas.drawLine(cx, cy, cx + lenSec, cy, handSecondPaint);
+        // Tiny hub glow
+        canvas.drawCircle(cx, cy, ScalingUtils.getScaledSize(getContext(), 0.01f), handSecondPaint);
+        canvas.restore();
+
+        // 5. Draw the Luminous Hub
+        hubPaint.setColor(primaryColor);
+        canvas.drawCircle(cx, cy, ScalingUtils.getScaledSize(getContext(), 0.025f), hubPaint);
+        hubPaint.setColor(ivory);
+        canvas.drawCircle(cx, cy, ScalingUtils.getScaledSize(getContext(), 0.012f), hubPaint);
+    }
+
     private void drawCenterDisplay(Canvas canvas, float cx, float cy, float rInner) {
         if (activeSegmentIndex == -1) return;
         WaqtSegment active = segments.get(activeSegmentIndex);
 
-        // Waqt Name
+        // Waqt Name (Shifted Upwards)
         centerTextPaint.setTextSize(rInner * 0.25f);
         centerTextPaint.setColor(ContextCompat.getColor(getContext(), R.color.emerald_primary));
-        canvas.drawText(active.name.toUpperCase(), cx, cy - (rInner * 0.25f), centerTextPaint);
+        canvas.drawText(active.name.toUpperCase(), cx, cy - (rInner * 0.33f), centerTextPaint);
 
-        // Start - End
-        centerTextPaint.setTextSize(rInner * 0.12f);
+        // Start - End (Size Increased & Shifted Upwards)
+        centerTextPaint.setTextSize(rInner * 0.14f);
         centerTextPaint.setColor(ContextCompat.getColor(getContext(), R.color.text_secondary));
         String range = active.startTimeStr + " - " + active.endTimeStr;
-        canvas.drawText(range, cx, cy - (rInner * 0.05f), centerTextPaint);
+        canvas.drawText(range, cx, cy - (rInner * 0.15f), centerTextPaint);
 
         // Countdown (Large)
         timerPaint.setTextSize(rInner * 0.45f);
