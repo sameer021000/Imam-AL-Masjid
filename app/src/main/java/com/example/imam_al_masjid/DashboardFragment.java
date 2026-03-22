@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class DashboardFragment extends BaseFragment {
 
@@ -63,6 +64,7 @@ public class DashboardFragment extends BaseFragment {
     private CelestialWaqtEngine.PrecisePrayerTimes latestPreciseTimes;
     private static final String PREFS_NAME = "PrayerSettings";
     private static final String KEY_SPEAKER_PREFIX = "speaker_";
+    private static final String KEY_LAST_ADDRESS = "last_known_address";
 
     // Location & Sound
     private FusedLocationProviderClient fusedLocationClient;
@@ -139,6 +141,13 @@ public class DashboardFragment extends BaseFragment {
         txtCurrentDate = view.findViewById(R.id.txt_dashboard_current_date);
         txtHijriDate = view.findViewById(R.id.txt_dashboard_hijri_date);
         txtDeviceAddress = view.findViewById(R.id.txt_device_address);
+        
+        // Pre-load last known address from persistence to avoid "Detecting..." flicker
+        android.content.SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String savedAddress = prefs.getString(KEY_LAST_ADDRESS, null);
+        if (savedAddress != null && txtDeviceAddress != null) {
+            txtDeviceAddress.setText(savedAddress);
+        }
 
         txtAnnouncementsTitle = view.findViewById(R.id.txt_announcements_title);
         txtAnnouncementContent = view.findViewById(R.id.txt_announcement_content);
@@ -1065,9 +1074,16 @@ public class DashboardFragment extends BaseFragment {
                 Address address = addresses.get(0);
                 String fullAddress = address.getAddressLine(0);
                 txtDeviceAddress.setText(fullAddress);
+                
+                // Persist successful address for offline fallback
+                requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                        .edit().putString(KEY_LAST_ADDRESS, fullAddress).apply();
             }
         } catch (Exception e) {
-            txtDeviceAddress.setText(getString(R.string.dashboard_address_error));
+            // Fallback to last known address if network is unavailable
+            android.content.SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            String savedAddress = prefs.getString(KEY_LAST_ADDRESS, null);
+            txtDeviceAddress.setText(Objects.requireNonNullElseGet(savedAddress, () -> getString(R.string.dashboard_address_error)));
         }
     }
 
