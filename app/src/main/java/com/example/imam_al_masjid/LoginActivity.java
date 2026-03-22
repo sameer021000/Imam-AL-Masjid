@@ -92,10 +92,10 @@ public class LoginActivity extends AppCompatActivity {
 
     @android.annotation.SuppressLint("ClickableViewAccessibility")
     private void showMasjidDropdown() {
-        // 1. DISMISS KEYBOARD (Crucial for visibility - P1)
+        // 1. DISMISS KEYBOARD
         hideKeyboard();
 
-        // Create Custom Claymorphic Dropdown via PopupWindow (P6)
+        // Create Custom Claymorphic Dropdown via PopupWindow
         LinearLayout itemsContainer = new LinearLayout(this);
         itemsContainer.setOrientation(LinearLayout.VERTICAL);
         itemsContainer.setBackground(ScalingUtils.createClayDrawable(this, 0.04f, 0.01f, 0.01f, 0));
@@ -119,13 +119,13 @@ public class LoginActivity extends AppCompatActivity {
             item.setTextColor(ContextCompat.getColor(this, R.color.emerald_primary));
             item.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding); 
             
-            // Highlight Selected Masjid Background (P6)
+            // Highlight Selected Masjid Background
             if (masjid.equals(selectedMasjid)) {
                 item.setBackground(ScalingUtils.createInsetClayDrawable(this, 0.02f, 0.005f, 0.01f,
                         highlightBody, highlightShadow, highlightLight));
             }
 
-            // Long Press (2s) for details (Requirement #3)
+            // Long Press (2s) for details
             Handler longPressHandler = new Handler(Looper.getMainLooper());
             Runnable longPressRunnable = () -> {
                 if (popup.isShowing()) {
@@ -215,7 +215,7 @@ public class LoginActivity extends AppCompatActivity {
         txtName.setText(name);
         txtAddress.setText(address);
 
-        // --- STRICT DYNAMIC SCALING (Requirement #4) ---
+        // --- STRICT DYNAMIC SCALING ---
         txtTitle.setTextSize(ScalingUtils.getScaledTextSize(this, 0.050f));
         txtName.setTextSize(ScalingUtils.getScaledTextSize(this, 0.045f));
         txtAddress.setTextSize(ScalingUtils.getScaledTextSize(this, 0.038f));
@@ -307,13 +307,13 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // 1. Morph Button to Loading State (Requirement #4)
+        // 1. Morph Button to Loading State
         btnSubmit.setEnabled(false);
         btnSubmit.setText(""); 
         progressLogin.setVisibility(View.VISIBLE);
 
         new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-            if (name.equals("S") && pass.equals("S")) {
+            if (name.equals("s") && pass.equals("s")) {
                 // Success
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
@@ -330,7 +330,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setupAnimations() {
-        // Entrance Animations (Requirement #2 style)
+        // Entrance Animations
         android.view.animation.Animation slideDown = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
 
         logoContainer.startAnimation(slideDown);
@@ -398,7 +398,7 @@ public class LoginActivity extends AppCompatActivity {
         btnSubmitContainer = findViewById(R.id.btn_submit_container);
         
         // Satisfy the 'decreased height' feedback by adding internal form padding
-        // Ensure all inputs have vertical centering (P4 uniformity)
+        // Ensure all inputs have vertical centering
         int verticalGravity = android.view.Gravity.CENTER_VERTICAL;
         edtFullName.setGravity(verticalGravity);
         dropdownMasjid.setGravity(verticalGravity);
@@ -487,7 +487,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void applyClaymorphism() {
-        // 1. Logo Container - No border as per P7
+        // 1. Logo Container - No border
         logoContainer.setBackground(ScalingUtils.createClayDrawable(this, 0.080f, 0.012f, 0.02f, 0f));
 
         // 2. Login Card Background (Raised Clay)
@@ -499,7 +499,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordContainer.setBackground(insetBg); // Container gets the inset bg
         dropdownMasjid.setBackground(insetBg);
 
-        // 4. Submit Button (Convex Clay - P3, P4)
+        // 4. Submit Button (Convex Clay)
         // Use Emerald for Light Mode and Dark Accent Primary for Dark Mode (handled by resources)
         int btnBodyColor = ContextCompat.getColor(this, R.color.emerald_primary);
         int btnShadow = ContextCompat.getColor(this, R.color.clay_dark_shadow);
@@ -509,7 +509,7 @@ public class LoginActivity extends AppCompatActivity {
                 btnBodyColor, btnShadow, btnHighlight, 0));
         btnSubmit.setTextColor(ContextCompat.getColor(this, R.color.off_white_primary));
 
-        // 5. Password Toggle Color (P2)
+        // 5. Password Toggle Color
         btnTogglePassword.setImageResource(R.drawable.ic_eye_hidden);
         btnTogglePassword.setColorFilter(ContextCompat.getColor(this, R.color.emerald_primary));
     }
