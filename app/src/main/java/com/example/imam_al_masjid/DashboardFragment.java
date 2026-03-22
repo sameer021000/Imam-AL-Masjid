@@ -365,6 +365,9 @@ public class DashboardFragment extends BaseFragment {
             tabMasjid.setTextColor(activeTextColor);
             tabWaqt.setBackground(null);
             tabWaqt.setTextColor(inactiveTextColor);
+            
+            // Trigger the staggered unrolling animation when switching back to Prayer Times
+            animatePrayerRows(200);
         } else {
             tabWaqt.setBackground(ScalingUtils.createClayDrawable(getContext(), 0.04f, 0.006f, 0.003f, 0f,
                     activeBodyColor,
@@ -1436,17 +1439,20 @@ public class DashboardFragment extends BaseFragment {
                 .start();
 
         // Staggered Row Entrances
-        animateRow(rowFajr, 500);
-        animateRow(rowZuhr, 600);
-
-        animateRow(rowAsr, 700);
-        animateRow(rowMaghrib, 800);
-        animateRow(rowIsha, 900);
+        animatePrayerRows(500);
 
         panelAnnouncements.animate().alpha(1f)
                 .setDuration(800)
                 .setStartDelay(800)
                 .start();
+    }
+
+    private void animatePrayerRows(int baseDelay) {
+        animateRow(rowFajr, baseDelay);
+        animateRow(rowZuhr, baseDelay + 100);
+        animateRow(rowAsr, baseDelay + 200);
+        animateRow(rowMaghrib, baseDelay + 300);
+        animateRow(rowIsha, baseDelay + 400);
     }
 
     private void animateAddressReveal() {

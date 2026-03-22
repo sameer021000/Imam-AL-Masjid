@@ -282,7 +282,7 @@
                             android:text="@string/dashboard_detecting_location"
                             android:textColor="@color/emerald_dark"
                             android:fontFamily="@font/chillax_medium_font"
-                            android:maxLines="2"
+                            android:maxLines="4"
                             android:ellipsize="end" />
                     </LinearLayout>
 
