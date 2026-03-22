@@ -118,7 +118,7 @@ public class SettingsFragment extends BaseFragment {
     }
 
     // ================================================================
-    //  THEME SELECTION  (FIX #6: Do NOT call setDefaultNightMode if recreate
+    //  THEME SELECTION  (Do NOT call setDefaultNightMode if recreate
     //  would navigate away; instead use recreate() only when truly needed)
     // ================================================================
     private void onThemeSelected(int index) {
@@ -266,7 +266,7 @@ public class SettingsFragment extends BaseFragment {
             ScalingUtils.applyScaledLayout(t, -1, -1, 0, 0.015f, 0, 0);
         }
 
-        // Theme toggle container: fixed height so tabs are vertically centered (FIX #7)
+        // Theme toggle container: fixed height so tabs are vertically centered
         LinearLayout themeContainer = view.findViewById(R.id.settings_theme_toggle_container);
         themeContainer.getLayoutParams().height = ScalingUtils.getScaledSize(ctx, 0.13f);
         themeContainer.requestLayout();
@@ -347,7 +347,7 @@ public class SettingsFragment extends BaseFragment {
     }
 
     // ================================================================
-    //  CLAYMORPHISM (FIX #5: use BORDER-based clay instead of shadow-only
+    //  CLAYMORPHISM (use BORDER-based clay instead of shadow-only
     //  for better visibility of card edges in LIGHT theme)
     // ================================================================
     @Override
@@ -355,7 +355,7 @@ public class SettingsFragment extends BaseFragment {
         if (getContext() == null) return;
         Context ctx = getContext();
 
-        // FIX #5: use a distinctly visible card body color + a visible stroke
+        // use a distinctly visible card body color + a visible stroke
         // so both left and top edges are fully visible in light theme.
         int cardBodyColor   = ContextCompat.getColor(ctx, R.color.off_white_primary);
         int shadowColor     = ContextCompat.getColor(ctx, R.color.off_white_surface_shadow);
