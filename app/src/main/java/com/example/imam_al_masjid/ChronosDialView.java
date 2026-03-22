@@ -3,7 +3,6 @@ package com.example.imam_al_masjid;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -12,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import androidx.annotation.NonNull;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -19,10 +19,9 @@ import androidx.core.content.res.ResourcesCompat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
- * Sacred Chronos Dial v4: A 24-hour interactive partitioned clock.
+ * Sacred Chronos Dial : A 24-hour interactive partitioned clock.
  */
 public class ChronosDialView extends View {
 
@@ -54,8 +53,7 @@ public class ChronosDialView extends View {
     private int tappedSegmentIndex = -1;
     private String centerCountdown = "00:00:00";
     
-    private RectF dialRect = new RectF();
-    private Typeface jannaBold;
+    private final RectF dialRect = new RectF();
     
     // Animation/State
     private float entryProgress = 0f;
@@ -72,7 +70,7 @@ public class ChronosDialView extends View {
     }
 
     private void init(Context context) {
-        jannaBold = ResourcesCompat.getFont(context, R.font.janna_it_bold_font);
+        Typeface jannaBold = ResourcesCompat.getFont(context, R.font.janna_it_bold_font);
 
         arcPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         arcPaint.setStyle(Paint.Style.FILL);
@@ -151,7 +149,7 @@ public class ChronosDialView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         if (segments.isEmpty()) return;
 
@@ -317,9 +315,15 @@ public class ChronosDialView extends View {
             }
             if (!matched) isWaqtTappedState = false;
             invalidate();
+            performClick();
             return true;
         }
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
     }
 
     // Tap away logic (call from Fragment)
