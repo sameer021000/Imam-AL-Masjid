@@ -16,7 +16,7 @@ public class ScalingUtils {
 
     /*
      * Strictly creates a ClayMorphic Background at runtime using screen percentages.
-     * Every value (Radius, Shift, Inset) is dynamic to satisfy Requirement #4.
+     * Every value (Radius, Shift, Inset) is dynamic.
      */
     /*
      * Creates an INSET (Concave) ClayMorphic background for Input Fields.
@@ -108,9 +108,6 @@ public class ScalingUtils {
     }
 
     /**
-     * Calculates a value based on a percentage of screen width or height.
-     */
-    /**
      * Strictly creates the Layered Papyrus background (used for Address bar) using percentages.
      */
     public static Drawable createLayeredPapyrusDrawable(Context context) {
@@ -167,6 +164,9 @@ public class ScalingUtils {
         return ld;
     }
 
+    /**
+     * Calculates a value based on a percentage of screen width or height.
+     */
     public static int getScaledSize(Context context, float percentage, boolean useHeight) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         float base = useHeight ? metrics.heightPixels : metrics.widthPixels;
@@ -210,6 +210,7 @@ public class ScalingUtils {
         }
         view.setLayoutParams(params);
     }
+
     /**
      * Helper to apply Claymorphism to any view using percentages.
      */
@@ -229,13 +230,5 @@ public class ScalingUtils {
                     bodyColor); // No stroke by default
         }
         view.setBackground(clay);
-    }
-
-    public static void setMargins(View view, int left, int top, int right, int bottom) {
-        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-            p.setMargins(left, top, right, bottom);
-            view.requestLayout();
-        }
     }
 }
