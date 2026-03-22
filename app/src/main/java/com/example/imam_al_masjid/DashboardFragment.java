@@ -11,10 +11,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -29,7 +27,6 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,8 +44,7 @@ public class DashboardFragment extends BaseFragment {
     private ImageView imgHeaderLocation, imgAddressLocation;
     private View layoutHeaderAddressGroup;
 
-    // V3 Tab System
-    private View tabTrack, tabPill;
+    private View tabTrack;
     private TextView tabMasjid, tabWaqt;
     private View panelMasjidTimes, panelWaqtDetails;
     private ChronosDialView chronosDial;
@@ -58,17 +54,9 @@ public class DashboardFragment extends BaseFragment {
     private TextView txtMasjidName, txtMasjidAddress, txtCurrentDate, txtHijriDate, txtDeviceAddress;
     private TextView txtAnnouncementsTitle, txtAnnouncementContent;
 
-
-
-
-
-
     // Timing Row views for the 5 prayers
     private View rowFajr, rowZuhr, rowAsr, rowMaghrib, rowIsha;
     private View activeRow;
-
-    
-    // Special Timing Tiles - Removed per user request
 
     // Backend Logic
     private PrayerTimes latestPrayerTimes;
@@ -76,14 +64,13 @@ public class DashboardFragment extends BaseFragment {
     private static final String PREFS_NAME = "PrayerSettings";
     private static final String KEY_SPEAKER_PREFIX = "speaker_";
 
-
     // Location & Sound
     private FusedLocationProviderClient fusedLocationClient;
     private MediaPlayer mediaPlayer;
     private boolean isPlaying = false;
 
     // Countdown Backend
-    private android.os.Handler countdownHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    private final android.os.Handler countdownHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private Runnable countdownRunnable;
 
     private final ActivityResultLauncher<String[]> locationPermissionRequest =
@@ -146,11 +133,6 @@ public class DashboardFragment extends BaseFragment {
             });
         }
 
-
-
-
-
-
         // 2. Bind Text Elements
         txtMasjidName = view.findViewById(R.id.txt_dashboard_masjid_name);
         txtMasjidAddress = view.findViewById(R.id.txt_dashboard_masjid_address);
@@ -161,8 +143,6 @@ public class DashboardFragment extends BaseFragment {
         txtAnnouncementsTitle = view.findViewById(R.id.txt_announcements_title);
         txtAnnouncementContent = view.findViewById(R.id.txt_announcement_content);
 
-
-
         // 3. Bind Timing Rows
         rowFajr = view.findViewById(R.id.row_fajr);
         rowZuhr = view.findViewById(R.id.row_dhuhr);
@@ -170,21 +150,12 @@ public class DashboardFragment extends BaseFragment {
         rowMaghrib = view.findViewById(R.id.row_maghrib);
         rowIsha = view.findViewById(R.id.row_isha);
 
-        // 4. Bind Special Tiles - Removed per user request
-
         // 5. Set Initial Content (Placeholder Masjid Times)
         setupTimingRow(rowFajr, "FAJR", "fajr");
         setupTimingRow(rowZuhr, "ZUHR", "zuhr");
         setupTimingRow(rowAsr, "ASR", "asr");
         setupTimingRow(rowMaghrib, "MAGHRIB", "maghrib");
         setupTimingRow(rowIsha, "ISHA", "isha");
-
-
-
-
-
-        // Special tiles setup removed
-
 
         // Match status bar color with top accent
         updateStatusBarColor();
@@ -227,7 +198,7 @@ public class DashboardFragment extends BaseFragment {
         // 9. Initialize Animations (Sets initial states of unrolled elements)
         setupAnimations();
 
-        // 10. Finalize Dynamic Scaling (Requirement #4)
+        // 10. Finalize Dynamic Scaling
         applyGlobalScaling(view);
     }
 
@@ -298,7 +269,6 @@ public class DashboardFragment extends BaseFragment {
         ScalingUtils.applyScaledLayout(btnEditLocation, 0.12f, 0.07f, 0.005f, 0, 0, 0.005f);
         btnEditLocation.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, ScalingUtils.getScaledSize(getContext(), 0.025f));
 
-        // ... (previous methods)
         // Chronos Dial (The Centerpiece)
         ScalingUtils.applyScaledLayout(chronosDial, -1, 0.8f, 0.01f, 0, 0, 0);
 
@@ -417,12 +387,12 @@ public class DashboardFragment extends BaseFragment {
             updateChronosDial(latestPreciseTimes);
             if (chronosDial != null) chronosDial.triggerEntrance();
             
-            // Concept D: Trigger the unroll reveal when tab is actually clicked
+            // Trigger the unroll reveal when tab is actually clicked
             animateAddressReveal();
         }
     }
 
-    // Chronos Dial v4 implementation
+    // Chronos Dial implementation
     private void updateChronosDial(CelestialWaqtEngine.PrecisePrayerTimes prayerTimes) {
         if (prayerTimes == null || chronosDial == null) return;
 
@@ -449,7 +419,7 @@ public class DashboardFragment extends BaseFragment {
         addWaqt(list, "ASR", prayerTimes.asr, prayerTimes.maghrib);
         addWaqt(list, "MAGHRIB", prayerTimes.maghrib, prayerTimes.isha);
         
-        // Isha Wrap (Active logic for Point 4 & 5)
+        // Isha Wrap
         // If Isha is currently started, its end is the NEXT Fajr.
         // We can safely use prayerTimes.fajr + 1 day as the logical cycle end IF it's before midnight,
         // but since we are using a MIXED object, prayerTimes.fajr is ALREADY the correct end 
@@ -511,13 +481,10 @@ public class DashboardFragment extends BaseFragment {
             androidx.core.view.WindowInsetsControllerCompat controller = 
                 androidx.core.view.WindowCompat.getInsetsController(getActivity().getWindow(), getActivity().getWindow().getDecorView());
             
-            if (controller != null) {
-                // If it's NOT night mode, the background is light, so we need dark icons
-                controller.setAppearanceLightStatusBars(!isNightMode);
-            }
+            // If it's NOT night mode, the background is light, so we need dark icons
+            controller.setAppearanceLightStatusBars(!isNightMode);
         }
     }
-
 
     private void updateHeaderDates() {
         updateHeaderDates(true);
@@ -532,9 +499,8 @@ public class DashboardFragment extends BaseFragment {
         String gDate = gregFormat.format(now);
         
         // 2. Hijri Date (e.g., 27 Ramadan 1447 AH)
-        String hDate = "";
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            android.icu.util.IslamicCalendar islamicCalendar = new android.icu.util.IslamicCalendar();
+        String hDate;
+        android.icu.util.IslamicCalendar islamicCalendar = new android.icu.util.IslamicCalendar();
             
             // Advanced Backend Logic: Hijri day begins at Sunset (Maghrib)
             if (latestPreciseTimes != null && latestPreciseTimes.maghrib != null) {
@@ -561,7 +527,6 @@ public class DashboardFragment extends BaseFragment {
             };
             
             hDate = day + " " + (month >= 0 && month < 12 ? hijriMonths[month] : month) + " " + year + " AH";
-        }
 
         if (animated) {
             // Apply with Clockwork Roll (Animates only if value actually changes)
@@ -595,15 +560,14 @@ public class DashboardFragment extends BaseFragment {
                 }).start();
     }
 
-
     private void setupTimingRow(View row, String name, String prefKey) {
         TextView txtName = row.findViewById(R.id.txt_prayer_name);
         ImageView imgSound = row.findViewById(R.id.img_azan_sound_toggle);
 
         if (txtName != null) txtName.setText(name);
 
-        if (imgSound != null) {
-            boolean isOn = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        if (imgSound != null && getContext() != null) {
+            boolean isOn = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                     .getBoolean(KEY_SPEAKER_PREFIX + prefKey, true);
             updateSpeakerIcon(imgSound, isOn, false);
             imgSound.setOnClickListener(v -> toggleAzanSound(imgSound, prefKey));
@@ -631,8 +595,6 @@ public class DashboardFragment extends BaseFragment {
         icon.setAlpha(1.0f); 
     }
 
-    // setupSpecialTile removed
-
     private void startHeroPulse() {
         // Concept M Hero pulse removed per user request
         if (headerHorizonBackdrop != null) {
@@ -643,8 +605,6 @@ public class DashboardFragment extends BaseFragment {
             pulseHeader.start();
         }
     }
-
-
 
     private void startAxisPulse() {
         if (dotAxisTop != null && dotAxisBottom != null) {
@@ -657,7 +617,6 @@ public class DashboardFragment extends BaseFragment {
         }
     }
 
-
     private void openMasjidMap() {
 
         String address = getString(R.string.address_alamgeer);
@@ -665,18 +624,18 @@ public class DashboardFragment extends BaseFragment {
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, mapUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         
-        if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
+        if (getContext() != null && mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
             startActivity(mapIntent);
-        } else {
+        } else if (getContext() != null) {
             // Fallback to any app that can handle geo URIs
             Intent fallbackIntent = new Intent(Intent.ACTION_VIEW, mapUri);
             startActivity(fallbackIntent);
         }
     }
 
-
     private void toggleAzanSound(ImageView icon, String prefKey) {
-        android.content.SharedPreferences prefs = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        if (getContext() == null) return;
+        android.content.SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         boolean currentState = prefs.getBoolean(KEY_SPEAKER_PREFIX + prefKey, true);
         boolean newState = !currentState;
         
@@ -686,7 +645,7 @@ public class DashboardFragment extends BaseFragment {
         boolean isActive = false;
         android.view.ViewParent vp = icon.getParent();
         while (vp instanceof View) {
-            if (vp == activeRow && activeRow != null) {
+            if (vp == activeRow) {
                 isActive = true;
                 break;
             }
@@ -694,8 +653,6 @@ public class DashboardFragment extends BaseFragment {
         }
 
         updateSpeakerIcon(icon, newState, isActive);
-
-
 
         if (!newState && isPlaying) {
             // If user turned off sound while azan was playing, stop it
@@ -712,7 +669,7 @@ public class DashboardFragment extends BaseFragment {
         if (isPlaying || getContext() == null) return;
         try {
             // Using placeholder notification sound as requested
-            mediaPlayer = MediaPlayer.create(getContext(), android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
+            mediaPlayer = MediaPlayer.create(requireContext(), android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
             mediaPlayer.setOnCompletionListener(mp -> {
                 isPlaying = false;
                 mediaPlayer.release();
@@ -723,9 +680,8 @@ public class DashboardFragment extends BaseFragment {
         } catch (Exception ignored) {}
     }
 
-
     private void detectCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
+        if (getContext() == null || ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
 
         fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
             if (location != null) {
@@ -774,7 +730,7 @@ public class DashboardFragment extends BaseFragment {
         CelestialWaqtEngine.PrecisePrayerTimes yesterday = CelestialWaqtEngine.calculate(lat, lon, calYesterday.getTime(), 
             parameters.fajrAngle, parameters.ishaAngle);
 
-        // 3. MIXED STATE LOGIC: Points 3 and 4 of the approved plan
+        // 3. MIXED STATE LOGIC:
         // At 12:00 AM, update every waqt's start & end time with current date (today), 
         // except the Isha's start time (as Isha didn't complete yet).
         if (now.before(today.fajr)) {
@@ -800,21 +756,11 @@ public class DashboardFragment extends BaseFragment {
         updateRowWaqtTimes(rowAsr, getStaticAzanTime("asr"), getStaticJamatTime("asr"));
         updateRowWaqtTimes(rowMaghrib, getStaticAzanTime("maghrib"), getStaticJamatTime("maghrib"));
         
-        // Point 1: Except Isha's start/end time (until it completes at Fajr today)
-        if (now.before(today.fajr)) {
-             // For the static text row labels, we can continue showing yesterday's times? 
-             // Or actually, the plan says "Don't update Isha's start/end". 
-             // I'll keep the static labels matching the religious logic.
-             updateRowWaqtTimes(rowIsha, getStaticAzanTime("isha"), getStaticJamatTime("isha"));
-        } else {
-             updateRowWaqtTimes(rowIsha, getStaticAzanTime("isha"), getStaticJamatTime("isha"));
-        }
+        updateRowWaqtTimes(rowIsha, getStaticAzanTime("isha"), getStaticJamatTime("isha"));
 
         highlightActiveWaqt(latestPreciseTimes, coordinates);
         updateHeaderDates(false);
     }
-
-
 
     private void highlightActiveWaqt(CelestialWaqtEngine.PrecisePrayerTimes prayerTimes, Coordinates coordinates) {
         if (prayerTimes == null) return;
@@ -835,11 +781,11 @@ public class DashboardFragment extends BaseFragment {
         else if (now.after(prayerTimes.isha)) current = com.batoulapps.adhan.Prayer.ISHA;
         
         // Reset all rows
-        resetRowHighlight(rowFajr, "FAJR", "fajr");
-        resetRowHighlight(rowZuhr, "ZUHR", "zuhr");
-        resetRowHighlight(rowAsr, "ASR", "asr");
-        resetRowHighlight(rowMaghrib, "MAGHRIB", "maghrib");
-        resetRowHighlight(rowIsha, "ISHA", "isha");
+        resetRowHighlight(rowFajr, "fajr");
+        resetRowHighlight(rowZuhr, "zuhr");
+        resetRowHighlight(rowAsr, "asr");
+        resetRowHighlight(rowMaghrib, "maghrib");
+        resetRowHighlight(rowIsha, "isha");
         activeRow = null;
 
         View targetRow = null;
@@ -851,11 +797,7 @@ public class DashboardFragment extends BaseFragment {
         now = new Date();
 
         if (current == com.batoulapps.adhan.Prayer.NONE) {
-            if (now.before(prayerTimes.fajr)) {
-                current = com.batoulapps.adhan.Prayer.ISHA;
-            } else {
-                current = com.batoulapps.adhan.Prayer.ISHA; // Passed Isha
-            }
+            current = com.batoulapps.adhan.Prayer.ISHA;
         }
 
         switch (current) {
@@ -873,8 +815,6 @@ public class DashboardFragment extends BaseFragment {
                 currentWaqtName = "ZUHR";
                 waqtEndsAt = prayerTimes.asr;
                 break;
-
-
             case ASR: 
                 targetRow = rowAsr; 
                 currentWaqtName = "ASR";
@@ -930,7 +870,6 @@ public class DashboardFragment extends BaseFragment {
             // Physical Lift
             targetRow.animate().translationZ(15f).scaleY(1.05f).setDuration(400).start();
 
-            
             // Group A: Prayer Name & Jamat Time
             TextView txtName = targetRow.findViewById(R.id.txt_prayer_name);
             TextView txtJamatValue = targetRow.findViewById(R.id.txt_jamat_time);
@@ -952,11 +891,10 @@ public class DashboardFragment extends BaseFragment {
                 ScalingUtils.applyClaymorphism(speakerInset, 0.5f, true, activeCardBg);
             }
 
-
             // Update Speaker Icon Color for Active State
             ImageView imgSound = targetRow.findViewById(R.id.img_azan_sound_toggle);
             if (imgSound != null) {
-                boolean isOn = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                boolean isOn = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                         .getBoolean(KEY_SPEAKER_PREFIX + currentWaqtName.toLowerCase(), true);
                 updateSpeakerIcon(imgSound, isOn, true);
             }
@@ -967,21 +905,11 @@ public class DashboardFragment extends BaseFragment {
             activeRow = targetRow;
         }
 
-
-
-
-
-
-
-
-
-
-
         // Start Countdown Timer
         startWaqtCountdown(waqtEndsAt);
     }
 
-    private void resetRowHighlight(View row, String name, String prefKey) {
+    private void resetRowHighlight(View row, String prefKey) {
         if (getContext() == null) return;
         
         row.animate().translationZ(0f).scaleY(1.0f).setDuration(300).start();
@@ -1018,20 +946,16 @@ public class DashboardFragment extends BaseFragment {
         if (lblAzan != null) lblAzan.setTextColor(subTextColor);
         if (lblJamat != null) lblJamat.setTextColor(subTextColor);
 
-
-
-
         View speakerInset = row.findViewById(R.id.view_speaker_inset_bg);
         if (speakerInset != null) {
             int bodyColor = ContextCompat.getColor(getContext(), R.color.off_white_primary);
             ScalingUtils.applyClaymorphism(speakerInset, 0.5f, true, bodyColor);
         }
 
-
         // Re-apply speaker state icons with Inactive Color
         ImageView imgSound = row.findViewById(R.id.img_azan_sound_toggle);
         if (imgSound != null) {
-            boolean isOn = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            boolean isOn = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                     .getBoolean(KEY_SPEAKER_PREFIX + prefKey, true);
             updateSpeakerIcon(imgSound, isOn, false);
         }
@@ -1041,12 +965,6 @@ public class DashboardFragment extends BaseFragment {
         updateCelestialOrbit(row, prefKey, activeBorderColor, false);
 
     }
-
-
-
-
-
-
 
     private void updateCelestialOrbit(View row, String waqtKey, int color, boolean isActive) {
         CelestialOrbitView orbit = row.findViewById(R.id.view_celestial_orbit);
@@ -1064,7 +982,6 @@ public class DashboardFragment extends BaseFragment {
         }
     }
 
-
     private void updateRowWaqtTimes(View row, String azan, String jamat) {
 
         TextView txtAzan = row.findViewById(R.id.txt_azan_time);
@@ -1078,10 +995,6 @@ public class DashboardFragment extends BaseFragment {
         if (txtStart != null) txtStart.setText(azan);
         if (txtEnd != null) txtEnd.setText(jamat);
     }
-
-
-
-
 
     private void startWaqtCountdown(Date endsAt) {
         if (countdownRunnable != null) {
@@ -1106,7 +1019,6 @@ public class DashboardFragment extends BaseFragment {
                 updateActivePulse(nowMs);
 
                 if (diff <= 0) {
-
 
                     // if (txtNextCountdown != null) txtNextCountdown.setText("00:00:00");
                     // Optionally, trigger a recalculation here when the waqt ends
@@ -1142,7 +1054,7 @@ public class DashboardFragment extends BaseFragment {
     private void updateAddressFromLocation(Location location) {
 
         try {
-            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+            Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
@@ -1150,7 +1062,7 @@ public class DashboardFragment extends BaseFragment {
                 txtDeviceAddress.setText(fullAddress);
             }
         } catch (Exception e) {
-            txtDeviceAddress.setText("Location found (address error)");
+            txtDeviceAddress.setText(getString(R.string.dashboard_address_error));
         }
     }
 
@@ -1166,11 +1078,10 @@ public class DashboardFragment extends BaseFragment {
         }
     }
 
-
     private void checkAndTriggerAzan(long nowMs) {
         if (latestPrayerTimes == null || getContext() == null) return;
         
-        android.content.SharedPreferences prefs = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        android.content.SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         long tolerance = 2000; 
 
         // Use the relative date from location-based prayer times as reference for static times
@@ -1180,7 +1091,6 @@ public class DashboardFragment extends BaseFragment {
         checkSingleAzan(nowMs, parseTimeToMs(getStaticAzanTime("maghrib"), latestPrayerTimes.maghrib), "maghrib", prefs, tolerance);
         checkSingleAzan(nowMs, parseTimeToMs(getStaticAzanTime("isha"), latestPrayerTimes.isha), "isha", prefs, tolerance);
     }
-
 
     private void updateActivePulse(long nowMs) {
         if (latestPrayerTimes == null || getContext() == null) return;
@@ -1217,12 +1127,11 @@ public class DashboardFragment extends BaseFragment {
         }
     }
 
-
-
     private long parseTimeToMs(String timeStr, Date refDate) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
             Date d = sdf.parse(timeStr);
+            if (d == null) throw new Exception("Parse failed");
             java.util.Calendar ref = java.util.Calendar.getInstance();
             ref.setTime(refDate);
             java.util.Calendar val = java.util.Calendar.getInstance();
@@ -1266,11 +1175,9 @@ public class DashboardFragment extends BaseFragment {
     protected void applyDynamicScaling(View view) {
         if (getContext() == null) return;
 
-        
         // Content container should have no padding to allow edge-to-edge header
         view.findViewById(R.id.dashboard_content_container).setPadding(0, 0, 0, 0);
         int sectionPadding = ScalingUtils.getScaledSize(getContext(), 0.06f);
-
 
         // 1. Header Scaling
         txtMasjidName.setTextSize(ScalingUtils.getScaledTextSize(getContext(), 0.065f));
@@ -1296,18 +1203,6 @@ public class DashboardFragment extends BaseFragment {
         ScalingUtils.applyScaledLayout(txtMasjidAddress, 0.68f, -1, 0.005f, 0, 0, 0);
         ScalingUtils.applyScaledLayout(imgHeaderLocation, 0.10f, 0.10f, 0.005f, 0, 0.03f, 0);
 
-
-
-
-
-
-
-
-
-
-
-
-        
         // 1.5 Date Container Scaling (Celestial Axis)
         txtHijriDate.setTextSize(ScalingUtils.getScaledTextSize(getContext(), 0.035f));
         txtCurrentDate.setTextSize(ScalingUtils.getScaledTextSize(getContext(), 0.035f));
@@ -1325,14 +1220,13 @@ public class DashboardFragment extends BaseFragment {
         ScalingUtils.applyScaledLayout(dotAxisTop, 0.015f, 0.015f, 0, 0, 0, 0);
         ScalingUtils.applyScaledLayout(dotAxisBottom, 0.015f, 0.015f, 0, 0, 0, 0);
 
-        // V3 Tab Scaling (Stand-alone now, matching Settings Theme Toggle height)
+        // Tab Scaling (Stand-alone now, matching Settings Theme Toggle height)
         ScalingUtils.applyScaledLayout(tabTrack, 0.94f, -1, 0.015f, 0.005f, 0, 0); // Standardized Top Margin
         tabTrack.getLayoutParams().height = ScalingUtils.getScaledSize(getContext(), 0.13f);
         tabMasjid.setTextSize(ScalingUtils.getScaledTextSize(getContext(), 0.038f));
         tabWaqt.setTextSize(ScalingUtils.getScaledTextSize(getContext(), 0.038f));
 
         // Waqt Details Content Scaling
-
         View addressContainer = view.findViewById(R.id.container_waqt_address);
         if (addressContainer != null) {
             // Match header at 98% width and center it
@@ -1357,11 +1251,6 @@ public class DashboardFragment extends BaseFragment {
         int cardPaddingHorizontal = ScalingUtils.getScaledSize(getContext(), 0.03f); 
         cardPrayerTimings.setPadding(cardPaddingHorizontal, cardPaddingVertical, cardPaddingHorizontal, cardPaddingVertical);
 
-
-
-
-
-
         // Scale individual rows inside the card
         float rowTextSize = ScalingUtils.getScaledTextSize(getContext(), 0.040f);
         float rowMarginTop = 0.025f;
@@ -1370,9 +1259,6 @@ public class DashboardFragment extends BaseFragment {
         scaleRow(rowAsr, rowTextSize, rowMarginTop);
         scaleRow(rowMaghrib, rowTextSize, rowMarginTop);
         scaleRow(rowIsha, rowTextSize, rowMarginTop);
-
-
-        // Special Times Scaling - Removed per user request
 
         // 4. Announcements Panel Scaling
         txtAnnouncementsTitle.setTextSize(ScalingUtils.getScaledTextSize(getContext(), 0.042f));
@@ -1383,7 +1269,6 @@ public class DashboardFragment extends BaseFragment {
         panelAnnouncements.setPadding(panelPadding, panelPadding, panelPadding, panelPadding);
         ScalingUtils.applyScaledLayout(txtAnnouncementContent, -1, -1, 0.015f, 0, 0, 0);
     }
-
 
     private void scaleRow(View row, float textSize, float marginTop) {
         TextView txtName = row.findViewById(R.id.txt_prayer_name);
@@ -1400,37 +1285,22 @@ public class DashboardFragment extends BaseFragment {
         ScalingUtils.applyScaledLayout(row, -1, -1, marginTop, 0, 0, 0);
     }
 
-
-
-    // scaleSpecialTile removed
-
-
-
     @Override
     protected void applyClaymorphism(View view) {
         if (getContext() == null) return;
-        int bodyColor = ContextCompat.getColor(getContext(), R.color.emerald_glow_highlight);
         
-        // Concept 2: Individual Pillars (no single container background needed, each row is a card)
+        // Individual Pillars (no single container background needed, each row is a card)
         // cardPrayerTimings is now just a container LinearLayout.
         
         // Let's re-trigger reset highlights to apply initial card state
-        resetRowHighlight(rowFajr, "FAJR", "fajr");
-        resetRowHighlight(rowZuhr, "ZUHR", "zuhr");
-        resetRowHighlight(rowAsr, "ASR", "asr");
-        resetRowHighlight(rowMaghrib, "MAGHRIB", "maghrib");
-        resetRowHighlight(rowIsha, "ISHA", "isha");
-
-
-        // cardSpecialTimes removal completed
-
-
+        resetRowHighlight(rowFajr, "fajr");
+        resetRowHighlight(rowZuhr, "zuhr");
+        resetRowHighlight(rowAsr, "asr");
+        resetRowHighlight(rowMaghrib, "maghrib");
+        resetRowHighlight(rowIsha, "isha");
 
         // Header Background
         applyAtmosphericBackground(headerHorizonBackdrop, new TextView[]{txtMasjidName, txtMasjidAddress}, imgHeaderLocation);
-
-
-        // Special components removed from Waqt Details
 
         // Inset (Carved) panels with 'Luminous' branding
         int announcementBody = ContextCompat.getColor(getContext(), R.color.dashboard_top_accent_bg);
@@ -1440,12 +1310,12 @@ public class DashboardFragment extends BaseFragment {
         panelAnnouncements.setBackground(ScalingUtils.createInsetClayDrawable(getContext(), 0.02f, 0.007f, 0.004f,
                 announcementBody, deepShadow, internalGlow));
 
-        // Concept D: Convex Pill Button
+        // Convex Pill Button
         if (btnEditLocation != null) {
             btnEditLocation.setBackground(ScalingUtils.createClayDrawable(getContext(), 0.5f, 0.006f, 0.004f, 0.002f));
         }
 
-        // V3 Tab Switcher Claymorphism (Matching Settings Theme Toggle exactly)
+        // Tab Switcher Claymorphism (Matching Settings Theme Toggle exactly)
         if (tabTrack != null) {
             int shadowColor = ContextCompat.getColor(getContext(), R.color.off_white_surface_shadow);
             int highlightColor = ContextCompat.getColor(getContext(), R.color.off_white_surface_highlight);
@@ -1485,20 +1355,17 @@ public class DashboardFragment extends BaseFragment {
         }
     }
 
-
-
     private void setupAnimations() {
         // Prepare initial states
         float shift = 50f;
-        float dateSlideDistance = 40f; // Reduced so they start exactly at the divider
 
         headerSection.setAlpha(0f);
         headerSection.setTranslationY(-shift);
 
-        
         // Dates start "tucked in" AT the divider (Scale from center)
+        if (getContext() == null) return;
         txtHijriDate.setAlpha(0f);
-        txtHijriDate.setPivotX(ScalingUtils.getScaledSize(getContext(), 1.0f, false)); 
+        txtHijriDate.setPivotX(ScalingUtils.getScaledSize(requireContext(), 1.0f, false)); 
         txtHijriDate.setScaleX(0f);
         txtHijriDate.setTranslationY(40f); // Ready for Clockwork Roll
         
@@ -1507,7 +1374,6 @@ public class DashboardFragment extends BaseFragment {
         txtCurrentDate.setScaleX(0f);
         txtCurrentDate.setTranslationY(40f); // Ready for Clockwork Roll
 
-        
         dividerDates.setAlpha(0f);
         dividerDates.setScaleY(0f); 
 
@@ -1516,15 +1382,12 @@ public class DashboardFragment extends BaseFragment {
             dotAxisBottom.setAlpha(0f);
         }
 
-
-
         cardPrayerTimings.setAlpha(0f);
         cardPrayerTimings.setTranslationY(shift);
 
-        // Removed cardSpecialTimes initialization
         panelAnnouncements.setAlpha(0f);
 
-        // Concept D: The Unroll Initial State
+        // The Unroll Initial State
         if (layoutAddressPapyrus != null) {
             layoutAddressPapyrus.setPivotX(0f);
             layoutAddressPapyrus.setScaleX(0f);
@@ -1532,7 +1395,6 @@ public class DashboardFragment extends BaseFragment {
             txtDeviceAddress.setTranslationY(20f);
             btnEditLocation.setAlpha(0f);
         }
-
 
         // Execute Sequence
         headerSection.animate().alpha(1f).translationY(0)
@@ -1544,8 +1406,6 @@ public class DashboardFragment extends BaseFragment {
             headerHorizonBackdrop.setAlpha(0f);
             headerHorizonBackdrop.animate().alpha(1f).setDuration(1000).start();
         }
-
-
 
         // 1.5 Date Animation (Celestial Axis Reveal)
         dividerDates.animate().alpha(1f).scaleY(1f)
@@ -1570,12 +1430,6 @@ public class DashboardFragment extends BaseFragment {
                 .setInterpolator(new android.view.animation.OvershootInterpolator(0.8f))
                 .start();
 
-
-
-
-        
-        // cardNextPrayer animation removed
-
         cardPrayerTimings.animate().alpha(1f).translationY(0)
                 .setDuration(900)
                 .setStartDelay(400)
@@ -1588,11 +1442,6 @@ public class DashboardFragment extends BaseFragment {
         animateRow(rowAsr, 700);
         animateRow(rowMaghrib, 800);
         animateRow(rowIsha, 900);
-
-
-
-
-        // Removed cardSpecialTimes animation
 
         panelAnnouncements.animate().alpha(1f)
                 .setDuration(800)
@@ -1618,7 +1467,6 @@ public class DashboardFragment extends BaseFragment {
         }
     }
 
-
     private void animateRow(View row, int delay) {
         row.setAlpha(0f);
         row.setTranslationX(-30f);
@@ -1629,4 +1477,3 @@ public class DashboardFragment extends BaseFragment {
                 .start();
     }
 }
-

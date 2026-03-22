@@ -127,4 +127,5 @@
     <string name="cd_toggle_azan_sound">Toggle Azan Sound</string>
     <string name="placeholder_waqt_time">12:00 AM</string>
     <string name="placeholder_waqt_name">WAQT</string>
+    <string name="dashboard_address_error">Location found (address error)</string>
 </resources>
