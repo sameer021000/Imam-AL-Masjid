@@ -4,7 +4,7 @@
     <!-- ========================= -->
     <string name="app_name">Imam-AL-Masjid</string>
     <string name="arabic_name">إمام المسجد</string>
-    
+
     <!-- ========================== -->
     <!-- ======= Login Screen ====== -->
     <!-- ========================== -->
@@ -15,13 +15,13 @@
     <string name="select_masjid">Select Masjid</string>
     <string name="submit">Submit</string>
     <string name="masjid_details_hint">Tip: Press &amp; Hold an option for Masjid details</string>
-    
+
     <!-- Errors / Validation -->
     <string name="invalid_credentials">Invalid Full Name or Password</string>
     <string name="error_select_masjid">Please select a Masjid</string>
     <string name="error_empty_name">Please enter your Full Name</string>
     <string name="error_empty_password">Please enter your Password</string>
-    
+
     <!-- ========================== -->
     <!-- ==== Masjid Details ======= -->
     <!-- ========================== -->
@@ -127,5 +127,12 @@
     <string name="cd_toggle_azan_sound">Toggle Azan Sound</string>
     <string name="placeholder_waqt_time">12:00 AM</string>
     <string name="placeholder_waqt_name">WAQT</string>
+    <string name="dashboard_btn_refresh">REFRESH</string>
+    <string name="cd_expand_address_menu">Expand address menu</string>
+    <string name="cd_collapse_address_menu">Collapse address menu</string>
     <string name="dashboard_address_error">Location found (address error)</string>
+    <string name="toast_address_updated">Address Updated Successfully</string>
+    <string name="toast_internet_error">Internet not available</string>
+    <string name="toast_location_failed">Failed to refresh location</string>
+    <string name="toast_permission_denied">Location permission needed</string>
 </resources>

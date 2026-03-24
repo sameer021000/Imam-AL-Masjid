@@ -116,7 +116,7 @@
                     android:id="@+id/container_axis_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-                    
+
                     <View
                         android:id="@+id/divider_dates"
                         android:layout_width="0dp"
@@ -124,7 +124,7 @@
                         android:layout_gravity="center"
                         android:background="@color/celestial_gold"
                         android:alpha="0.8" />
-                    
+
                     <!-- Axis Glow Dots -->
                     <View
                         android:id="@+id/dot_axis_top"
@@ -284,20 +284,55 @@
                             android:fontFamily="@font/chillax_medium_font"
                             android:maxLines="4"
                             android:ellipsize="end" />
-                    </LinearLayout>
 
-                    <!-- Convex Pill Button in the Top-Right Corner -->
-                        <TextView
-                            android:id="@+id/btn_edit_location"
+                        <!-- The Menu Trigger (Down Arrow) -->
+                        <ImageView
+                            android:id="@+id/img_address_menu_toggle"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
-                            android:layout_gravity="top|end"
+                            android:src="@android:drawable/arrow_down_float"
+                            app:tint="@color/emerald_primary"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:contentDescription="@string/cd_expand_address_menu" />
+                    </LinearLayout>
+
+                    <!-- Surface 2: The Dropdown (Claymorphic) -->
+                    <LinearLayout
+                        android:id="@+id/layout_address_dropdown"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        android:elevation="8dp">
+
+                        <TextView
+                            android:id="@+id/btn_address_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:text="@string/dashboard_btn_edit"
-                            android:gravity="center"
                             android:textColor="@color/emerald_primary"
                             android:fontFamily="@font/janna_it_bold_font"
+                            app:drawableStartCompat="@drawable/ic_edit"
+                            app:drawableTint="@color/emerald_primary"
+                            android:gravity="center_vertical"
                             android:clickable="true"
                             android:focusable="true" />
+
+                        <TextView
+                            android:id="@+id/btn_address_refresh"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/dashboard_btn_refresh"
+                            android:textColor="@color/emerald_primary"
+                            android:fontFamily="@font/janna_it_bold_font"
+                            app:drawableStartCompat="@drawable/ic_settings_sync"
+                            app:drawableTint="@color/emerald_primary"
+                            android:gravity="center_vertical"
+                            android:clickable="true"
+                            android:focusable="true" />
+                    </LinearLayout>
                 </FrameLayout>
 
                 <com.example.imam_al_masjid.ChronosDialView
