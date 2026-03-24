@@ -100,16 +100,27 @@ public class SettingsFragment extends BaseFragment {
         backupButton.setOnClickListener(v -> {
             // Placeholder for backup logic
         });
-        backupButton.setOnTouchListener((v, event) -> {
+        applyTactileTouch(backupButton);
+
+        // === Waqt Calculation Rows (Tactile feedback) ===
+        applyTactileTouch(view.findViewById(R.id.settings_row_asr_madhab));
+        applyTactileTouch(view.findViewById(R.id.settings_row_methods));
+        applyTactileTouch(view.findViewById(R.id.settings_row_hijri));
+        applyTactileTouch(view.findViewById(R.id.settings_row_country));
+    }
+
+    private void applyTactileTouch(View v) {
+        if (v == null) return;
+        v.setOnTouchListener((v1, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    v.animate().scaleX(0.97f).scaleY(0.97f).alpha(0.85f).setDuration(100).start();
+                    v1.animate().scaleX(0.97f).scaleY(0.97f).alpha(0.85f).setDuration(100).start();
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    v.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
+                    v1.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        v.performClick();
+                        v1.performClick();
                     }
                     break;
             }
@@ -250,8 +261,11 @@ public class SettingsFragment extends BaseFragment {
         int cardHorizPad = ScalingUtils.getScaledSize(ctx, 0.04f);
         int cardVertPad  = ScalingUtils.getScaledSize(ctx, 0.03f);
         int cardMarginV  = ScalingUtils.getScaledSize(ctx, 0.03f);
-        for (int id : new int[]{R.id.settings_card_theme, R.id.settings_card_preferences, R.id.settings_card_data_management}) {
+        int[] cardIds = {R.id.settings_card_theme, R.id.settings_card_preferences, 
+                        R.id.settings_card_calculation, R.id.settings_card_data_management};
+        for (int id : cardIds) {
             View card = view.findViewById(id);
+            if (card == null) continue;
             card.setPadding(cardHorizPad, cardVertPad, cardHorizPad, cardVertPad);
             ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
             p.setMargins(0, cardMarginV, 0, cardMarginV);
@@ -260,7 +274,8 @@ public class SettingsFragment extends BaseFragment {
 
         // Section labels
         float sectionLabelSize = ScalingUtils.getScaledTextSize(ctx, 0.034f);
-        for (int id : new int[]{R.id.settings_label_theme, R.id.settings_label_preferences, R.id.settings_label_data}) {
+        for (int id : new int[]{R.id.settings_label_theme, R.id.settings_label_preferences, 
+                R.id.settings_label_calculation, R.id.settings_label_data}) {
             TextView t = view.findViewById(id);
             t.setTextSize(sectionLabelSize);
             ScalingUtils.applyScaledLayout(t, -1, -1, 0, 0.015f, 0, 0);
@@ -286,7 +301,8 @@ public class SettingsFragment extends BaseFragment {
         int iconMarginRight = ScalingUtils.getScaledSize(ctx, 0.04f);
         int toggleIconSize = ScalingUtils.getScaledSize(ctx, 0.07f);
 
-        for (int rowId : new int[]{R.id.settings_row_notifications, R.id.settings_row_vibration, R.id.settings_row_sound}) {
+        for (int rowId : new int[]{R.id.settings_row_notifications, R.id.settings_row_vibration, R.id.settings_row_sound,
+                R.id.settings_row_asr_madhab, R.id.settings_row_methods, R.id.settings_row_hijri, R.id.settings_row_country}) {
             view.findViewById(rowId).setPadding(0, rowPadV, 0, rowPadV);
         }
 
@@ -312,11 +328,21 @@ public class SettingsFragment extends BaseFragment {
         float titleSize    = ScalingUtils.getScaledTextSize(ctx, 0.042f);
         float subtitleSize = ScalingUtils.getScaledTextSize(ctx, 0.033f);
         for (int id : new int[]{R.id.settings_text_notifications, R.id.settings_text_vibration,
-                R.id.settings_text_sound, R.id.settings_text_sync, R.id.settings_text_backup}) {
+                R.id.settings_text_sound, R.id.settings_text_sync, R.id.settings_text_backup,
+                R.id.settings_text_asr_madhab, R.id.settings_text_methods, R.id.settings_text_hijri, R.id.settings_text_country}) {
             ((TextView) view.findViewById(id)).setTextSize(titleSize);
         }
-        for (int id : new int[]{R.id.settings_subtext_notifications, R.id.settings_subtext_vibration, R.id.settings_subtext_sound}) {
+        for (int id : new int[]{R.id.settings_subtext_notifications, R.id.settings_subtext_vibration, R.id.settings_subtext_sound,
+                R.id.settings_subtext_asr_madhab, R.id.settings_subtext_methods, R.id.settings_subtext_hijri, R.id.settings_subtext_country}) {
             ((TextView) view.findViewById(id)).setTextSize(subtitleSize);
+        }
+
+        // New selection icons (chevrons)
+        for (int id : new int[]{R.id.settings_icon_asr_madhab, R.id.settings_icon_methods, R.id.settings_icon_hijri, R.id.settings_icon_country}) {
+            ImageView icon = view.findViewById(id);
+            icon.getLayoutParams().width = iconSize;
+            icon.getLayoutParams().height = iconSize;
+            icon.setLayoutParams(icon.getLayoutParams());
         }
 
         // Sync dot
@@ -362,8 +388,11 @@ public class SettingsFragment extends BaseFragment {
         int highlightColor  = ContextCompat.getColor(ctx, R.color.off_white_surface_highlight);
         int strokeColor     = ContextCompat.getColor(ctx, R.color.off_white_grayish);
 
-        for (int id : new int[]{R.id.settings_card_theme, R.id.settings_card_preferences, R.id.settings_card_data_management}) {
+        int[] cards = {R.id.settings_card_theme, R.id.settings_card_preferences, 
+                      R.id.settings_card_calculation, R.id.settings_card_data_management};
+        for (int id : cards) {
             View card = view.findViewById(id);
+            if (card == null) continue;
             // Convex clay with a visible soft stroke for clear edges in light theme
             card.setBackground(ScalingUtils.createClayDrawable(ctx,
                     0.045f,   // cornerRadius %

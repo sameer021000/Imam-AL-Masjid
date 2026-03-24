@@ -72,7 +72,18 @@
     <!-- Section Labels -->
     <string name="settings_label_appearance">Appearance</string>
     <string name="settings_label_preferences">Preferences</string>
+    <string name="settings_label_calculation">Waqts Calculation</string>
     <string name="settings_label_data">Data Management</string>
+
+    <!-- Waqt Calculation -->
+    <string name="settings_asr_madhab_title">Asr Selection</string>
+    <string name="settings_asr_madhab_subtitle">Hanafi / (Shafi, Maliki, Hanbali)</string>
+    <string name="settings_calculation_method_title">Fajr &amp; Isha Methods</string>
+    <string name="settings_calculation_method_subtitle">Karachi, MWL, ISNA, Umm al-Qura, Egypt, etc.</string>
+    <string name="settings_hijri_system_title">Hijri Date System</string>
+    <string name="settings_hijri_system_subtitle">Islamic Calendar adjustments</string>
+    <string name="settings_country_selection_title">Select by Country</string>
+    <string name="settings_country_selection_subtitle">Auto-configure methods by county</string>
 
     <!-- Theme Switcher -->
     <string name="settings_theme_system">System</string>
