@@ -66,6 +66,7 @@ public class DashboardFragment extends BaseFragment {
     // Backend Logic
     private PrayerTimes latestPrayerTimes;
     private CelestialWaqtEngine.PrecisePrayerTimes latestPreciseTimes;
+    private com.batoulapps.adhan.Coordinates lastCoordinates;
     private static final String PREFS_NAME = "PrayerSettings";
     private static final String KEY_SPEAKER_PREFIX = "speaker_";
     private static final String KEY_LAST_ADDRESS = "last_known_address";
@@ -727,7 +728,7 @@ public class DashboardFragment extends BaseFragment {
     }
 
     private void calculateLocationBasedWaqts(double lat, double lon) {
-        Coordinates coordinates = new Coordinates(lat, lon);
+        lastCoordinates = new com.batoulapps.adhan.Coordinates(lat, lon);
         Calendar calToday = Calendar.getInstance();
         Date now = new Date();
         calToday.setTime(now);
@@ -755,23 +756,23 @@ public class DashboardFragment extends BaseFragment {
 
         // 4. Persistence for logic and UI
         latestPreciseTimes = today;
-
+ 
         // Use Adhan library object for parts of the legacy UI/logic that still need it
         Calendar calComp = Calendar.getInstance();
         calComp.setTime(today.dhuhr); // Use the current day as reference
         DateComponents dc = new DateComponents(calComp.get(Calendar.YEAR), calComp.get(Calendar.MONTH) + 1, calComp.get(Calendar.DAY_OF_MONTH));
-        latestPrayerTimes = new PrayerTimes(coordinates, dc, parameters);
-
+        latestPrayerTimes = new PrayerTimes(lastCoordinates, dc, parameters);
+ 
         // Update Static Labels (always for today)
         // Update Static Labels
         updateRowWaqtTimes(rowFajr, getStaticAzanTime("fajr"), getStaticJamatTime("fajr"));
         updateRowWaqtTimes(rowZuhr, getStaticAzanTime("zuhr"), getStaticJamatTime("zuhr"));
         updateRowWaqtTimes(rowAsr, getStaticAzanTime("asr"), getStaticJamatTime("asr"));
         updateRowWaqtTimes(rowMaghrib, getStaticAzanTime("maghrib"), getStaticJamatTime("maghrib"));
-
+ 
         updateRowWaqtTimes(rowIsha, getStaticAzanTime("isha"), getStaticJamatTime("isha"));
-
-        highlightActiveWaqt(latestPreciseTimes, coordinates);
+ 
+        highlightActiveWaqt(latestPreciseTimes, lastCoordinates);
         updateHeaderDates(false);
     }
 
@@ -1032,10 +1033,10 @@ public class DashboardFragment extends BaseFragment {
                 updateActivePulse(nowMs);
 
                 if (diff <= 0) {
-
-                    // if (txtNextCountdown != null) txtNextCountdown.setText("00:00:00");
-                    // Optionally, trigger a recalculation here when the waqt ends
-                    if (fusedLocationClient != null) {
+                    // Waqt ended! Instantly transition to next highlight if we have the schedule
+                    if (latestPreciseTimes != null && lastCoordinates != null) {
+                        highlightActiveWaqt(latestPreciseTimes, lastCoordinates);
+                    } else if (fusedLocationClient != null) {
                         try {
                             detectCurrentLocation();
                         } catch (Exception ignored) {}
