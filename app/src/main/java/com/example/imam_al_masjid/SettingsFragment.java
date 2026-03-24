@@ -96,6 +96,9 @@ public class SettingsFragment extends BaseFragment {
         // === Mock Sync Status (design) ===
         setSyncStatus();
 
+        // Ensure status bar color matches Settings theme (overwriting dashboard accent)
+        updateStatusBarColor();
+
         // === Backup button (Tactile feedback matching Login dropdown) ===
         backupButton.setOnClickListener(v -> {
             // Placeholder for backup logic
@@ -149,6 +152,23 @@ public class SettingsFragment extends BaseFragment {
         // Activity recreate automatically; the Fragment back-stack is preserved.
         ThemeManager.setTheme(getContext(), mode);
         // The activity recreates itself; no manual navigation happens.
+    }
+
+    private void updateStatusBarColor() {
+        if (getActivity() != null && getActivity().getWindow() != null && getContext() != null) {
+            // Settings uses the default window background color (off_white_primary)
+            // Note: off_white_primary is overridden to dark_background in values-night
+            int color = ContextCompat.getColor(getContext(), R.color.off_white_primary);
+            getActivity().getWindow().setStatusBarColor(color);
+
+            boolean isNightMode = (getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
+                    == android.content.res.Configuration.UI_MODE_NIGHT_YES;
+
+            androidx.core.view.WindowInsetsControllerCompat controller =
+                    androidx.core.view.WindowCompat.getInsetsController(getActivity().getWindow(), getActivity().getWindow().getDecorView());
+
+            controller.setAppearanceLightStatusBars(!isNightMode);
+        }
     }
 
     private void updateThemeToggleUI() {
@@ -261,8 +281,8 @@ public class SettingsFragment extends BaseFragment {
         int cardHorizPad = ScalingUtils.getScaledSize(ctx, 0.04f);
         int cardVertPad  = ScalingUtils.getScaledSize(ctx, 0.03f);
         int cardMarginV  = ScalingUtils.getScaledSize(ctx, 0.03f);
-        int[] cardIds = {R.id.settings_card_theme, R.id.settings_card_preferences, 
-                        R.id.settings_card_calculation, R.id.settings_card_data_management};
+        int[] cardIds = {R.id.settings_card_theme, R.id.settings_card_calculation, 
+                        R.id.settings_card_preferences, R.id.settings_card_data_management};
         for (int id : cardIds) {
             View card = view.findViewById(id);
             if (card == null) continue;
@@ -274,8 +294,8 @@ public class SettingsFragment extends BaseFragment {
 
         // Section labels
         float sectionLabelSize = ScalingUtils.getScaledTextSize(ctx, 0.034f);
-        for (int id : new int[]{R.id.settings_label_theme, R.id.settings_label_preferences, 
-                R.id.settings_label_calculation, R.id.settings_label_data}) {
+        for (int id : new int[]{R.id.settings_label_theme, R.id.settings_label_calculation,
+                R.id.settings_label_preferences, R.id.settings_label_data}) {
             TextView t = view.findViewById(id);
             t.setTextSize(sectionLabelSize);
             ScalingUtils.applyScaledLayout(t, -1, -1, 0, 0.015f, 0, 0);
@@ -388,8 +408,8 @@ public class SettingsFragment extends BaseFragment {
         int highlightColor  = ContextCompat.getColor(ctx, R.color.off_white_surface_highlight);
         int strokeColor     = ContextCompat.getColor(ctx, R.color.off_white_grayish);
 
-        int[] cards = {R.id.settings_card_theme, R.id.settings_card_preferences, 
-                      R.id.settings_card_calculation, R.id.settings_card_data_management};
+        int[] cards = {R.id.settings_card_theme, R.id.settings_card_calculation,
+                      R.id.settings_card_preferences, R.id.settings_card_data_management};
         for (int id : cards) {
             View card = view.findViewById(id);
             if (card == null) continue;

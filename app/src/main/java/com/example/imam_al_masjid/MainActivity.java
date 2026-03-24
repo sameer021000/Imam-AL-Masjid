@@ -27,7 +27,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Apply persisted theme BEFORE inflating any layout
         ThemeManager.applyTheme(this, false);
-        androidx.activity.EdgeToEdge.enable(this);
+        androidx.activity.EdgeToEdge.enable(this,
+            androidx.activity.SystemBarStyle.auto(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT),
+            androidx.activity.SystemBarStyle.auto(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
+        );
         setContentView(R.layout.activity_main);
         
         androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
