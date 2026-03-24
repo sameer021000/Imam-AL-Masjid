@@ -394,8 +394,8 @@ public class ChronosDialView extends View {
             float rOuter = Math.min(getWidth() / 2f, getHeight() / 2f) * 0.78f;
             float rInner = rOuter * 0.6f;
 
-            // 2. Ignore center taps (the void area)
-            if (distance < rInner) {
+            // 2. Ignore taps outside the active ring (center void or outer space)
+            if (distance < rInner || distance > rOuter) {
                 isWaqtTappedState = false;
                 invalidate();
                 return true; 
