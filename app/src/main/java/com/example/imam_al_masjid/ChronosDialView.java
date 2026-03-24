@@ -59,6 +59,7 @@ public class ChronosDialView extends View {
     // Animation/State
     private float entryProgress = 0f;
     private boolean isWaqtTappedState = false;
+    private float markerRevealProgress = 1f; // 1 means fully revealed
 
     public ChronosDialView(Context context) {
         super(context);
@@ -192,7 +193,7 @@ public class ChronosDialView extends View {
         if (isWaqtTappedState && tappedSegmentIndex != -1) {
             drawTappedWaqtMarkers(canvas, cx, cy, rOuter);
         } else {
-            draw24hClockMarkers(canvas, cx, cy, rOuter);
+            drawAnimated24hMarkers(canvas, cx, cy, rOuter);
         }
 
         // Request next frame for smooth 60fps "Sweeping" second hand
@@ -343,20 +344,42 @@ public class ChronosDialView extends View {
         canvas.drawText(centerCountdown, cx, cy + (rInner * 0.45f), timerPaint);
     }
 
-    private void draw24hClockMarkers(Canvas canvas, float cx, float cy, float rOuter) {
+    private void drawAnimated24hMarkers(Canvas canvas, float cx, float cy, float rOuter) {
         markerPaint.setTextSize(ScalingUtils.getScaledSize(getContext(), 0.028f));
         markerPaint.setColor(ContextCompat.getColor(getContext(), R.color.text_secondary));
-        markerPaint.setAlpha(150);
 
-        float markerOffset = ScalingUtils.getScaledSize(getContext(), 0.05f); // Dynamic offset (~35-40dp)
+        float standardOffset = ScalingUtils.getScaledSize(getContext(), 0.05f);
         String[] times = {"12AM", "3AM", "6AM", "9AM", "12PM", "3PM", "6PM", "9PM"};
+
         for (int i = 0; i < 8; i++) {
             float angle = i * 45f - 90f;
             float angleRad = (float) Math.toRadians(angle);
-            float x = (float) (cx + (rOuter + markerOffset) * Math.cos(angleRad));
-            float y = (float) (cy + (rOuter + markerOffset) * Math.sin(angleRad)) + (markerPaint.getTextSize() / 2f);
-            canvas.drawText(times[i], x, y, markerPaint);
+            
+            // Dimensional Reveal Animation Logic
+            // Slide outwards: offset starts at (standardOffset - 20dp) and moves to standardOffset
+            float startOffset = standardOffset - ScalingUtils.getScaledSize(getContext(), 0.04f); // ~20dp
+            float currentOffset = startOffset + (standardOffset - startOffset) * markerRevealProgress;
+            int alpha = (int) (150 * markerRevealProgress);
+
+            markerPaint.setAlpha(alpha);
+            float x = (float) (cx + (rOuter + currentOffset) * Math.cos(angleRad));
+            float y = (float) (cy + (rOuter + currentOffset) * Math.sin(angleRad)) + (markerPaint.getTextSize() / 2f);
+            
+            if (alpha > 0) {
+                canvas.drawText(times[i], x, y, markerPaint);
+            }
         }
+    }
+
+    private void startMarkerRevealAnimation() {
+        ValueAnimator anim = ValueAnimator.ofFloat(0f, 1f);
+        anim.setDuration(600); // Expanding reveal duration
+        anim.setInterpolator(new android.view.animation.DecelerateInterpolator());
+        anim.addUpdateListener(animation -> {
+            markerRevealProgress = (float) animation.getAnimatedValue();
+            invalidate();
+        });
+        anim.start();
     }
 
     private void drawTappedWaqtMarkers(Canvas canvas, float cx, float cy, float rOuter) {
@@ -395,10 +418,17 @@ public class ChronosDialView extends View {
             float rInner = rOuter * 0.6f;
 
             // 2. Ignore taps outside the active ring (center void or outer space)
-            if (distance < rInner || distance > rOuter) {
+            if (distance < rInner) {
+                if (isWaqtTappedState) startMarkerRevealAnimation(); // Trigger Dimensional Reveal on Center Tap
                 isWaqtTappedState = false;
                 invalidate();
                 return true; 
+            }
+            if (distance > rOuter) {
+                if (isWaqtTappedState) startMarkerRevealAnimation(); // Trigger Dimensional Reveal on Outer Tap
+                isWaqtTappedState = false;
+                invalidate();
+                return true;
             }
 
             // 3. Determine angle and segment
