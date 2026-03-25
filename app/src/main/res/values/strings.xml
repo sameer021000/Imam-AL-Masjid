@@ -159,34 +159,34 @@
     <string name="hijri_manual_offset_tag">Recommended for: All apps (optional)</string>
 
     <!-- Country Presets Detail -->
-    <string name="country_south_asia">India, Pakistan, Bangladesh</string>
+    <string name="country_south_asia">🇮🇳 India, 🇵🇰 Pakistan, 🇧🇩 Bangladesh</string>
     <string name="country_south_asia_tag">Asr: Hanafi, Fajr&amp;Isha: Karachi, Hijri: Local moon sighting</string>
 
-    <string name="country_saudi">Saudi Arabia</string>
+    <string name="country_saudi">🇸🇦 Saudi Arabia</string>
     <string name="country_saudi_tag">Asr: Hanbali, Fajr&amp;Isha: Umm al-Qura, Hijri: Umm al-Qura</string>
 
-    <string name="country_uae">UAE</string>
+    <string name="country_uae">🇦🇪 UAE</string>
     <string name="country_uae_tag">Asr: Standard, Fajr&amp;Isha: MWL / Umm al-Qura, Hijri: Umm al-Qura</string>
 
-    <string name="country_qatar">Qatar</string>
+    <string name="country_qatar">🇶🇦 Qatar</string>
     <string name="country_qatar_tag">Asr: Standard, Fajr&amp;Isha: MWL, Hijri: Umm al-Qura</string>
 
-    <string name="country_egypt">Egypt</string>
+    <string name="country_egypt">🇪🇬 Egypt</string>
     <string name="country_egypt_tag">Asr: Standard, Fajr&amp;Isha: MWL / Egyptian, Hijri: Mixed</string>
 
-    <string name="country_turkey">Turkey</string>
+    <string name="country_turkey">🇹🇷 Turkey</string>
     <string name="country_turkey_tag">Asr: Standard, Fajr&amp;Isha: Diyanet, Hijri: Astronomical</string>
 
-    <string name="country_north_america">USA, Canada</string>
+    <string name="country_north_america">🇺🇸 USA, 🇨🇦 Canada</string>
     <string name="country_north_america_tag">Asr: Mixed, Fajr&amp;Isha: ISNA, Hijri: Mixed</string>
 
-    <string name="country_southeast_asia">Indonesia, Malaysia</string>
+    <string name="country_southeast_asia">🇮🇩 Indonesia, 🇲🇾 Malaysia</string>
     <string name="country_southeast_asia_tag">Asr: Shafi, Fajr&amp;Isha: MWL, Hijri: Local sighting</string>
 
-    <string name="country_iran">Iran</string>
+    <string name="country_iran">🇮🇷 Iran</string>
     <string name="country_iran_tag">Asr: Jafari, Fajr&amp;Isha: Tehran, Hijri: Local sighting</string>
 
-    <string name="country_iraq">Iraq</string>
+    <string name="country_iraq">🇮🇶 Iraq</string>
     <string name="country_iraq_tag">Asr: Mixed, Fajr&amp;Isha: Tehran / MWL, Hijri: Local sighting</string>
 
     <!-- ========================== -->
