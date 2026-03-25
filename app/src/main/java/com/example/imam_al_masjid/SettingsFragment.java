@@ -335,43 +335,42 @@ public class SettingsFragment extends BaseFragment {
         if (getContext() == null) return;
         Context ctx = getContext();
 
-        // Root padding (Applies side padding to both Title and Scroll content)
+        // Root padding (Applies top padding only now to allow cards to reach the edge)
         View root = view.findViewById(R.id.settings_root);
-        int sidePadding = ScalingUtils.getScaledSize(ctx, 0.05f);
         int topPadding  = ScalingUtils.getScaledSize(ctx, 0.04f);
-        root.setPadding(sidePadding, topPadding, sidePadding, 0);
+        root.setPadding(0, topPadding, 0, 0);
 
         // Scroll root (Bottom padding for scroll space)
         View scrollRoot = view.findViewById(R.id.settings_scroll_root);
         scrollRoot.setPadding(0, 0, 0, topPadding);
 
-        // Screen Title
+        // Screen Title (Retaining 5% indent for text alignment)
         TextView screenTitle = view.findViewById(R.id.settings_screen_title);
         screenTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.065f));
-        ScalingUtils.applyScaledLayout(screenTitle, -1, -1, 0, 0.01f, 0.03f, 0);
+        ScalingUtils.applyScaledLayout(screenTitle, -1, -1, 0, 0.01f, 0.05f, 0);
 
-        // Card margins & padding
+        // Card Width & margins & padding
         int cardHorizPad = ScalingUtils.getScaledSize(ctx, 0.04f);
         int cardVertPad  = ScalingUtils.getScaledSize(ctx, 0.03f);
-        int cardMarginV  = ScalingUtils.getScaledSize(ctx, 0.03f);
+        float cardMarginV  = 0.03f;
         int[] cardIds = {R.id.settings_card_theme, R.id.settings_card_calculation, 
                         R.id.settings_card_preferences, R.id.settings_card_data_management};
         for (int id : cardIds) {
             View card = view.findViewById(id);
             if (card == null) continue;
             card.setPadding(cardHorizPad, cardVertPad, cardHorizPad, cardVertPad);
-            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
-            p.setMargins(0, cardMarginV, 0, cardMarginV);
-            card.setLayoutParams(p);
+            // Matching Home Header Width: 98% width, centered (0.01f margins)
+            ScalingUtils.applyScaledLayout(card, 0.98f, -1, cardMarginV, cardMarginV, 0.01f, 0.01f);
         }
 
-        // Section labels
+        // Section labels (Add indent now that root padding is removed)
         float sectionLabelSize = ScalingUtils.getScaledTextSize(ctx, 0.034f);
         for (int id : new int[]{R.id.settings_label_theme, R.id.settings_label_calculation,
                 R.id.settings_label_preferences, R.id.settings_label_data}) {
             TextView t = view.findViewById(id);
+            if (t == null) continue;
             t.setTextSize(sectionLabelSize);
-            ScalingUtils.applyScaledLayout(t, -1, -1, 0, 0.015f, 0, 0);
+            ScalingUtils.applyScaledLayout(t, -1, -1, 0, 0.015f, 0.05f, 0); // 5% indent
         }
 
         // Theme toggle container: fixed height so tabs are vertically centered
