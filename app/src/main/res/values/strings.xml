@@ -85,7 +85,13 @@
     <string name="settings_country_selection_title">Select by Country</string>
     <string name="settings_country_selection_subtitle">Auto-configure methods by county</string>
 
-    <!-- Theme Switcher -->
+    <!-- Asr Selection Dialog -->
+    <string name="asr_selector_title">Asr Calculation Method</string>
+    <string name="asr_selector_standard_title">Standard (Shafi, Maliki, Hanbali)</string>
+    <string name="asr_selector_hanafi_title">Hanafi</string>
+    <string name="asr_selector_standard_tag">Recommended for: Saudi Arabia, UAE, Qatar, Egypt, Indonesia, Malaysia, Turkey</string>
+    <string name="asr_selector_hanafi_tag">Recommended for: India, Pakistan, Bangladesh, Afghanistan, Central Asia</string>
+    <string name="asr_selector_current_indicator">Current Selection</string>
     <string name="settings_theme_system">System</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>

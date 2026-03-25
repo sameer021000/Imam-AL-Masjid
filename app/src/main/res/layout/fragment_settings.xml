@@ -95,7 +95,8 @@
                 android:id="@+id/settings_card_calculation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:animateLayoutChanges="true">
 
                 <TextView
                     android:id="@+id/settings_label_calculation"
@@ -105,199 +106,291 @@
                     android:textColor="@color/emerald_primary"
                     android:fontFamily="@font/janna_it_bold_font" />
 
-                <!-- Asr Madhab Selection Row -->
-                <LinearLayout
-                    android:id="@+id/settings_row_asr_madhab"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true">
+                    android:layout_height="wrap_content">
 
+                    <!-- List Level 1: Core Options -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:id="@+id/settings_calculation_list_root"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/settings_text_asr_madhab"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:id="@+id/settings_row_asr_madhab"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/settings_asr_madhab_title"
-                            android:textColor="@color/emerald_primary"
-                            android:fontFamily="@font/janna_it_bold_font" />
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:clickable="true"
+                            android:focusable="true">
 
-                        <TextView
-                            android:id="@+id/settings_subtext_asr_madhab"
-                            android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/settings_text_asr_madhab"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_asr_madhab_title"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+
+                                <TextView
+                                    android:id="@+id/settings_subtext_asr_madhab"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_asr_madhab_subtitle"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/settings_icon_asr_madhab"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_chevron_right"
+                                app:tint="@color/emerald_primary"
+                                android:alpha="0.3"
+                                android:contentDescription="@null" />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/settings_divider_asr_methods"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/off_white_grayish" />
+
+                        <!-- Methods Row -->
+                        <LinearLayout
+                            android:id="@+id/settings_row_methods"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/settings_asr_madhab_subtitle"
-                            android:fontFamily="@font/chillax_medium_font"
-                            android:textColor="@color/text_secondary" />
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/settings_text_methods"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_calculation_method_title"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+
+                                <TextView
+                                    android:id="@+id/settings_subtext_methods"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_calculation_method_subtitle"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/settings_icon_methods"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_chevron_right"
+                                app:tint="@color/emerald_primary"
+                                android:alpha="0.3"
+                                android:contentDescription="@null" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/settings_divider_methods_hijri"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/off_white_grayish" />
+
+                        <!-- Hijri Row -->
+                        <LinearLayout
+                            android:id="@+id/settings_row_hijri"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/settings_text_hijri"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_hijri_system_title"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+
+                                <TextView
+                                    android:id="@+id/settings_subtext_hijri"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_hijri_system_subtitle"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/settings_icon_hijri"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_chevron_right"
+                                app:tint="@color/emerald_primary"
+                                android:alpha="0.3"
+                                android:contentDescription="@null" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/settings_divider_hijri_country"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/off_white_grayish" />
+
+                        <!-- Country Row -->
+                        <LinearLayout
+                            android:id="@+id/settings_row_country"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/settings_text_country"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_country_selection_title"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+
+                                <TextView
+                                    android:id="@+id/settings_subtext_country"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_country_selection_subtitle"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/settings_icon_country"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_chevron_right"
+                                app:tint="@color/emerald_primary"
+                                android:alpha="0.3"
+                                android:contentDescription="@null" />
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/settings_icon_asr_madhab"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_chevron_right"
-                        app:tint="@color/emerald_primary"
-                        android:alpha="0.3"
-                        android:contentDescription="@null" />
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/settings_divider_asr_methods"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/off_white_grayish" />
-
-                <!-- Methods Row -->
-                <LinearLayout
-                    android:id="@+id/settings_row_methods"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true">
-
+                    <!-- List Level 2: Asr Selection Detail -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:id="@+id/settings_calculation_asr_detail_root"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
-                        <TextView
-                            android:id="@+id/settings_text_methods"
-                            android:layout_width="wrap_content"
+                        <!-- Detail Header: Back Arrow + Title -->
+                        <LinearLayout
+                            android:id="@+id/settings_calculation_asr_header"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/settings_calculation_method_title"
-                            android:textColor="@color/emerald_primary"
-                            android:fontFamily="@font/janna_it_bold_font" />
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
 
-                        <TextView
-                            android:id="@+id/settings_subtext_methods"
-                            android:layout_width="wrap_content"
+                            <ImageView
+                                android:id="@+id/settings_button_asr_back"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_chevron_left"
+                                app:tint="@color/emerald_primary"
+                                android:contentDescription="@null"
+                                android:clickable="true"
+                                android:focusable="true"/>
+
+                            <TextView
+                                android:id="@+id/settings_text_asr_header_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/asr_selector_title"
+                                android:textColor="@color/emerald_primary"
+                                android:fontFamily="@font/janna_it_bold_font" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/settings_card_asr_standard"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/settings_calculation_method_subtitle"
-                            android:fontFamily="@font/chillax_medium_font"
-                            android:textColor="@color/text_secondary" />
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/settings_text_asr_standard"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/asr_selector_standard_title"
+                                android:textColor="@color/emerald_primary"
+                                android:fontFamily="@font/janna_it_bold_font" />
+
+                            <TextView
+                                android:id="@+id/settings_subtext_asr_standard"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/asr_selector_standard_tag"
+                                android:fontFamily="@font/chillax_medium_font"
+                                android:textColor="@color/text_secondary" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/settings_card_asr_hanafi"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/settings_text_asr_hanafi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/asr_selector_hanafi_title"
+                                android:textColor="@color/emerald_primary"
+                                android:fontFamily="@font/janna_it_bold_font" />
+
+                            <TextView
+                                android:id="@+id/settings_subtext_asr_hanafi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/asr_selector_hanafi_tag"
+                                android:fontFamily="@font/chillax_medium_font"
+                                android:textColor="@color/text_secondary" />
+                        </LinearLayout>
                     </LinearLayout>
-
-                    <ImageView
-                        android:id="@+id/settings_icon_methods"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_chevron_right"
-                        app:tint="@color/emerald_primary"
-                        android:alpha="0.3"
-                        android:contentDescription="@null" />
-
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/settings_divider_methods_hijri"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/off_white_grayish" />
-
-                <!-- Hijri Row -->
-                <LinearLayout
-                    android:id="@+id/settings_row_hijri"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/settings_text_hijri"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/settings_hijri_system_title"
-                            android:textColor="@color/emerald_primary"
-                            android:fontFamily="@font/janna_it_bold_font" />
-
-                        <TextView
-                            android:id="@+id/settings_subtext_hijri"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/settings_hijri_system_subtitle"
-                            android:fontFamily="@font/chillax_medium_font"
-                            android:textColor="@color/text_secondary" />
-                    </LinearLayout>
-
-                    <ImageView
-                        android:id="@+id/settings_icon_hijri"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_chevron_right"
-                        app:tint="@color/emerald_primary"
-                        android:alpha="0.3"
-                        android:contentDescription="@null" />
-
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/settings_divider_hijri_country"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/off_white_grayish" />
-
-                <!-- Country Row -->
-                <LinearLayout
-                    android:id="@+id/settings_row_country"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/settings_text_country"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/settings_country_selection_title"
-                            android:textColor="@color/emerald_primary"
-                            android:fontFamily="@font/janna_it_bold_font" />
-
-                        <TextView
-                            android:id="@+id/settings_subtext_country"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/settings_country_selection_subtitle"
-                            android:fontFamily="@font/chillax_medium_font"
-                            android:textColor="@color/text_secondary" />
-                    </LinearLayout>
-
-                    <ImageView
-                        android:id="@+id/settings_icon_country"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_chevron_right"
-                        app:tint="@color/emerald_primary"
-                        android:alpha="0.3"
-                        android:contentDescription="@null" />
-
-                </LinearLayout>
-
+                </FrameLayout>
             </LinearLayout>
 
             <!-- ============================== -->

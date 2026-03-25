@@ -34,6 +34,11 @@ public class SettingsFragment extends BaseFragment {
     private View syncStatusDot;
     private TextView syncStatusText;
 
+    // --- In-Card Waqt Calculation ---
+    private View calculationListRoot, calculationAsrDetailRoot;
+    private View asrCardStandard, asrCardHanafi;
+    private boolean isAsrDetailVisible = false;
+
     // Current theme selection index (0=System, 1=Light, 2=Dark)
     private int selectedThemeIndex = 0;
 
@@ -105,11 +110,79 @@ public class SettingsFragment extends BaseFragment {
         });
         applyTactileTouch(backupButton);
 
-        // === Waqt Calculation Rows (Tactile feedback) ===
-        applyTactileTouch(view.findViewById(R.id.settings_row_asr_madhab));
+        // === Waqt Calculation Rows (In-Card Transition) ===
+        calculationListRoot = view.findViewById(R.id.settings_calculation_list_root);
+        calculationAsrDetailRoot = view.findViewById(R.id.settings_calculation_asr_detail_root);
+        asrCardStandard = view.findViewById(R.id.settings_card_asr_standard);
+        asrCardHanafi = view.findViewById(R.id.settings_card_asr_hanafi);
+        
+        View asrBackBtn = view.findViewById(R.id.settings_button_asr_back);
+        asrBackBtn.setOnClickListener(v -> toggleAsrDetail(false));
+        applyTactileTouch(asrBackBtn);
+
+        View asrRow = view.findViewById(R.id.settings_row_asr_madhab);
+        asrRow.setOnClickListener(v -> toggleAsrDetail(true));
+        applyTactileTouch(asrRow);
+
+        asrCardStandard.setOnClickListener(v -> handleInCardAsrSelection(false));
+        asrCardHanafi.setOnClickListener(v -> handleInCardAsrSelection(true));
+
+        applyTactileTouch(asrCardStandard);
+        applyTactileTouch(asrCardHanafi);
+
+        updateAsrSubtitle();
+
         applyTactileTouch(view.findViewById(R.id.settings_row_methods));
         applyTactileTouch(view.findViewById(R.id.settings_row_hijri));
         applyTactileTouch(view.findViewById(R.id.settings_row_country));
+    }
+
+    private void toggleAsrDetail(boolean show) {
+        if (show == isAsrDetailVisible) return;
+        isAsrDetailVisible = show;
+
+        if (getView() == null) return;
+        android.transition.TransitionManager.beginDelayedTransition(getView().findViewById(R.id.settings_card_calculation));
+
+        getView().findViewById(R.id.settings_label_calculation).setVisibility(show ? View.GONE : View.VISIBLE);
+        calculationListRoot.setVisibility(show ? View.GONE : View.VISIBLE);
+        calculationAsrDetailRoot.setVisibility(show ? View.VISIBLE : View.GONE);
+
+        if (show) {
+            // Entrance animation for sub-cards
+            asrCardStandard.setAlpha(0f);
+            asrCardStandard.setTranslationX(50f);
+            asrCardHanafi.setAlpha(0f);
+            asrCardHanafi.setTranslationX(50f);
+
+            asrCardStandard.animate().alpha(1f).translationX(0f).setDuration(300).setStartDelay(100).start();
+            asrCardHanafi.animate().alpha(1f).translationX(0f).setDuration(300).setStartDelay(200).start();
+        }
+    }
+
+    private void handleInCardAsrSelection(boolean hanafi) {
+        if (getContext() == null) return;
+        
+        // Persist selection
+        getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
+                .edit().putBoolean("is_asr_hanafi", hanafi).apply();
+
+        updateAsrSubtitle();
+        applyClaymorphism(getView()); // Refresh highlights
+
+        // Delay slightly for tactile feedback then slide back
+        calculationAsrDetailRoot.postDelayed(() -> toggleAsrDetail(false), 300);
+    }
+
+    private void updateAsrSubtitle() {
+        if (getView() == null || getContext() == null) return;
+        TextView sub = getView().findViewById(R.id.settings_subtext_asr_madhab);
+        if (sub == null) return;
+
+        boolean isHanafi = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
+                .getBoolean("is_asr_hanafi", false);
+        
+        sub.setText(isHanafi ? getString(R.string.asr_selector_hanafi_title) : getString(R.string.asr_selector_standard_title));
     }
 
     private void applyTactileTouch(View v) {
@@ -390,6 +463,47 @@ public class SettingsFragment extends BaseFragment {
         TextView versionText = view.findViewById(R.id.settings_version_text);
         versionText.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.033f));
         ScalingUtils.applyScaledLayout(versionText, -1, -1, 0.03f, 0.01f, 0, 0);
+
+        // --- In-Card Detail Scaling ---
+        // Assuming tagStandard and tagHanafi are TextViews and are defined/found elsewhere
+        // or are meant to be found here. Since they are not in the original code,
+        // I will define them as TextViews found by ID, assuming they exist in the layout.
+        TextView tagStandard = view.findViewById(R.id.settings_subtext_asr_standard); // Assuming this is the ID for the tag
+        TextView tagHanafi = view.findViewById(R.id.settings_subtext_asr_hanafi); // Assuming this is the ID for the tag
+
+        if (tagStandard != null) ScalingUtils.applyScaledLayout(tagStandard, -1, -1, 0.005f, 0, 0, 0);
+        if (tagHanafi != null) ScalingUtils.applyScaledLayout(tagHanafi, -1, -1, 0.005f, 0, 0, 0);
+
+        int detailCardPadH = ScalingUtils.getScaledSize(ctx, 0.045f);
+        int detailCardPadV = ScalingUtils.getScaledSize(ctx, 0.025f);
+        int detailCardMarginV = ScalingUtils.getScaledSize(ctx, 0.02f);
+        float detailTitleSize = ScalingUtils.getScaledTextSize(ctx, 0.04f);
+        float detailTagSize   = ScalingUtils.getScaledTextSize(ctx, 0.03f);
+
+        for (View v : new View[]{asrCardStandard, asrCardHanafi}) {
+            v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
+            v.setLayoutParams(lp);
+        }
+        
+        ((TextView)view.findViewById(R.id.settings_text_asr_standard)).setTextSize(detailTitleSize);
+        ((TextView)view.findViewById(R.id.settings_text_asr_hanafi)).setTextSize(detailTitleSize);
+        ((TextView)view.findViewById(R.id.settings_subtext_asr_standard)).setTextSize(detailTagSize);
+        ((TextView)view.findViewById(R.id.settings_subtext_asr_hanafi)).setTextSize(detailTagSize);
+
+        // --- Asr Header Scaling ---
+        View asrBackBtn = view.findViewById(R.id.settings_button_asr_back);
+        int backIconSize = ScalingUtils.getScaledSize(ctx, 0.05f);
+        asrBackBtn.getLayoutParams().width = backIconSize;
+        asrBackBtn.getLayoutParams().height = backIconSize;
+        ViewGroup.MarginLayoutParams m = (ViewGroup.MarginLayoutParams) asrBackBtn.getLayoutParams();
+        m.setMarginEnd(ScalingUtils.getScaledSize(ctx, 0.02f));
+        asrBackBtn.setLayoutParams(m);
+
+        TextView asrHeaderTitle = view.findViewById(R.id.settings_text_asr_header_title);
+        asrHeaderTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.034f));
+        view.findViewById(R.id.settings_calculation_asr_header).setPadding(0, 0, 0, ScalingUtils.getScaledSize(ctx, 0.02f));
     }
 
     // ================================================================
@@ -438,8 +552,52 @@ public class SettingsFragment extends BaseFragment {
         // Sync status pill: rounded pill
         applyPillBackground(view.findViewById(R.id.settings_sync_status_pill), ctx);
 
-        // Re-apply theme toggle highlights now that claymorphism is set
+        // Re-apply theme toggle highlights
         updateThemeToggleUI();
+
+        // --- In-Card Detail Styling ---
+        boolean isStandardActive = !ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
+                .getBoolean("is_asr_hanafi", false);
+
+        int activeColor   = ContextCompat.getColor(ctx, R.color.emerald_primary);
+        int detailBodyColor = ContextCompat.getColor(ctx, R.color.off_white_primary);
+
+        asrCardStandard.setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
+                isStandardActive ? activeColor : detailBodyColor, shadowColor, highlightColor, 
+                isStandardActive ? activeColor : strokeColor));
+
+        asrCardHanafi.setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
+                !isStandardActive ? activeColor : detailBodyColor, shadowColor, highlightColor, 
+                !isStandardActive ? activeColor : strokeColor));
+
+        // Text & Subtext colors (Active vs Inactive)
+        boolean isNight = (ctx.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK) 
+                == android.content.res.Configuration.UI_MODE_NIGHT_YES;
+        
+        int activeSubColor = ContextCompat.getColor(ctx, R.color.prayer_card_active_secondary_text);
+        int inactiveSubColor = ContextCompat.getColor(ctx, R.color.text_secondary);
+
+        TextView subStandard = view.findViewById(R.id.settings_subtext_asr_standard);
+        TextView subHanafi = view.findViewById(R.id.settings_subtext_asr_hanafi);
+
+        // Titles
+        ((TextView)view.findViewById(R.id.settings_text_asr_standard)).setTextColor(isStandardActive ? detailBodyColor : activeColor);
+        ((TextView)view.findViewById(R.id.settings_text_asr_hanafi)).setTextColor(!isStandardActive ? detailBodyColor : activeColor);
+
+        // Subtexts (Regional Tags) - Matching Home Screen "AZAN/JAMAT" logic
+        if (isStandardActive && !isNight) {
+            subStandard.setTextColor(activeSubColor);
+        } else {
+            subStandard.setTextColor(inactiveSubColor);
+        }
+        subStandard.setAlpha(0.8f);
+
+        if (!isStandardActive && !isNight) {
+            subHanafi.setTextColor(activeSubColor);
+        } else {
+            subHanafi.setTextColor(inactiveSubColor);
+        }
+        subHanafi.setAlpha(0.8f);
     }
 
     private void applyPillBackground(View pill, Context ctx) {
