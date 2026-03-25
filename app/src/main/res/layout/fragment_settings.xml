@@ -763,6 +763,271 @@
 
                         </LinearLayout>
                     </LinearLayout>
+
+                    <!-- List Level 2: Country Selection Detail -->
+                    <LinearLayout
+                        android:id="@+id/settings_calculation_country_detail_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- Detail Header -->
+                        <LinearLayout
+                            android:id="@+id/settings_calculation_country_header"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/settings_button_country_back"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_chevron_left"
+                                app:tint="@color/emerald_primary"
+                                android:contentDescription="@null"
+                                android:clickable="true"
+                                android:focusable="true"/>
+
+                            <TextView
+                                android:id="@+id/settings_text_country_header_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_country_selection_title"
+                                android:textColor="@color/emerald_primary"
+                                android:fontFamily="@font/janna_it_bold_font" />
+                        </LinearLayout>
+
+                        <!-- Countries List -->
+                        <LinearLayout
+                            android:id="@+id/settings_country_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <!-- India, Pak, Bang -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_country_south_asia"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_country_south_asia"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_south_asia"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_country_south_asia_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_south_asia_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Saudi -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_country_saudi"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_country_saudi"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_saudi"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_country_saudi_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_saudi_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- UAE -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_country_uae"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_country_uae"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_uae"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_country_uae_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_uae_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Qatar -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_country_qatar"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_country_qatar"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_qatar"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_country_qatar_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_qatar_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Egypt -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_country_egypt"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_country_egypt"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_egypt"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_country_egypt_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_egypt_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Turkey -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_country_turkey"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_country_turkey"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_turkey"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_country_turkey_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_turkey_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- USA / Canada -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_country_north_america"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_country_north_america"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_north_america"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_country_north_america_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_north_america_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Indonesia / Malaysia -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_country_southeast_asia"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_country_southeast_asia"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_southeast_asia"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_country_southeast_asia_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_southeast_asia_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Iran -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_country_iran"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_country_iran"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_iran"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_country_iran_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_iran_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Iraq -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_country_iraq"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_country_iraq"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_iraq"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_country_iraq_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/country_iraq_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
                 </FrameLayout>
             </LinearLayout>
 

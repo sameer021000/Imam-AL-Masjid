@@ -35,13 +35,15 @@ public class SettingsFragment extends BaseFragment {
     private TextView syncStatusText;
 
     // --- In-Card Waqt Calculation ---
-    private View calculationListRoot, calculationAsrDetailRoot, calculationMethodsDetailRoot, calculationHijriDetailRoot;
+    private View calculationListRoot, calculationAsrDetailRoot, calculationMethodsDetailRoot, calculationHijriDetailRoot, calculationCountryDetailRoot;
     private View asrCardStandard, asrCardHanafi;
-    private View[] methodCards; // Karachi, MWL, ISNA, UmmAlQura, Tehran, Turkey
-    private View[] hijriCards;  // Astro, UmmAlQura, Local, Global, Manual
+    private View[] methodCards;  // Karachi, MWL, ISNA, UmmAlQura, Tehran, Turkey
+    private View[] hijriCards;   // Astro, UmmAlQura, Local, Global, Manual
+    private View[] countryCards; // SA, Saudi, UAE, Qatar, Egypt, Turkey, NA, SEA, Iran, Iraq
     private boolean isAsrDetailVisible = false;
     private boolean isMethodsDetailVisible = false;
     private boolean isHijriDetailVisible = false;
+    private boolean isCountryDetailVisible = false;
 
     // Current theme selection index (0=System, 1=Light, 2=Dark)
     private int selectedThemeIndex = 0;
@@ -191,7 +193,37 @@ public class SettingsFragment extends BaseFragment {
 
         updateHijriSubtitle();
 
-        applyTactileTouch(view.findViewById(R.id.settings_row_country));
+        // --- Country detail ---
+        calculationCountryDetailRoot = view.findViewById(R.id.settings_calculation_country_detail_root);
+        countryCards = new View[]{
+            view.findViewById(R.id.settings_card_country_south_asia),
+            view.findViewById(R.id.settings_card_country_saudi),
+            view.findViewById(R.id.settings_card_country_uae),
+            view.findViewById(R.id.settings_card_country_qatar),
+            view.findViewById(R.id.settings_card_country_egypt),
+            view.findViewById(R.id.settings_card_country_turkey),
+            view.findViewById(R.id.settings_card_country_north_america),
+            view.findViewById(R.id.settings_card_country_southeast_asia),
+            view.findViewById(R.id.settings_card_country_iran),
+            view.findViewById(R.id.settings_card_country_iraq)
+        };
+        
+        String[] countryIds = {"SOUTH_ASIA", "SAUDI", "UAE", "QATAR", "EGYPT", "TURKEY", "NORTH_AMERICA", "SOUTHEAST_ASIA", "IRAN", "IRAQ"};
+        for (int i = 0; i < countryCards.length; i++) {
+            final String cid = countryIds[i];
+            countryCards[i].setOnClickListener(v -> handleInCardCountrySelection(cid));
+            applyTactileTouch(countryCards[i]);
+        }
+
+        View countryBackBtn = view.findViewById(R.id.settings_button_country_back);
+        countryBackBtn.setOnClickListener(v -> toggleCountryDetail(false));
+        applyTactileTouch(countryBackBtn);
+
+        View countryRow = view.findViewById(R.id.settings_row_country);
+        countryRow.setOnClickListener(v -> toggleCountryDetail(true));
+        applyTactileTouch(countryRow);
+
+        updateCountrySubtitle();
     }
 
     private void toggleAsrDetail(boolean show) {
@@ -257,6 +289,26 @@ public class SettingsFragment extends BaseFragment {
         }
     }
 
+    private void toggleCountryDetail(boolean show) {
+        if (show == isCountryDetailVisible) return;
+        isCountryDetailVisible = show;
+
+        if (getView() == null) return;
+        android.transition.TransitionManager.beginDelayedTransition(getView().findViewById(R.id.settings_card_calculation));
+
+        getView().findViewById(R.id.settings_label_calculation).setVisibility(show ? View.GONE : View.VISIBLE);
+        calculationListRoot.setVisibility(show ? View.GONE : View.VISIBLE);
+        calculationCountryDetailRoot.setVisibility(show ? View.VISIBLE : View.GONE);
+
+        if (show) {
+            for (int i = 0; i < countryCards.length; i++) {
+                countryCards[i].setAlpha(0f);
+                countryCards[i].setTranslationX(50f);
+                countryCards[i].animate().alpha(1f).translationX(0f).setDuration(300).setStartDelay(50L * i).start();
+            }
+        }
+    }
+
     private void handleInCardAsrSelection(boolean hanafi) {
         if (getContext() == null) return;
 
@@ -295,6 +347,18 @@ public class SettingsFragment extends BaseFragment {
         calculationHijriDetailRoot.postDelayed(() -> toggleHijriDetail(false), 300);
     }
 
+    private void handleInCardCountrySelection(String countryId) {
+        if (getContext() == null) return;
+        
+        getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
+                .edit().putString("selected_country", countryId).apply();
+
+        updateCountrySubtitle();
+        applyClaymorphism(getView());
+
+        calculationCountryDetailRoot.postDelayed(() -> toggleCountryDetail(false), 300);
+    }
+
     private void updateAsrSubtitle() {
         if (getView() == null || getContext() == null) return;
         TextView sub = getView().findViewById(R.id.settings_subtext_asr_madhab);
@@ -326,6 +390,17 @@ public class SettingsFragment extends BaseFragment {
                 .getString("hijri_system", "ASTRONOMICAL");
         
         sub.setText(system.replace("_", " "));
+    }
+
+    private void updateCountrySubtitle() {
+        if (getView() == null || getContext() == null) return;
+        TextView sub = getView().findViewById(R.id.settings_subtext_country);
+        if (sub == null) return;
+
+        String countryId = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
+                .getString("selected_country", "SOUTH_ASIA");
+        
+        sub.setText(countryId.replace("_", " "));
     }
 
     private void applyTactileTouch(View v) {
@@ -671,6 +746,18 @@ public class SettingsFragment extends BaseFragment {
         hijHeaderTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.034f));
         view.findViewById(R.id.settings_calculation_hijri_header).setPadding(0, 0, 0, ScalingUtils.getScaledSize(ctx, 0.02f));
 
+        // --- Country Header Scaling ---
+        View countBackBtn = view.findViewById(R.id.settings_button_country_back);
+        countBackBtn.getLayoutParams().width = backIconSize;
+        countBackBtn.getLayoutParams().height = backIconSize;
+        ViewGroup.MarginLayoutParams m4 = (ViewGroup.MarginLayoutParams) countBackBtn.getLayoutParams();
+        m4.setMarginEnd(ScalingUtils.getScaledSize(ctx, 0.02f));
+        countBackBtn.setLayoutParams(m4);
+
+        TextView countHeaderTitle = view.findViewById(R.id.settings_text_country_header_title);
+        countHeaderTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.034f));
+        view.findViewById(R.id.settings_calculation_country_header).setPadding(0, 0, 0, ScalingUtils.getScaledSize(ctx, 0.02f));
+
         // Scale method cards
         for (View v : methodCards) {
             v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
@@ -704,6 +791,24 @@ public class SettingsFragment extends BaseFragment {
         }
         for (int id : new int[]{R.id.settings_subtext_hijri_astro_tag, R.id.settings_subtext_hijri_ummalqura_tag, R.id.settings_subtext_hijri_local_tag,
                 R.id.settings_subtext_hijri_global_tag, R.id.settings_subtext_hijri_manual_tag}) {
+            ((TextView)view.findViewById(id)).setTextSize(detailTagSize);
+        }
+
+        // Scale Country cards
+        for (View v : countryCards) {
+            v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
+            v.setLayoutParams(lp);
+        }
+        for (int id : new int[]{R.id.settings_text_country_south_asia, R.id.settings_text_country_saudi, R.id.settings_text_country_uae,
+                R.id.settings_text_country_qatar, R.id.settings_text_country_egypt, R.id.settings_text_country_turkey,
+                R.id.settings_text_country_north_america, R.id.settings_text_country_southeast_asia, R.id.settings_text_country_iran, R.id.settings_text_country_iraq}) {
+            ((TextView)view.findViewById(id)).setTextSize(detailTitleSize);
+        }
+        for (int id : new int[]{R.id.settings_subtext_country_south_asia_tag, R.id.settings_subtext_country_saudi_tag, R.id.settings_subtext_country_uae_tag,
+                R.id.settings_subtext_country_qatar_tag, R.id.settings_subtext_country_egypt_tag, R.id.settings_subtext_country_turkey_tag,
+                R.id.settings_subtext_country_north_america_tag, R.id.settings_subtext_country_southeast_asia_tag, R.id.settings_subtext_country_iran_tag, R.id.settings_subtext_country_iraq_tag}) {
             ((TextView)view.findViewById(id)).setTextSize(detailTagSize);
         }
     }
@@ -849,6 +954,37 @@ public class SettingsFragment extends BaseFragment {
                 case 2: titleId = R.id.settings_text_hijri_local; tagId = R.id.settings_subtext_hijri_local_tag; break;
                 case 3: titleId = R.id.settings_text_hijri_global; tagId = R.id.settings_subtext_hijri_global_tag; break;
                 case 4: titleId = R.id.settings_text_hijri_manual; tagId = R.id.settings_subtext_hijri_manual_tag; break;
+            }
+
+            ((TextView)view.findViewById(titleId)).setTextColor(isActive ? detailBodyColor : activeColor);
+            TextView tvTag = view.findViewById(tagId);
+            tvTag.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
+            tvTag.setAlpha(0.8f);
+        }
+
+        // --- Country Detail Styling ---
+        String selectedCountry = ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
+                .getString("selected_country", "SOUTH_ASIA");
+        String[] countryIds = {"SOUTH_ASIA", "SAUDI", "UAE", "QATAR", "EGYPT", "TURKEY", "NORTH_AMERICA", "SOUTHEAST_ASIA", "IRAN", "IRAQ"};
+
+        for (int i = 0; i < countryCards.length; i++) {
+            boolean isActive = countryIds[i].equals(selectedCountry);
+            countryCards[i].setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
+                    isActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
+                    isActive ? activeColor : strokeColor));
+
+            int titleId = 0, tagId = 0;
+            switch(i) {
+                case 0: titleId = R.id.settings_text_country_south_asia; tagId = R.id.settings_subtext_country_south_asia_tag; break;
+                case 1: titleId = R.id.settings_text_country_saudi; tagId = R.id.settings_subtext_country_saudi_tag; break;
+                case 2: titleId = R.id.settings_text_country_uae; tagId = R.id.settings_subtext_country_uae_tag; break;
+                case 3: titleId = R.id.settings_text_country_qatar; tagId = R.id.settings_subtext_country_qatar_tag; break;
+                case 4: titleId = R.id.settings_text_country_egypt; tagId = R.id.settings_subtext_country_egypt_tag; break;
+                case 5: titleId = R.id.settings_text_country_turkey; tagId = R.id.settings_subtext_country_turkey_tag; break;
+                case 6: titleId = R.id.settings_text_country_north_america; tagId = R.id.settings_subtext_country_north_america_tag; break;
+                case 7: titleId = R.id.settings_text_country_southeast_asia; tagId = R.id.settings_subtext_country_southeast_asia_tag; break;
+                case 8: titleId = R.id.settings_text_country_iran; tagId = R.id.settings_subtext_country_iran_tag; break;
+                case 9: titleId = R.id.settings_text_country_iraq; tagId = R.id.settings_subtext_country_iraq_tag; break;
             }
 
             ((TextView)view.findViewById(titleId)).setTextColor(isActive ? detailBodyColor : activeColor);
