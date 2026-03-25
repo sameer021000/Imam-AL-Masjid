@@ -126,6 +126,10 @@ public class SettingsFragment extends BaseFragment {
         asrBackBtn.setOnClickListener(v -> toggleAsrDetail(false));
         applyTactileTouch(asrBackBtn);
 
+        View asrHeaderTitle = view.findViewById(R.id.settings_text_asr_header_title);
+        asrHeaderTitle.setOnClickListener(v -> toggleAsrDetail(false));
+        applyTactileTouch(asrHeaderTitle);
+
         View asrRow = view.findViewById(R.id.settings_row_asr_madhab);
         asrRow.setOnClickListener(v -> toggleAsrDetail(true));
         applyTactileTouch(asrRow);
@@ -160,6 +164,10 @@ public class SettingsFragment extends BaseFragment {
         methodsBackBtn.setOnClickListener(v -> toggleMethodsDetail(false));
         applyTactileTouch(methodsBackBtn);
 
+        View methodsHeaderTitle = view.findViewById(R.id.settings_text_methods_header_title);
+        methodsHeaderTitle.setOnClickListener(v -> toggleMethodsDetail(false));
+        applyTactileTouch(methodsHeaderTitle);
+
         View methodsRow = view.findViewById(R.id.settings_row_methods);
         methodsRow.setOnClickListener(v -> toggleMethodsDetail(true));
         applyTactileTouch(methodsRow);
@@ -186,6 +194,10 @@ public class SettingsFragment extends BaseFragment {
         View hijriBackBtn = view.findViewById(R.id.settings_button_hijri_back);
         hijriBackBtn.setOnClickListener(v -> toggleHijriDetail(false));
         applyTactileTouch(hijriBackBtn);
+
+        View hijriHeaderTitle = view.findViewById(R.id.settings_text_hijri_header_title);
+        hijriHeaderTitle.setOnClickListener(v -> toggleHijriDetail(false));
+        applyTactileTouch(hijriHeaderTitle);
 
         View hijriRow = view.findViewById(R.id.settings_row_hijri);
         hijriRow.setOnClickListener(v -> toggleHijriDetail(true));
@@ -218,6 +230,10 @@ public class SettingsFragment extends BaseFragment {
         View countryBackBtn = view.findViewById(R.id.settings_button_country_back);
         countryBackBtn.setOnClickListener(v -> toggleCountryDetail(false));
         applyTactileTouch(countryBackBtn);
+
+        View countryHeaderTitle = view.findViewById(R.id.settings_text_country_header_title);
+        countryHeaderTitle.setOnClickListener(v -> toggleCountryDetail(false));
+        applyTactileTouch(countryHeaderTitle);
 
         View countryRow = view.findViewById(R.id.settings_row_country);
         countryRow.setOnClickListener(v -> toggleCountryDetail(true));
