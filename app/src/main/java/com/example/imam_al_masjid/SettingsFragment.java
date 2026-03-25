@@ -35,11 +35,13 @@ public class SettingsFragment extends BaseFragment {
     private TextView syncStatusText;
 
     // --- In-Card Waqt Calculation ---
-    private View calculationListRoot, calculationAsrDetailRoot, calculationMethodsDetailRoot;
+    private View calculationListRoot, calculationAsrDetailRoot, calculationMethodsDetailRoot, calculationHijriDetailRoot;
     private View asrCardStandard, asrCardHanafi;
     private View[] methodCards; // Karachi, MWL, ISNA, UmmAlQura, Tehran, Turkey
+    private View[] hijriCards;  // Astro, UmmAlQura, Local, Global, Manual
     private boolean isAsrDetailVisible = false;
     private boolean isMethodsDetailVisible = false;
+    private boolean isHijriDetailVisible = false;
 
     // Current theme selection index (0=System, 1=Light, 2=Dark)
     private int selectedThemeIndex = 0;
@@ -117,7 +119,7 @@ public class SettingsFragment extends BaseFragment {
         calculationAsrDetailRoot = view.findViewById(R.id.settings_calculation_asr_detail_root);
         asrCardStandard = view.findViewById(R.id.settings_card_asr_standard);
         asrCardHanafi = view.findViewById(R.id.settings_card_asr_hanafi);
-        
+
         View asrBackBtn = view.findViewById(R.id.settings_button_asr_back);
         asrBackBtn.setOnClickListener(v -> toggleAsrDetail(false));
         applyTactileTouch(asrBackBtn);
@@ -137,14 +139,14 @@ public class SettingsFragment extends BaseFragment {
         // --- Methods detail ---
         calculationMethodsDetailRoot = view.findViewById(R.id.settings_calculation_methods_detail_root);
         methodCards = new View[]{
-            view.findViewById(R.id.settings_card_method_karachi),
-            view.findViewById(R.id.settings_card_method_mwl),
-            view.findViewById(R.id.settings_card_method_isna),
-            view.findViewById(R.id.settings_card_method_ummalqura),
-            view.findViewById(R.id.settings_card_method_tehran),
-            view.findViewById(R.id.settings_card_method_turkey)
+                view.findViewById(R.id.settings_card_method_karachi),
+                view.findViewById(R.id.settings_card_method_mwl),
+                view.findViewById(R.id.settings_card_method_isna),
+                view.findViewById(R.id.settings_card_method_ummalqura),
+                view.findViewById(R.id.settings_card_method_tehran),
+                view.findViewById(R.id.settings_card_method_turkey)
         };
-        
+
         String[] methodIds = {"KARACHI", "MWL", "ISNA", "UMM_AL_QURA", "TEHRAN", "TURKEY"};
         for (int i = 0; i < methodCards.length; i++) {
             final String mid = methodIds[i];
@@ -162,7 +164,33 @@ public class SettingsFragment extends BaseFragment {
 
         updateMethodsSubtitle();
 
-        applyTactileTouch(view.findViewById(R.id.settings_row_hijri));
+        // --- Hijri detail ---
+        calculationHijriDetailRoot = view.findViewById(R.id.settings_calculation_hijri_detail_root);
+        hijriCards = new View[]{
+            view.findViewById(R.id.settings_card_hijri_astro),
+            view.findViewById(R.id.settings_card_hijri_ummalqura),
+            view.findViewById(R.id.settings_card_hijri_local),
+            view.findViewById(R.id.settings_card_hijri_global),
+            view.findViewById(R.id.settings_card_hijri_manual)
+        };
+        
+        String[] hijriIds = {"ASTRONOMICAL", "UMM_AL_QURA", "LOCAL_SIGHTING", "GLOBAL_SIGHTING", "MANUAL_OFFSET"};
+        for (int i = 0; i < hijriCards.length; i++) {
+            final String hid = hijriIds[i];
+            hijriCards[i].setOnClickListener(v -> handleInCardHijriSelection(hid));
+            applyTactileTouch(hijriCards[i]);
+        }
+
+        View hijriBackBtn = view.findViewById(R.id.settings_button_hijri_back);
+        hijriBackBtn.setOnClickListener(v -> toggleHijriDetail(false));
+        applyTactileTouch(hijriBackBtn);
+
+        View hijriRow = view.findViewById(R.id.settings_row_hijri);
+        hijriRow.setOnClickListener(v -> toggleHijriDetail(true));
+        applyTactileTouch(hijriRow);
+
+        updateHijriSubtitle();
+
         applyTactileTouch(view.findViewById(R.id.settings_row_country));
     }
 
@@ -209,9 +237,29 @@ public class SettingsFragment extends BaseFragment {
         }
     }
 
+    private void toggleHijriDetail(boolean show) {
+        if (show == isHijriDetailVisible) return;
+        isHijriDetailVisible = show;
+
+        if (getView() == null) return;
+        android.transition.TransitionManager.beginDelayedTransition(getView().findViewById(R.id.settings_card_calculation));
+
+        getView().findViewById(R.id.settings_label_calculation).setVisibility(show ? View.GONE : View.VISIBLE);
+        calculationListRoot.setVisibility(show ? View.GONE : View.VISIBLE);
+        calculationHijriDetailRoot.setVisibility(show ? View.VISIBLE : View.GONE);
+
+        if (show) {
+            for (int i = 0; i < hijriCards.length; i++) {
+                hijriCards[i].setAlpha(0f);
+                hijriCards[i].setTranslationX(50f);
+                hijriCards[i].animate().alpha(1f).translationX(0f).setDuration(300).setStartDelay(50L * i).start();
+            }
+        }
+    }
+
     private void handleInCardAsrSelection(boolean hanafi) {
         if (getContext() == null) return;
-        
+
         // Persist selection
         getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .edit().putBoolean("is_asr_hanafi", hanafi).apply();
@@ -235,6 +283,18 @@ public class SettingsFragment extends BaseFragment {
         calculationMethodsDetailRoot.postDelayed(() -> toggleMethodsDetail(false), 300);
     }
 
+    private void handleInCardHijriSelection(String systemId) {
+        if (getContext() == null) return;
+        
+        getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
+                .edit().putString("hijri_system", systemId).apply();
+
+        updateHijriSubtitle();
+        applyClaymorphism(getView());
+
+        calculationHijriDetailRoot.postDelayed(() -> toggleHijriDetail(false), 300);
+    }
+
     private void updateAsrSubtitle() {
         if (getView() == null || getContext() == null) return;
         TextView sub = getView().findViewById(R.id.settings_subtext_asr_madhab);
@@ -242,7 +302,7 @@ public class SettingsFragment extends BaseFragment {
 
         boolean isHanafi = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .getBoolean("is_asr_hanafi", false);
-        
+
         sub.setText(isHanafi ? getString(R.string.asr_selector_hanafi_title) : getString(R.string.asr_selector_standard_title));
     }
 
@@ -255,6 +315,17 @@ public class SettingsFragment extends BaseFragment {
                 .getString("calculation_method", "KARACHI");
         
         sub.setText(method.replace("_", " "));
+    }
+
+    private void updateHijriSubtitle() {
+        if (getView() == null || getContext() == null) return;
+        TextView sub = getView().findViewById(R.id.settings_subtext_hijri);
+        if (sub == null) return;
+
+        String system = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
+                .getString("hijri_system", "ASTRONOMICAL");
+        
+        sub.setText(system.replace("_", " "));
     }
 
     private void applyTactileTouch(View v) {
@@ -425,8 +496,8 @@ public class SettingsFragment extends BaseFragment {
         int cardHorizPad = ScalingUtils.getScaledSize(ctx, 0.04f);
         int cardVertPad  = ScalingUtils.getScaledSize(ctx, 0.03f);
         float cardMarginV  = 0.03f;
-        int[] cardIds = {R.id.settings_card_theme, R.id.settings_card_calculation, 
-                        R.id.settings_card_preferences, R.id.settings_card_data_management};
+        int[] cardIds = {R.id.settings_card_theme, R.id.settings_card_calculation,
+                R.id.settings_card_preferences, R.id.settings_card_data_management};
         for (int id : cardIds) {
             View card = view.findViewById(id);
             if (card == null) continue;
@@ -557,7 +628,7 @@ public class SettingsFragment extends BaseFragment {
             lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
             v.setLayoutParams(lp);
         }
-        
+
         ((TextView)view.findViewById(R.id.settings_text_asr_standard)).setTextSize(detailTitleSize);
         ((TextView)view.findViewById(R.id.settings_text_asr_hanafi)).setTextSize(detailTitleSize);
         ((TextView)view.findViewById(R.id.settings_subtext_asr_standard)).setTextSize(detailTagSize);
@@ -588,6 +659,18 @@ public class SettingsFragment extends BaseFragment {
         methHeaderTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.034f));
         view.findViewById(R.id.settings_calculation_methods_header).setPadding(0, 0, 0, ScalingUtils.getScaledSize(ctx, 0.02f));
 
+        // --- Hijri Header Scaling ---
+        View hijBackBtn = view.findViewById(R.id.settings_button_hijri_back);
+        hijBackBtn.getLayoutParams().width = backIconSize;
+        hijBackBtn.getLayoutParams().height = backIconSize;
+        ViewGroup.MarginLayoutParams m3 = (ViewGroup.MarginLayoutParams) hijBackBtn.getLayoutParams();
+        m3.setMarginEnd(ScalingUtils.getScaledSize(ctx, 0.02f));
+        hijBackBtn.setLayoutParams(m3);
+
+        TextView hijHeaderTitle = view.findViewById(R.id.settings_text_hijri_header_title);
+        hijHeaderTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.034f));
+        view.findViewById(R.id.settings_calculation_hijri_header).setPadding(0, 0, 0, ScalingUtils.getScaledSize(ctx, 0.02f));
+
         // Scale method cards
         for (View v : methodCards) {
             v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
@@ -605,6 +688,22 @@ public class SettingsFragment extends BaseFragment {
                 R.id.settings_subtext_method_ummalqura_info, R.id.settings_subtext_method_tehran_info, R.id.settings_subtext_method_turkey_info,
                 R.id.settings_subtext_method_karachi_regions, R.id.settings_subtext_method_mwl_regions, R.id.settings_subtext_method_isna_regions,
                 R.id.settings_subtext_method_ummalqura_regions, R.id.settings_subtext_method_tehran_regions, R.id.settings_subtext_method_turkey_regions}) {
+            ((TextView)view.findViewById(id)).setTextSize(detailTagSize);
+        }
+
+        // Scale Hijri cards
+        for (View v : hijriCards) {
+            v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
+            v.setLayoutParams(lp);
+        }
+        for (int id : new int[]{R.id.settings_text_hijri_astro, R.id.settings_text_hijri_ummalqura, R.id.settings_text_hijri_local,
+                R.id.settings_text_hijri_global, R.id.settings_text_hijri_manual}) {
+            ((TextView)view.findViewById(id)).setTextSize(detailTitleSize);
+        }
+        for (int id : new int[]{R.id.settings_subtext_hijri_astro_tag, R.id.settings_subtext_hijri_ummalqura_tag, R.id.settings_subtext_hijri_local_tag,
+                R.id.settings_subtext_hijri_global_tag, R.id.settings_subtext_hijri_manual_tag}) {
             ((TextView)view.findViewById(id)).setTextSize(detailTagSize);
         }
     }
@@ -626,7 +725,7 @@ public class SettingsFragment extends BaseFragment {
         int strokeColor     = ContextCompat.getColor(ctx, R.color.off_white_grayish);
 
         int[] cards = {R.id.settings_card_theme, R.id.settings_card_calculation,
-                      R.id.settings_card_preferences, R.id.settings_card_data_management};
+                R.id.settings_card_preferences, R.id.settings_card_data_management};
         for (int id : cards) {
             View card = view.findViewById(id);
             if (card == null) continue;
@@ -666,17 +765,17 @@ public class SettingsFragment extends BaseFragment {
         int detailBodyColor = ContextCompat.getColor(ctx, R.color.off_white_primary);
 
         asrCardStandard.setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
-                isStandardActive ? activeColor : detailBodyColor, shadowColor, highlightColor, 
+                isStandardActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
                 isStandardActive ? activeColor : strokeColor));
 
         asrCardHanafi.setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
-                !isStandardActive ? activeColor : detailBodyColor, shadowColor, highlightColor, 
+                !isStandardActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
                 !isStandardActive ? activeColor : strokeColor));
 
         // Text & Subtext colors (Active vs Inactive)
-        boolean isNight = (ctx.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK) 
+        boolean isNight = (ctx.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
                 == android.content.res.Configuration.UI_MODE_NIGHT_YES;
-        
+
         int activeSubColor = ContextCompat.getColor(ctx, R.color.prayer_card_active_secondary_text);
         int inactiveSubColor = ContextCompat.getColor(ctx, R.color.text_secondary);
 
@@ -708,9 +807,9 @@ public class SettingsFragment extends BaseFragment {
         for (int i = 0; i < methodCards.length; i++) {
             boolean isActive = methodIds[i].equals(selectedMethod);
             methodCards[i].setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
-                    isActive ? activeColor : detailBodyColor, shadowColor, highlightColor, 
+                    isActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
                     isActive ? activeColor : strokeColor));
-            
+
             // Set text colors
             int titleId = 0, infoId = 0, regId = 0;
             switch(i) {
@@ -723,13 +822,39 @@ public class SettingsFragment extends BaseFragment {
             }
 
             ((TextView)view.findViewById(titleId)).setTextColor(isActive ? detailBodyColor : activeColor);
-            
+
             TextView tvInfo = view.findViewById(infoId);
             TextView tvReg = view.findViewById(regId);
             tvInfo.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
             tvReg.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
             tvInfo.setAlpha(0.8f);
             tvReg.setAlpha(0.8f);
+        }
+
+        // --- Hijri Detail Styling ---
+        String selectedHijri = ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
+                .getString("hijri_system", "ASTRONOMICAL");
+        String[] hijriIds = {"ASTRONOMICAL", "UMM_AL_QURA", "LOCAL_SIGHTING", "GLOBAL_SIGHTING", "MANUAL_OFFSET"};
+
+        for (int i = 0; i < hijriCards.length; i++) {
+            boolean isActive = hijriIds[i].equals(selectedHijri);
+            hijriCards[i].setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
+                    isActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
+                    isActive ? activeColor : strokeColor));
+
+            int titleId = 0, tagId = 0;
+            switch(i) {
+                case 0: titleId = R.id.settings_text_hijri_astro; tagId = R.id.settings_subtext_hijri_astro_tag; break;
+                case 1: titleId = R.id.settings_text_hijri_ummalqura; tagId = R.id.settings_subtext_hijri_ummalqura_tag; break;
+                case 2: titleId = R.id.settings_text_hijri_local; tagId = R.id.settings_subtext_hijri_local_tag; break;
+                case 3: titleId = R.id.settings_text_hijri_global; tagId = R.id.settings_subtext_hijri_global_tag; break;
+                case 4: titleId = R.id.settings_text_hijri_manual; tagId = R.id.settings_subtext_hijri_manual_tag; break;
+            }
+
+            ((TextView)view.findViewById(titleId)).setTextColor(isActive ? detailBodyColor : activeColor);
+            TextView tvTag = view.findViewById(tagId);
+            tvTag.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
+            tvTag.setAlpha(0.8f);
         }
     }
 

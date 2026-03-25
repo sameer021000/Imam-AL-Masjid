@@ -608,6 +608,161 @@
 
                         </LinearLayout>
                     </LinearLayout>
+
+                    <!-- List Level 2: Hijri Date System Detail -->
+                    <LinearLayout
+                        android:id="@+id/settings_calculation_hijri_detail_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- Detail Header -->
+                        <LinearLayout
+                            android:id="@+id/settings_calculation_hijri_header"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/settings_button_hijri_back"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_chevron_left"
+                                app:tint="@color/emerald_primary"
+                                android:contentDescription="@null"
+                                android:clickable="true"
+                                android:focusable="true"/>
+
+                            <TextView
+                                android:id="@+id/settings_text_hijri_header_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_hijri_system_title"
+                                android:textColor="@color/emerald_primary"
+                                android:fontFamily="@font/janna_it_bold_font" />
+                        </LinearLayout>
+
+                        <!-- Systems List -->
+                        <LinearLayout
+                            android:id="@+id/settings_hijri_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <!-- Astronomical -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_hijri_astro"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_hijri_astro"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/hijri_astronomical"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_hijri_astro_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/hijri_astronomical_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Umm al-Qura -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_hijri_ummalqura"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_hijri_ummalqura"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/hijri_ummalqura"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_hijri_ummalqura_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/hijri_ummalqura_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Local Sighting -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_hijri_local"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_hijri_local"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/hijri_local_sighting"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_hijri_local_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/hijri_local_sighting_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Global Sighting -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_hijri_global"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_hijri_global"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/hijri_global_sighting"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_hijri_global_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/hijri_global_sighting_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Manual Offset -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_hijri_manual"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_hijri_manual"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/hijri_manual_offset"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_hijri_manual_tag"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/hijri_manual_offset_tag"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
                 </FrameLayout>
             </LinearLayout>
 

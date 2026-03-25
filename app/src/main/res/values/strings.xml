@@ -142,6 +142,22 @@
     <string name="method_turkey_info">Fajr Angle: 18°, Isha Rule: 17° (adj)</string>
     <string name="method_turkey_regions">Turkey</string>
 
+    <!-- Hijri Systems Detail -->
+    <string name="hijri_astronomical">Astronomical</string>
+    <string name="hijri_astronomical_tag">Recommended for: Many apps (default)</string>
+
+    <string name="hijri_ummalqura">Umm al-Qura</string>
+    <string name="hijri_ummalqura_tag">Recommended for: Saudi, Gulf countries</string>
+
+    <string name="hijri_local_sighting">Local Moon Sighting</string>
+    <string name="hijri_local_sighting_tag">Recommended for: India, Pakistan, Bangladesh, Morocco</string>
+
+    <string name="hijri_global_sighting">Global Sighting</string>
+    <string name="hijri_global_sighting_tag">Recommended for: Some orgs</string>
+
+    <string name="hijri_manual_offset">Manual Offset</string>
+    <string name="hijri_manual_offset_tag">Recommended for: All apps (optional)</string>
+
     <!-- ========================== -->
     <!-- == Content Descriptions == -->
     <!-- ========================== -->
