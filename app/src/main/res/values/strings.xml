@@ -117,6 +117,31 @@
     <!-- Version -->
     <string name="settings_version">Version 1.0.0</string>
 
+    <!-- Calculation Methods Detail -->
+    <string name="method_karachi">Karachi</string>
+    <string name="method_karachi_info">Fajr Angle: 18°, Isha Rule: 18°</string>
+    <string name="method_karachi_regions">India, Pakistan, Bangladesh, Afghanistan</string>
+
+    <string name="method_mwl">MWL (Muslim World League)</string>
+    <string name="method_mwl_info">Fajr Angle: 18°, Isha Rule: 17°</string>
+    <string name="method_mwl_regions">Middle East, Global apps</string>
+
+    <string name="method_isna">ISNA</string>
+    <string name="method_isna_info">Fajr Angle: 15°, Isha Rule: 15°</string>
+    <string name="method_isna_regions">USA, Canada</string>
+
+    <string name="method_ummalqura">Umm al-Qura</string>
+    <string name="method_ummalqura_info">Fajr Angle: 18.5°, Isha Rule: Fixed (90 min after maghrib)</string>
+    <string name="method_ummalqura_regions">Saudi Arabia</string>
+
+    <string name="method_tehran">Tehran (Jafari)</string>
+    <string name="method_tehran_info">Fajr Angle: 17.7°, Isha Rule: 14°</string>
+    <string name="method_tehran_regions">Iran, Iraq (Shia)</string>
+
+    <string name="method_turkey">Turkey (Diyanet)</string>
+    <string name="method_turkey_info">Fajr Angle: 18°, Isha Rule: 17° (adj)</string>
+    <string name="method_turkey_regions">Turkey</string>
+
     <!-- ========================== -->
     <!-- == Content Descriptions == -->
     <!-- ========================== -->

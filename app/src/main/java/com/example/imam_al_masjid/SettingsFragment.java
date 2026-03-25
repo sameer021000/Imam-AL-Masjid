@@ -35,9 +35,11 @@ public class SettingsFragment extends BaseFragment {
     private TextView syncStatusText;
 
     // --- In-Card Waqt Calculation ---
-    private View calculationListRoot, calculationAsrDetailRoot;
+    private View calculationListRoot, calculationAsrDetailRoot, calculationMethodsDetailRoot;
     private View asrCardStandard, asrCardHanafi;
+    private View[] methodCards; // Karachi, MWL, ISNA, UmmAlQura, Tehran, Turkey
     private boolean isAsrDetailVisible = false;
+    private boolean isMethodsDetailVisible = false;
 
     // Current theme selection index (0=System, 1=Light, 2=Dark)
     private int selectedThemeIndex = 0;
@@ -132,7 +134,34 @@ public class SettingsFragment extends BaseFragment {
 
         updateAsrSubtitle();
 
-        applyTactileTouch(view.findViewById(R.id.settings_row_methods));
+        // --- Methods detail ---
+        calculationMethodsDetailRoot = view.findViewById(R.id.settings_calculation_methods_detail_root);
+        methodCards = new View[]{
+            view.findViewById(R.id.settings_card_method_karachi),
+            view.findViewById(R.id.settings_card_method_mwl),
+            view.findViewById(R.id.settings_card_method_isna),
+            view.findViewById(R.id.settings_card_method_ummalqura),
+            view.findViewById(R.id.settings_card_method_tehran),
+            view.findViewById(R.id.settings_card_method_turkey)
+        };
+        
+        String[] methodIds = {"KARACHI", "MWL", "ISNA", "UMM_AL_QURA", "TEHRAN", "TURKEY"};
+        for (int i = 0; i < methodCards.length; i++) {
+            final String mid = methodIds[i];
+            methodCards[i].setOnClickListener(v -> handleInCardMethodSelection(mid));
+            applyTactileTouch(methodCards[i]);
+        }
+
+        View methodsBackBtn = view.findViewById(R.id.settings_button_methods_back);
+        methodsBackBtn.setOnClickListener(v -> toggleMethodsDetail(false));
+        applyTactileTouch(methodsBackBtn);
+
+        View methodsRow = view.findViewById(R.id.settings_row_methods);
+        methodsRow.setOnClickListener(v -> toggleMethodsDetail(true));
+        applyTactileTouch(methodsRow);
+
+        updateMethodsSubtitle();
+
         applyTactileTouch(view.findViewById(R.id.settings_row_hijri));
         applyTactileTouch(view.findViewById(R.id.settings_row_country));
     }
@@ -160,6 +189,26 @@ public class SettingsFragment extends BaseFragment {
         }
     }
 
+    private void toggleMethodsDetail(boolean show) {
+        if (show == isMethodsDetailVisible) return;
+        isMethodsDetailVisible = show;
+
+        if (getView() == null) return;
+        android.transition.TransitionManager.beginDelayedTransition(getView().findViewById(R.id.settings_card_calculation));
+
+        getView().findViewById(R.id.settings_label_calculation).setVisibility(show ? View.GONE : View.VISIBLE);
+        calculationListRoot.setVisibility(show ? View.GONE : View.VISIBLE);
+        calculationMethodsDetailRoot.setVisibility(show ? View.VISIBLE : View.GONE);
+
+        if (show) {
+            for (int i = 0; i < methodCards.length; i++) {
+                methodCards[i].setAlpha(0f);
+                methodCards[i].setTranslationX(50f);
+                methodCards[i].animate().alpha(1f).translationX(0f).setDuration(300).setStartDelay(50L * i).start();
+            }
+        }
+    }
+
     private void handleInCardAsrSelection(boolean hanafi) {
         if (getContext() == null) return;
         
@@ -174,6 +223,18 @@ public class SettingsFragment extends BaseFragment {
         calculationAsrDetailRoot.postDelayed(() -> toggleAsrDetail(false), 300);
     }
 
+    private void handleInCardMethodSelection(String methodId) {
+        if (getContext() == null) return;
+        
+        getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
+                .edit().putString("calculation_method", methodId).apply();
+
+        updateMethodsSubtitle();
+        applyClaymorphism(getView());
+
+        calculationMethodsDetailRoot.postDelayed(() -> toggleMethodsDetail(false), 300);
+    }
+
     private void updateAsrSubtitle() {
         if (getView() == null || getContext() == null) return;
         TextView sub = getView().findViewById(R.id.settings_subtext_asr_madhab);
@@ -183,6 +244,17 @@ public class SettingsFragment extends BaseFragment {
                 .getBoolean("is_asr_hanafi", false);
         
         sub.setText(isHanafi ? getString(R.string.asr_selector_hanafi_title) : getString(R.string.asr_selector_standard_title));
+    }
+
+    private void updateMethodsSubtitle() {
+        if (getView() == null || getContext() == null) return;
+        TextView sub = getView().findViewById(R.id.settings_subtext_methods);
+        if (sub == null) return;
+
+        String method = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
+                .getString("calculation_method", "KARACHI");
+        
+        sub.setText(method.replace("_", " "));
     }
 
     private void applyTactileTouch(View v) {
@@ -344,10 +416,10 @@ public class SettingsFragment extends BaseFragment {
         View scrollRoot = view.findViewById(R.id.settings_scroll_root);
         scrollRoot.setPadding(0, 0, 0, topPadding);
 
-        // Screen Title (Retaining 5% indent for text alignment)
+        // Screen Title
         TextView screenTitle = view.findViewById(R.id.settings_screen_title);
         screenTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.065f));
-        ScalingUtils.applyScaledLayout(screenTitle, -1, -1, 0, 0.01f, 0.05f, 0);
+        ScalingUtils.applyScaledLayout(screenTitle, -1, -1, 0, 0.01f, 0.055f, 0);
 
         // Card Width & margins & padding
         int cardHorizPad = ScalingUtils.getScaledSize(ctx, 0.04f);
@@ -363,14 +435,14 @@ public class SettingsFragment extends BaseFragment {
             ScalingUtils.applyScaledLayout(card, 0.98f, -1, cardMarginV, cardMarginV, 0.01f, 0.01f);
         }
 
-        // Section labels (Add indent now that root padding is removed)
+        // Section labels (Set to zero margin for flush alignment)
         float sectionLabelSize = ScalingUtils.getScaledTextSize(ctx, 0.034f);
         for (int id : new int[]{R.id.settings_label_theme, R.id.settings_label_calculation,
                 R.id.settings_label_preferences, R.id.settings_label_data}) {
             TextView t = view.findViewById(id);
             if (t == null) continue;
             t.setTextSize(sectionLabelSize);
-            ScalingUtils.applyScaledLayout(t, -1, -1, 0, 0.015f, 0.05f, 0); // 5% indent
+            ScalingUtils.applyScaledLayout(t, -1, -1, 0, 0.015f, 0, 0); // Zero indent
         }
 
         // Theme toggle container: fixed height so tabs are vertically centered
@@ -503,6 +575,38 @@ public class SettingsFragment extends BaseFragment {
         TextView asrHeaderTitle = view.findViewById(R.id.settings_text_asr_header_title);
         asrHeaderTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.034f));
         view.findViewById(R.id.settings_calculation_asr_header).setPadding(0, 0, 0, ScalingUtils.getScaledSize(ctx, 0.02f));
+
+        // --- Methods Header Scaling ---
+        View methBackBtn = view.findViewById(R.id.settings_button_methods_back);
+        methBackBtn.getLayoutParams().width = backIconSize;
+        methBackBtn.getLayoutParams().height = backIconSize;
+        ViewGroup.MarginLayoutParams m2 = (ViewGroup.MarginLayoutParams) methBackBtn.getLayoutParams();
+        m2.setMarginEnd(ScalingUtils.getScaledSize(ctx, 0.02f));
+        methBackBtn.setLayoutParams(m2);
+
+        TextView methHeaderTitle = view.findViewById(R.id.settings_text_methods_header_title);
+        methHeaderTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.034f));
+        view.findViewById(R.id.settings_calculation_methods_header).setPadding(0, 0, 0, ScalingUtils.getScaledSize(ctx, 0.02f));
+
+        // Scale method cards
+        for (View v : methodCards) {
+            v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
+            v.setLayoutParams(lp);
+        }
+
+        // Subtext scaling for methods
+        for (int id : new int[]{R.id.settings_text_method_karachi, R.id.settings_text_method_mwl, R.id.settings_text_method_isna,
+                R.id.settings_text_method_ummalqura, R.id.settings_text_method_tehran, R.id.settings_text_method_turkey}) {
+            ((TextView)view.findViewById(id)).setTextSize(detailTitleSize);
+        }
+        for (int id : new int[]{R.id.settings_subtext_method_karachi_info, R.id.settings_subtext_method_mwl_info, R.id.settings_subtext_method_isna_info,
+                R.id.settings_subtext_method_ummalqura_info, R.id.settings_subtext_method_tehran_info, R.id.settings_subtext_method_turkey_info,
+                R.id.settings_subtext_method_karachi_regions, R.id.settings_subtext_method_mwl_regions, R.id.settings_subtext_method_isna_regions,
+                R.id.settings_subtext_method_ummalqura_regions, R.id.settings_subtext_method_tehran_regions, R.id.settings_subtext_method_turkey_regions}) {
+            ((TextView)view.findViewById(id)).setTextSize(detailTagSize);
+        }
     }
 
     // ================================================================
@@ -596,7 +700,37 @@ public class SettingsFragment extends BaseFragment {
         } else {
             subHanafi.setTextColor(inactiveSubColor);
         }
-        subHanafi.setAlpha(0.8f);
+        // --- Methods Detail Styling ---
+        String selectedMethod = ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
+                .getString("calculation_method", "KARACHI");
+        String[] methodIds = {"KARACHI", "MWL", "ISNA", "UMM_AL_QURA", "TEHRAN", "TURKEY"};
+
+        for (int i = 0; i < methodCards.length; i++) {
+            boolean isActive = methodIds[i].equals(selectedMethod);
+            methodCards[i].setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
+                    isActive ? activeColor : detailBodyColor, shadowColor, highlightColor, 
+                    isActive ? activeColor : strokeColor));
+            
+            // Set text colors
+            int titleId = 0, infoId = 0, regId = 0;
+            switch(i) {
+                case 0: titleId = R.id.settings_text_method_karachi; infoId = R.id.settings_subtext_method_karachi_info; regId = R.id.settings_subtext_method_karachi_regions; break;
+                case 1: titleId = R.id.settings_text_method_mwl; infoId = R.id.settings_subtext_method_mwl_info; regId = R.id.settings_subtext_method_mwl_regions; break;
+                case 2: titleId = R.id.settings_text_method_isna; infoId = R.id.settings_subtext_method_isna_info; regId = R.id.settings_subtext_method_isna_regions; break;
+                case 3: titleId = R.id.settings_text_method_ummalqura; infoId = R.id.settings_subtext_method_ummalqura_info; regId = R.id.settings_subtext_method_ummalqura_regions; break;
+                case 4: titleId = R.id.settings_text_method_tehran; infoId = R.id.settings_subtext_method_tehran_info; regId = R.id.settings_subtext_method_tehran_regions; break;
+                case 5: titleId = R.id.settings_text_method_turkey; infoId = R.id.settings_subtext_method_turkey_info; regId = R.id.settings_subtext_method_turkey_regions; break;
+            }
+
+            ((TextView)view.findViewById(titleId)).setTextColor(isActive ? detailBodyColor : activeColor);
+            
+            TextView tvInfo = view.findViewById(infoId);
+            TextView tvReg = view.findViewById(regId);
+            tvInfo.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
+            tvReg.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
+            tvInfo.setAlpha(0.8f);
+            tvReg.setAlpha(0.8f);
+        }
     }
 
     private void applyPillBackground(View pill, Context ctx) {

@@ -390,6 +390,224 @@
                                 android:textColor="@color/text_secondary" />
                         </LinearLayout>
                     </LinearLayout>
+                    <!-- List Level 2: Fajr & Isha Methods Detail -->
+                    <LinearLayout
+                        android:id="@+id/settings_calculation_methods_detail_root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- Detail Header -->
+                        <LinearLayout
+                            android:id="@+id/settings_calculation_methods_header"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/settings_button_methods_back"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_chevron_left"
+                                app:tint="@color/emerald_primary"
+                                android:contentDescription="@null"
+                                android:clickable="true"
+                                android:focusable="true"/>
+
+                            <TextView
+                                android:id="@+id/settings_text_methods_header_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_calculation_method_title"
+                                android:textColor="@color/emerald_primary"
+                                android:fontFamily="@font/janna_it_bold_font" />
+                        </LinearLayout>
+
+                        <!-- Methods List -->
+                        <LinearLayout
+                            android:id="@+id/settings_methods_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <!-- Karachi -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_method_karachi"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_method_karachi"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_karachi"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_method_karachi_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_karachi_info"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_method_karachi_regions"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_karachi_regions"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- MWL -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_method_mwl"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_method_mwl"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_mwl"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_method_mwl_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_mwl_info"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_method_mwl_regions"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_mwl_regions"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- ISNA -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_method_isna"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_method_isna"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_isna"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_method_isna_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_isna_info"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_method_isna_regions"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_isna_regions"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Umm al-Qura -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_method_ummalqura"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_method_ummalqura"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_ummalqura"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_method_ummalqura_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_ummalqura_info"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_method_ummalqura_regions"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_ummalqura_regions"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Tehran -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_method_tehran"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_method_tehran"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_tehran"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_method_tehran_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_tehran_info"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_method_tehran_regions"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_tehran_regions"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                            <!-- Turkey -->
+                            <LinearLayout
+                                android:id="@+id/settings_card_method_turkey"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/settings_text_method_turkey"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_turkey"
+                                    android:textColor="@color/emerald_primary"
+                                    android:fontFamily="@font/janna_it_bold_font" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_method_turkey_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_turkey_info"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                                <TextView
+                                    android:id="@+id/settings_subtext_method_turkey_regions"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/method_turkey_regions"
+                                    android:fontFamily="@font/chillax_medium_font"
+                                    android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
                 </FrameLayout>
             </LinearLayout>
 
