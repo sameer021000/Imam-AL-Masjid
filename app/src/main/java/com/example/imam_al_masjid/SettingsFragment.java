@@ -415,8 +415,13 @@ public class SettingsFragment extends BaseFragment {
 
         String countryId = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .getString("selected_country", "SOUTH_ASIA");
-        
-        sub.setText(countryId.replace("_", " "));
+
+        int resId = getContext().getResources().getIdentifier("country_" + countryId.toLowerCase(), "string", getContext().getPackageName());
+        if (resId != 0) {
+            sub.setText(getString(resId));
+        } else {
+            sub.setText(countryId.replace("_", " "));
+        }
     }
 
     private void applyTactileTouch(View v) {
