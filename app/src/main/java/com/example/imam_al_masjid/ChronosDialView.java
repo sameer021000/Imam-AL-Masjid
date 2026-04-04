@@ -60,6 +60,8 @@ public class ChronosDialView extends View {
     private float entryProgress = 0f;
     private boolean isWaqtTappedState = false;
     private float markerRevealProgress = 1f; // 1 means fully revealed
+    private float selectionTransitionProgress = 0f; // 0 for active, 1 for selected (used for fade transitions)
+    private ValueAnimator selectionFadeAnimator;
 
     public ChronosDialView(Context context) {
         super(context);
@@ -110,8 +112,6 @@ public class ChronosDialView extends View {
 
         hubPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         hubPaint.setStyle(Paint.Style.FILL);
-
-        // Animation now triggered manually via triggerEntrance() to sync with UI tabs
     }
 
     public void triggerEntrance() {
@@ -187,7 +187,7 @@ public class ChronosDialView extends View {
         drawCelestialHands(canvas, cx, cy, rOuter);
 
         // 2. Draw Center Content
-        drawCenterDisplay(canvas, cx, cy, rInner);
+        drawCenterDisplayWithSelection(canvas, cx, cy, rInner);
 
         // 3. Draw Markers (24h or Tapped Waqt)
         if (isWaqtTappedState && tappedSegmentIndex != -1) {
@@ -323,25 +323,71 @@ public class ChronosDialView extends View {
         canvas.drawCircle(cx, cy, ScalingUtils.getScaledSize(getContext(), 0.012f), hubPaint);
     }
 
-    private void drawCenterDisplay(Canvas canvas, float cx, float cy, float rInner) {
-        if (activeSegmentIndex == -1) return;
-        WaqtSegment active = segments.get(activeSegmentIndex);
+    /**
+     * Smoothly transitions the center display between Active Prayer and Selected Waqt.
+     */
+    private void drawCenterDisplayWithSelection(Canvas canvas, float cx, float cy, float rInner) {
+        if (segments.isEmpty()) return;
 
-        // Waqt Name (Shifted Upwards)
+        // 1. Identify which data to draw
+        WaqtSegment activeSegment = (activeSegmentIndex != -1) ? segments.get(activeSegmentIndex) : null;
+        WaqtSegment selectedSegment = (isWaqtTappedState && tappedSegmentIndex != -1) ? segments.get(tappedSegmentIndex) : null;
+
+        if (activeSegment == null && selectedSegment == null) return;
+
+        // 2. Perform Cross-Fade Drawing Logic
+        // We use selectionTransitionProgress: 0 (Active) -> 1 (Selected)
+
+        // Draw Active Information (Fades Out when something is selected)
+        if (activeSegment != null) {
+            int activeAlpha = (int) (255 * (1f - selectionTransitionProgress));
+            if (activeAlpha > 0) {
+                drawCenterWaqtInfo(canvas, cx, cy, rInner, activeSegment, centerCountdown, activeAlpha, false);
+            }
+        }
+
+        // Draw Selected Information (Fades In when something is selected)
+        if (selectedSegment != null) {
+            int selectedAlpha = (int) (255 * selectionTransitionProgress);
+            if (selectedAlpha > 0) {
+                String durationLabel = calculateFormattedDuration(selectedSegment);
+                drawCenterWaqtInfo(canvas, cx, cy, rInner, selectedSegment, durationLabel, selectedAlpha, true);
+            }
+        }
+    }
+
+    private String calculateFormattedDuration(WaqtSegment s) {
+        long durationSec = (s.endTotalSeconds - s.startTotalSeconds + 86400) % 86400;
+        long h = durationSec / 3600;
+        long m = (durationSec % 3600) / 60;
+        long sec = durationSec % 60;
+        return String.format(java.util.Locale.getDefault(), "%02dh %02dm %02ds", h, m, sec);
+    }
+
+    private void drawCenterWaqtInfo(Canvas canvas, float cx, float cy, float rInner, WaqtSegment segment, String bottomLabel, int alpha, boolean isSelectionMode) {
+        int primaryColor = ContextCompat.getColor(getContext(), R.color.emerald_primary);
+        int secondaryColor = ContextCompat.getColor(getContext(), R.color.text_secondary);
+
+        // Waqt Name (Top Line) - Consistent size 0.25f
         centerTextPaint.setTextSize(rInner * 0.25f);
-        centerTextPaint.setColor(ContextCompat.getColor(getContext(), R.color.emerald_primary));
-        canvas.drawText(active.name.toUpperCase(), cx, cy - (rInner * 0.33f), centerTextPaint);
+        centerTextPaint.setColor(primaryColor);
+        centerTextPaint.setAlpha(alpha);
+        canvas.drawText(segment.name.toUpperCase(), cx, cy - (rInner * 0.33f), centerTextPaint);
 
-        // Start - End (Size Increased & Shifted Upwards)
+        // Precise Start - End Times (Middle Line)
         centerTextPaint.setTextSize(rInner * 0.14f);
-        centerTextPaint.setColor(ContextCompat.getColor(getContext(), R.color.text_secondary));
-        String range = active.startTimeStr + " - " + active.endTimeStr;
-        canvas.drawText(range, cx, cy - (rInner * 0.15f), centerTextPaint);
+        centerTextPaint.setColor(secondaryColor);
+        centerTextPaint.setAlpha((int) (alpha * 0.8f));
+        String timeRange = segment.startTimeStr + " - " + segment.endTimeStr;
+        canvas.drawText(timeRange, cx, cy - (rInner * 0.15f), centerTextPaint);
 
-        // Countdown (Large)
-        timerPaint.setTextSize(rInner * 0.45f);
-        timerPaint.setColor(ContextCompat.getColor(getContext(), R.color.emerald_primary));
-        canvas.drawText(centerCountdown, cx, cy + (rInner * 0.45f), timerPaint);
+        // Status / Countdown / Duration (Bottom Line)
+        // Redesigned: Live Countdown is 0.45f, Duration fits at 0.32f
+        float labelSize = isSelectionMode ? 0.32f : 0.45f;
+        timerPaint.setTextSize(rInner * labelSize);
+        timerPaint.setColor(primaryColor);
+        timerPaint.setAlpha(alpha);
+        canvas.drawText(bottomLabel, cx, cy + (rInner * 0.45f), timerPaint);
     }
 
     private void drawAnimated24hMarkers(Canvas canvas, float cx, float cy, float rOuter) {
@@ -382,6 +428,22 @@ public class ChronosDialView extends View {
         anim.start();
     }
 
+    private void startSelectionFadeTransition(boolean showSelection) {
+        if (selectionFadeAnimator != null) selectionFadeAnimator.cancel();
+
+        float start = selectionTransitionProgress;
+        float end = showSelection ? 1f : 0f;
+
+        selectionFadeAnimator = ValueAnimator.ofFloat(start, end);
+        selectionFadeAnimator.setDuration(400); // Smooth fluid transition
+        selectionFadeAnimator.setInterpolator(new DecelerateInterpolator());
+        selectionFadeAnimator.addUpdateListener(animation -> {
+            selectionTransitionProgress = (float) animation.getAnimatedValue();
+            invalidate();
+        });
+        selectionFadeAnimator.start();
+    }
+
     private void drawTappedWaqtMarkers(Canvas canvas, float cx, float cy, float rOuter) {
         WaqtSegment s = segments.get(tappedSegmentIndex);
         markerPaint.setTextSize(ScalingUtils.getScaledSize(getContext(), 0.032f));
@@ -418,20 +480,17 @@ public class ChronosDialView extends View {
             float rInner = rOuter * 0.6f;
 
             // 2. Ignore taps outside the active ring (center void or outer space)
-            if (distance < rInner) {
-                if (isWaqtTappedState) startMarkerRevealAnimation(); // Trigger Dimensional Reveal on Center Tap
-                isWaqtTappedState = false;
-                invalidate();
-                return true;
-            }
-            if (distance > rOuter) {
-                if (isWaqtTappedState) startMarkerRevealAnimation(); // Trigger Dimensional Reveal on Outer Tap
+            if (distance < rInner || distance > rOuter) {
+                if (isWaqtTappedState) {
+                    startMarkerRevealAnimation(); // Trigger Dimensional Reveal logic if resetting
+                    startSelectionFadeTransition(false); // Fade back to Active Mode
+                }
                 isWaqtTappedState = false;
                 invalidate();
                 return true;
             }
 
-            // 3. Determine angle and segment
+            // 3. Determine angle and segment selection
             double angle = Math.toDegrees(Math.atan2(y, x)) + 90;
             if (angle < 0) angle += 360;
 
@@ -442,10 +501,16 @@ public class ChronosDialView extends View {
                     tappedSegmentIndex = i;
                     isWaqtTappedState = true;
                     matched = true;
+                    startSelectionFadeTransition(true); // Smoothly transition to Selected Mode
                     break;
                 }
             }
-            if (!matched) isWaqtTappedState = false;
+
+            if (!matched && isWaqtTappedState) {
+                isWaqtTappedState = false;
+                startSelectionFadeTransition(false);
+            }
+
             invalidate();
             performClick();
             return true;
@@ -460,7 +525,10 @@ public class ChronosDialView extends View {
 
     // Tap away logic (call from Fragment)
     public void resetTapState() {
-        isWaqtTappedState = false;
-        invalidate();
+        if (isWaqtTappedState) {
+            startSelectionFadeTransition(false);
+            isWaqtTappedState = false;
+            invalidate();
+        }
     }
 }
