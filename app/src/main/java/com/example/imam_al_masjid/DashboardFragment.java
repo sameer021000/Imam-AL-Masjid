@@ -756,22 +756,22 @@ public class DashboardFragment extends BaseFragment {
 
         // 4. Persistence for logic and UI
         latestPreciseTimes = today;
- 
+
         // Use Adhan library object for parts of the legacy UI/logic that still need it
         Calendar calComp = Calendar.getInstance();
         calComp.setTime(today.dhuhr); // Use the current day as reference
         DateComponents dc = new DateComponents(calComp.get(Calendar.YEAR), calComp.get(Calendar.MONTH) + 1, calComp.get(Calendar.DAY_OF_MONTH));
         latestPrayerTimes = new PrayerTimes(lastCoordinates, dc, parameters);
- 
+
         // Update Static Labels (always for today)
         // Update Static Labels
         updateRowWaqtTimes(rowFajr, getStaticAzanTime("fajr"), getStaticJamatTime("fajr"));
         updateRowWaqtTimes(rowZuhr, getStaticAzanTime("zuhr"), getStaticJamatTime("zuhr"));
         updateRowWaqtTimes(rowAsr, getStaticAzanTime("asr"), getStaticJamatTime("asr"));
         updateRowWaqtTimes(rowMaghrib, getStaticAzanTime("maghrib"), getStaticJamatTime("maghrib"));
- 
+
         updateRowWaqtTimes(rowIsha, getStaticAzanTime("isha"), getStaticJamatTime("isha"));
- 
+
         highlightActiveWaqt(latestPreciseTimes, lastCoordinates);
         updateHeaderDates(false);
     }
@@ -1263,10 +1263,10 @@ public class DashboardFragment extends BaseFragment {
             ScalingUtils.applyScaledLayout(imgAddressMenuToggle, 0.06f, 0.06f, 0, 0, 0.01f, 0); // Spaced from right
             int togglePadding = ScalingUtils.getScaledSize(getContext(), 0.005f); // ~2dp equivalent
             imgAddressMenuToggle.setPadding(togglePadding, togglePadding, togglePadding, togglePadding);
-            
+
             // Positioning it below the arrow icon (increased to 0.10f margin)
             ScalingUtils.applyScaledLayout(layoutAddressDropdown, 0.40f, -1, 0.10f, 0, 0, 0.01f);
-            
+
             float dropTextSize = ScalingUtils.getScaledTextSize(getContext(), 0.028f);
             int hPad = ScalingUtils.getScaledSize(getContext(), 0.04f); // ~16dp equivalent
             int vPad = ScalingUtils.getScaledSize(getContext(), 0.02f); // ~8dp equivalent
@@ -1360,14 +1360,14 @@ public class DashboardFragment extends BaseFragment {
             int bgColor = ContextCompat.getColor(getContext(), android.R.color.transparent);
             int shadowColor = ContextCompat.getColor(getContext(), R.color.clay_dark_shadow);
             int highlightColor = ContextCompat.getColor(getContext(), R.color.clay_light_shadow);
-            
+
             if (btnAddressEdit != null) {
-                btnAddressEdit.setBackground(ScalingUtils.createClayDrawable(getContext(), 0.02f, 0.005f, 0.002f, 0.003f, 
-                    bgColor, shadowColor, highlightColor, emeraldBorder));
+                btnAddressEdit.setBackground(ScalingUtils.createClayDrawable(getContext(), 0.02f, 0.005f, 0.002f, 0.003f,
+                        bgColor, shadowColor, highlightColor, emeraldBorder));
             }
             if (btnAddressRefresh != null) {
-                btnAddressRefresh.setBackground(ScalingUtils.createClayDrawable(getContext(), 0.02f, 0.005f, 0.002f, 0.003f, 
-                    bgColor, shadowColor, highlightColor, emeraldBorder));
+                btnAddressRefresh.setBackground(ScalingUtils.createClayDrawable(getContext(), 0.02f, 0.005f, 0.002f, 0.003f,
+                        bgColor, shadowColor, highlightColor, emeraldBorder));
             }
         }
 
@@ -1596,7 +1596,7 @@ public class DashboardFragment extends BaseFragment {
 
     private void refreshAddress() {
         if (getContext() == null) return;
-        
+
         if (!isInternetAvailable()) {
             showCustomToast(getString(R.string.toast_internet_error), true);
             return;
@@ -1629,24 +1629,24 @@ public class DashboardFragment extends BaseFragment {
 
     private void showCustomToast(String message, boolean isError) {
         if (!isAdded() || getContext() == null) return;
-        
+
         View layout = getLayoutInflater().inflate(R.layout.layout_custom_toast, (android.view.ViewGroup) getView(), false);
         View root = layout.findViewById(R.id.toast_root);
         TextView text = layout.findViewById(R.id.toast_text);
-        
+
         if (text != null) {
             text.setText(message);
             // Dynamic text size based on accessibility-aware scaling (3.5% of width)
-            text.setTextSize(ScalingUtils.getScaledTextSize(getContext(), 0.035f)); 
+            text.setTextSize(ScalingUtils.getScaledTextSize(getContext(), 0.035f));
         }
-        
+
         if (root != null) {
             int bodyColor = ContextCompat.getColor(getContext(), isError ? R.color.error_red : R.color.emerald_primary);
             int shadowColor = ContextCompat.getColor(getContext(), R.color.clay_dark_shadow);
             int highlightColor = ContextCompat.getColor(getContext(), R.color.clay_light_shadow);
-            
+
             // Dynamic internal padding for the toast box (~6% horizontal, ~3% vertical)
-            int hPad = ScalingUtils.getScaledSize(getContext(), 0.06f); 
+            int hPad = ScalingUtils.getScaledSize(getContext(), 0.06f);
             int vPad = ScalingUtils.getScaledSize(getContext(), 0.03f);
             root.setPadding(hPad, vPad, hPad, vPad);
 
@@ -1654,11 +1654,11 @@ public class DashboardFragment extends BaseFragment {
             root.setBackground(ScalingUtils.createClayDrawable(getContext(), 0.04f, 0.008f, 0.004f, 0.002f,
                     bodyColor, shadowColor, highlightColor, bodyColor));
         }
-        
+
         Toast toast = new Toast(requireContext());
         toast.setDuration(Toast.LENGTH_SHORT);
         // Position it slightly above the nav bar dynamically
-        int yOffset = ScalingUtils.getScaledSize(getContext(), 0.08f, true); 
+        int yOffset = ScalingUtils.getScaledSize(getContext(), 0.08f, true);
         toast.setGravity(android.view.Gravity.BOTTOM | android.view.Gravity.CENTER_HORIZONTAL, 0, yOffset);
         toast.setView(layout);
         toast.show();

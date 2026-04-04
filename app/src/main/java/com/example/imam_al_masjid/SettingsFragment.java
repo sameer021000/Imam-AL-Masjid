@@ -177,13 +177,13 @@ public class SettingsFragment extends BaseFragment {
         // --- Hijri detail ---
         calculationHijriDetailRoot = view.findViewById(R.id.settings_calculation_hijri_detail_root);
         hijriCards = new View[]{
-            view.findViewById(R.id.settings_card_hijri_astro),
-            view.findViewById(R.id.settings_card_hijri_ummalqura),
-            view.findViewById(R.id.settings_card_hijri_local),
-            view.findViewById(R.id.settings_card_hijri_global),
-            view.findViewById(R.id.settings_card_hijri_manual)
+                view.findViewById(R.id.settings_card_hijri_astro),
+                view.findViewById(R.id.settings_card_hijri_ummalqura),
+                view.findViewById(R.id.settings_card_hijri_local),
+                view.findViewById(R.id.settings_card_hijri_global),
+                view.findViewById(R.id.settings_card_hijri_manual)
         };
-        
+
         String[] hijriIds = {"ASTRONOMICAL", "UMM_AL_QURA", "LOCAL_SIGHTING", "GLOBAL_SIGHTING", "MANUAL_OFFSET"};
         for (int i = 0; i < hijriCards.length; i++) {
             final String hid = hijriIds[i];
@@ -208,18 +208,18 @@ public class SettingsFragment extends BaseFragment {
         // --- Country detail ---
         calculationCountryDetailRoot = view.findViewById(R.id.settings_calculation_country_detail_root);
         countryCards = new View[]{
-            view.findViewById(R.id.settings_card_country_south_asia),
-            view.findViewById(R.id.settings_card_country_saudi),
-            view.findViewById(R.id.settings_card_country_uae),
-            view.findViewById(R.id.settings_card_country_qatar),
-            view.findViewById(R.id.settings_card_country_egypt),
-            view.findViewById(R.id.settings_card_country_turkey),
-            view.findViewById(R.id.settings_card_country_north_america),
-            view.findViewById(R.id.settings_card_country_southeast_asia),
-            view.findViewById(R.id.settings_card_country_iran),
-            view.findViewById(R.id.settings_card_country_iraq)
+                view.findViewById(R.id.settings_card_country_south_asia),
+                view.findViewById(R.id.settings_card_country_saudi),
+                view.findViewById(R.id.settings_card_country_uae),
+                view.findViewById(R.id.settings_card_country_qatar),
+                view.findViewById(R.id.settings_card_country_egypt),
+                view.findViewById(R.id.settings_card_country_turkey),
+                view.findViewById(R.id.settings_card_country_north_america),
+                view.findViewById(R.id.settings_card_country_southeast_asia),
+                view.findViewById(R.id.settings_card_country_iran),
+                view.findViewById(R.id.settings_card_country_iraq)
         };
-        
+
         String[] countryIds = {"SOUTH_ASIA", "SAUDI", "UAE", "QATAR", "EGYPT", "TURKEY", "NORTH_AMERICA", "SOUTHEAST_ASIA", "IRAN", "IRAQ"};
         for (int i = 0; i < countryCards.length; i++) {
             final String cid = countryIds[i];
@@ -341,7 +341,7 @@ public class SettingsFragment extends BaseFragment {
 
     private void handleInCardMethodSelection(String methodId) {
         if (getContext() == null) return;
-        
+
         getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .edit().putString("calculation_method", methodId).apply();
 
@@ -353,7 +353,7 @@ public class SettingsFragment extends BaseFragment {
 
     private void handleInCardHijriSelection(String systemId) {
         if (getContext() == null) return;
-        
+
         getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .edit().putString("hijri_system", systemId).apply();
 
@@ -365,7 +365,7 @@ public class SettingsFragment extends BaseFragment {
 
     private void handleInCardCountrySelection(String countryId) {
         if (getContext() == null) return;
-        
+
         getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .edit().putString("selected_country", countryId).apply();
 
@@ -393,7 +393,7 @@ public class SettingsFragment extends BaseFragment {
 
         String method = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .getString("calculation_method", "KARACHI");
-        
+
         sub.setText(method.replace("_", " "));
     }
 
@@ -404,7 +404,7 @@ public class SettingsFragment extends BaseFragment {
 
         String system = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .getString("hijri_system", "ASTRONOMICAL");
-        
+
         sub.setText(system.replace("_", " "));
     }
 

@@ -34,9 +34,9 @@ public class ChronosDialView extends View {
         public String startTimeRounded;    // Border version
         public String endTimeRounded;      // Border version
 
-        public WaqtSegment(String name, long startTotalSeconds, long endTotalSeconds, 
-                          String startTimeStr, String endTimeStr,
-                          String startTimeRounded, String endTimeRounded) {
+        public WaqtSegment(String name, long startTotalSeconds, long endTotalSeconds,
+                           String startTimeStr, String endTimeStr,
+                           String startTimeRounded, String endTimeRounded) {
             this.name = name;
             this.startTotalSeconds = startTotalSeconds;
             this.endTotalSeconds = endTotalSeconds;
@@ -53,9 +53,9 @@ public class ChronosDialView extends View {
     private int activeSegmentIndex = -1;
     private int tappedSegmentIndex = -1;
     private String centerCountdown = "00:00:00";
-    
+
     private final RectF dialRect = new RectF();
-    
+
     // Animation/State
     private float entryProgress = 0f;
     private boolean isWaqtTappedState = false;
@@ -107,7 +107,7 @@ public class ChronosDialView extends View {
         handSecondPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         handSecondPaint.setStyle(Paint.Style.STROKE);
         handSecondPaint.setStrokeCap(Paint.Cap.ROUND);
-        
+
         hubPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         hubPaint.setStyle(Paint.Style.FILL);
 
@@ -143,10 +143,10 @@ public class ChronosDialView extends View {
 
     private void updateActiveSegment() {
         java.util.Calendar now = java.util.Calendar.getInstance();
-        long nowSec = now.get(java.util.Calendar.HOUR_OF_DAY) * 3600L + 
-                      now.get(java.util.Calendar.MINUTE) * 60L + 
-                      now.get(java.util.Calendar.SECOND);
-        
+        long nowSec = now.get(java.util.Calendar.HOUR_OF_DAY) * 3600L +
+                now.get(java.util.Calendar.MINUTE) * 60L +
+                now.get(java.util.Calendar.SECOND);
+
         activeSegmentIndex = -1;
         for (int i = 0; i < segments.size(); i++) {
             WaqtSegment s = segments.get(i);
@@ -173,9 +173,9 @@ public class ChronosDialView extends View {
 
         float cx = getWidth() / 2f;
         float cy = getHeight() / 2f;
-        
+
         // Use 78% of half-width to leave room for outer markers (12AM, 3AM etc.)
-        float rOuter = Math.min(cx, cy) * 0.78f; 
+        float rOuter = Math.min(cx, cy) * 0.78f;
         float rInner = rOuter * 0.6f;
 
         dialRect.set(cx - rOuter, cy - rOuter, cx + rOuter, cy + rOuter);
@@ -203,7 +203,7 @@ public class ChronosDialView extends View {
     private void drawPartitions(Canvas canvas, float cx, float cy, float rOuter, float rInner) {
         int inactiveColor = ContextCompat.getColor(getContext(), R.color.emerald_primary);
         int activeColor = ContextCompat.getColor(getContext(), R.color.celestial_gold);
-        
+
         RectF innerRect = new RectF(cx - rInner, cy - rInner, cx + rInner, cy + rInner);
 
         for (int i = 0; i < segments.size(); i++) {
@@ -230,11 +230,11 @@ public class ChronosDialView extends View {
             // Draw Boundary Lines
             float lineAngleRad = (float) Math.toRadians(startAngle);
             canvas.drawLine(
-                (float) (cx + rInner * Math.cos(lineAngleRad)),
-                (float) (cy + rInner * Math.sin(lineAngleRad)),
-                (float) (cx + rOuter * Math.cos(lineAngleRad)),
-                (float) (cy + rOuter * Math.sin(lineAngleRad)),
-                linePaint
+                    (float) (cx + rInner * Math.cos(lineAngleRad)),
+                    (float) (cy + rInner * Math.sin(lineAngleRad)),
+                    (float) (cx + rOuter * Math.cos(lineAngleRad)),
+                    (float) (cy + rOuter * Math.sin(lineAngleRad)),
+                    linePaint
             );
         }
     }
@@ -248,7 +248,7 @@ public class ChronosDialView extends View {
         java.util.Calendar cal = java.util.Calendar.getInstance();
         long nowMs = System.currentTimeMillis();
         cal.setTimeInMillis(nowMs);
-        
+
         int hour24 = cal.get(java.util.Calendar.HOUR_OF_DAY);
         int minute = cal.get(java.util.Calendar.MINUTE);
         int second = cal.get(java.util.Calendar.SECOND);
@@ -257,10 +257,10 @@ public class ChronosDialView extends View {
         // 1. Calculate Precise Sweep Angles
         // Seconds: (0-60 in 1 minute)
         float sAngle = ((second + millis / 1000f) / 60f) * 360f - 90f;
-        
+
         // Minutes: (0-60 in 1 hour)
         float mAngle = ((minute + second / 60f) / 60f) * 360f - 90f;
-        
+
         // Hours: (0-24 in 1 day - Custom for 24h Spiritual Dial)
         float hAngle = ((hour24 + minute / 60f + second / 3600f) / 24f) * 360f - 90f;
 
@@ -273,7 +273,7 @@ public class ChronosDialView extends View {
         int primaryColor = ContextCompat.getColor(getContext(), R.color.emerald_primary);
         int accentColor = ContextCompat.getColor(getContext(), R.color.emerald_light);
         int ivory = ContextCompat.getColor(getContext(), R.color.off_white_primary);
-        
+
         // Hour (Bold Guardian)
         handHourPaint.setColor(primaryColor);
         handHourPaint.setStrokeWidth(ScalingUtils.getScaledSize(getContext(), 0.012f));
@@ -287,7 +287,7 @@ public class ChronosDialView extends View {
         // Second (Laser)
         handSecondPaint.setColor(accentColor);
         handSecondPaint.setStrokeWidth(ScalingUtils.getScaledSize(getContext(), 0.003f));
-        
+
         // 4. Draw Hands
         // Draw Hour Hand
         canvas.save();
@@ -354,7 +354,7 @@ public class ChronosDialView extends View {
         for (int i = 0; i < 8; i++) {
             float angle = i * 45f - 90f;
             float angleRad = (float) Math.toRadians(angle);
-            
+
             // Dimensional Reveal Animation Logic
             // Slide outwards: offset starts at (standardOffset - 20dp) and moves to standardOffset
             float startOffset = standardOffset - ScalingUtils.getScaledSize(getContext(), 0.04f); // ~20dp
@@ -364,7 +364,7 @@ public class ChronosDialView extends View {
             markerPaint.setAlpha(alpha);
             float x = (float) (cx + (rOuter + currentOffset) * Math.cos(angleRad));
             float y = (float) (cy + (rOuter + currentOffset) * Math.sin(angleRad)) + (markerPaint.getTextSize() / 2f);
-            
+
             if (alpha > 0) {
                 canvas.drawText(times[i], x, y, markerPaint);
             }
@@ -411,7 +411,7 @@ public class ChronosDialView extends View {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             float x = event.getX() - getWidth() / 2f;
             float y = event.getY() - getHeight() / 2f;
-            
+
             // 1. Calculate radial distance from center
             double distance = Math.sqrt(x * x + y * y);
             float rOuter = Math.min(getWidth() / 2f, getHeight() / 2f) * 0.78f;
@@ -422,7 +422,7 @@ public class ChronosDialView extends View {
                 if (isWaqtTappedState) startMarkerRevealAnimation(); // Trigger Dimensional Reveal on Center Tap
                 isWaqtTappedState = false;
                 invalidate();
-                return true; 
+                return true;
             }
             if (distance > rOuter) {
                 if (isWaqtTappedState) startMarkerRevealAnimation(); // Trigger Dimensional Reveal on Outer Tap
