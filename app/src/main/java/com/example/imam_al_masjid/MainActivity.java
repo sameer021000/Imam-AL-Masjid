@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.core.content.ContextCompat;
@@ -149,17 +150,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateNavUI(View selectedView) {
+        // Reset previous active view
         if (activeNavView != null) {
-            ((ImageView)activeNavView.findViewById(R.id.nav_icon)).setColorFilter(ContextCompat.getColor(this, R.color.text_secondary));
-            ((android.widget.TextView)activeNavView.findViewById(R.id.nav_title)).setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
-            activeNavView.findViewById(R.id.nav_underline).setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+            ImageView oldIcon = activeNavView.findViewById(R.id.nav_icon);
+            TextView oldTitle = activeNavView.findViewById(R.id.nav_title);
+            View oldUnderline = activeNavView.findViewById(R.id.nav_underline);
+
+            if (oldIcon != null) oldIcon.setColorFilter(ContextCompat.getColor(this, R.color.text_secondary));
+            if (oldTitle != null) oldTitle.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+            if (oldUnderline != null) oldUnderline.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
         }
 
+        // Apply new active view
         activeNavView = selectedView;
-        
-        ((ImageView)activeNavView.findViewById(R.id.nav_icon)).setColorFilter(ContextCompat.getColor(this, R.color.input_active));
-        ((android.widget.TextView)activeNavView.findViewById(R.id.nav_title)).setTextColor(ContextCompat.getColor(this, R.color.input_active));
-        activeNavView.findViewById(R.id.nav_underline).setBackgroundColor(ContextCompat.getColor(this, R.color.input_active));
+        if (selectedView != null) {
+            ImageView newIcon = selectedView.findViewById(R.id.nav_icon);
+            TextView newTitle = selectedView.findViewById(R.id.nav_title);
+            View newUnderline = selectedView.findViewById(R.id.nav_underline);
+
+            if (newIcon != null) newIcon.setColorFilter(ContextCompat.getColor(this, R.color.input_active));
+            if (newTitle != null) newTitle.setTextColor(ContextCompat.getColor(this, R.color.input_active));
+            if (newUnderline != null) newUnderline.setBackgroundColor(ContextCompat.getColor(this, R.color.input_active));
+        }
     }
 
     private void applyDynamicScaling() {

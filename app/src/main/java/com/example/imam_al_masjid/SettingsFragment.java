@@ -74,75 +74,87 @@ public class SettingsFragment extends BaseFragment {
 
         // === Restore saved theme selection (no recreate, just highlight) ===
         selectedThemeIndex = ThemeManager.getThemeSelectionIndex(getContext());
-        // updateThemeToggleUI is called after scaling in applyClaymorphism order,
-        // but we need it here too since initViews runs before scaling.
-        // It is safe because it only sets colours/backgrounds, not sizes.
         updateThemeToggleUI();
 
-        // === Theme toggle clicks – FIX #6: use post() to avoid immediate navigation ===
-        themeSystem.setOnClickListener(v -> onThemeSelected(0));
-        themeLight.setOnClickListener( v -> onThemeSelected(1));
-        themeDark.setOnClickListener(  v -> onThemeSelected(2));
+        // === Theme toggle clicks ===
+        if (themeSystem != null) themeSystem.setOnClickListener(v -> onThemeSelected(0));
+        if (themeLight != null) themeLight.setOnClickListener( v -> onThemeSelected(1));
+        if (themeDark != null) themeDark.setOnClickListener(  v -> onThemeSelected(2));
 
         // === Icon toggle clicks ===
-        toggleNotifications.setOnClickListener(v -> {
-            boolean mode = !isSettingOn(KEY_NOTIF);
-            saveSetting(KEY_NOTIF, mode);
-            updateNotifIcon();
-        });
-        toggleVibration.setOnClickListener(v -> {
-            boolean mode = !isSettingOn(KEY_VIB);
-            saveSetting(KEY_VIB, mode);
-            updateVibIcon();
-        });
-        toggleSound.setOnClickListener(v -> {
-            boolean mode = !isSettingOn(KEY_SOUND);
-            saveSetting(KEY_SOUND, mode);
-            updateSoundIcon();
-        });
+        if (toggleNotifications != null) {
+            toggleNotifications.setOnClickListener(v -> {
+                boolean mode = !isSettingOn(KEY_NOTIF);
+                saveSetting(KEY_NOTIF, mode);
+                updateNotifIcon();
+            });
+        }
+        if (toggleVibration != null) {
+            toggleVibration.setOnClickListener(v -> {
+                boolean mode = !isSettingOn(KEY_VIB);
+                saveSetting(KEY_VIB, mode);
+                updateVibIcon();
+            });
+        }
+        if (toggleSound != null) {
+            toggleSound.setOnClickListener(v -> {
+                boolean mode = !isSettingOn(KEY_SOUND);
+                saveSetting(KEY_SOUND, mode);
+                updateSoundIcon();
+            });
+        }
 
-        // Initialize icons based on current state (persisted across theme changes)
+        // Initialize icons based on current state
         updateAllToggleIcons();
 
-        // === Mock Sync Status (design) ===
+        // === Mock Sync Status ===
         setSyncStatus();
 
-        // Ensure status bar color matches Settings theme (overwriting dashboard accent)
+        // Status bar update
         updateStatusBarColor();
 
-        // === Backup button (Tactile feedback matching Login dropdown) ===
-        backupButton.setOnClickListener(v -> {
-            // Placeholder for backup logic
-        });
-        applyTactileTouch(backupButton);
+        // Backup button
+        if (backupButton != null) {
+            backupButton.setOnClickListener(v -> {});
+            applyTactileTouch(backupButton);
+        }
 
-        // === Waqt Calculation Rows (In-Card Transition) ===
+        // --- Waqt Calculation Initialization ---
         calculationListRoot = view.findViewById(R.id.settings_calculation_list_root);
         calculationAsrDetailRoot = view.findViewById(R.id.settings_calculation_asr_detail_root);
         asrCardStandard = view.findViewById(R.id.settings_card_asr_standard);
         asrCardHanafi = view.findViewById(R.id.settings_card_asr_hanafi);
 
         View asrBackBtn = view.findViewById(R.id.settings_button_asr_back);
-        asrBackBtn.setOnClickListener(v -> toggleAsrDetail(false));
-        applyTactileTouch(asrBackBtn);
+        if (asrBackBtn != null) {
+            asrBackBtn.setOnClickListener(v -> toggleAsrDetail(false));
+            applyTactileTouch(asrBackBtn);
+        }
 
         View asrHeaderTitle = view.findViewById(R.id.settings_text_asr_header_title);
-        asrHeaderTitle.setOnClickListener(v -> toggleAsrDetail(false));
-        applyTactileTouch(asrHeaderTitle);
+        if (asrHeaderTitle != null) {
+            asrHeaderTitle.setOnClickListener(v -> toggleAsrDetail(false));
+            applyTactileTouch(asrHeaderTitle);
+        }
 
         View asrRow = view.findViewById(R.id.settings_row_asr_madhab);
-        asrRow.setOnClickListener(v -> toggleAsrDetail(true));
-        applyTactileTouch(asrRow);
+        if (asrRow != null) {
+            asrRow.setOnClickListener(v -> toggleAsrDetail(true));
+            applyTactileTouch(asrRow);
+        }
 
-        asrCardStandard.setOnClickListener(v -> handleInCardAsrSelection(false));
-        asrCardHanafi.setOnClickListener(v -> handleInCardAsrSelection(true));
-
-        applyTactileTouch(asrCardStandard);
-        applyTactileTouch(asrCardHanafi);
+        if (asrCardStandard != null) {
+            asrCardStandard.setOnClickListener(v -> handleInCardAsrSelection(false));
+            applyTactileTouch(asrCardStandard);
+        }
+        if (asrCardHanafi != null) {
+            asrCardHanafi.setOnClickListener(v -> handleInCardAsrSelection(true));
+            applyTactileTouch(asrCardHanafi);
+        }
 
         updateAsrSubtitle();
 
-        // --- Methods detail ---
+        // --- Methods Detail ---
         calculationMethodsDetailRoot = view.findViewById(R.id.settings_calculation_methods_detail_root);
         methodCards = new View[]{
                 view.findViewById(R.id.settings_card_method_karachi),
@@ -156,25 +168,33 @@ public class SettingsFragment extends BaseFragment {
         String[] methodIds = {"KARACHI", "MWL", "ISNA", "UMM_AL_QURA", "TEHRAN", "TURKEY"};
         for (int i = 0; i < methodCards.length; i++) {
             final String mid = methodIds[i];
-            methodCards[i].setOnClickListener(v -> handleInCardMethodSelection(mid));
-            applyTactileTouch(methodCards[i]);
+            if (methodCards[i] != null) {
+                methodCards[i].setOnClickListener(v -> handleInCardMethodSelection(mid));
+                applyTactileTouch(methodCards[i]);
+            }
         }
 
         View methodsBackBtn = view.findViewById(R.id.settings_button_methods_back);
-        methodsBackBtn.setOnClickListener(v -> toggleMethodsDetail(false));
-        applyTactileTouch(methodsBackBtn);
+        if (methodsBackBtn != null) {
+            methodsBackBtn.setOnClickListener(v -> toggleMethodsDetail(false));
+            applyTactileTouch(methodsBackBtn);
+        }
 
         View methodsHeaderTitle = view.findViewById(R.id.settings_text_methods_header_title);
-        methodsHeaderTitle.setOnClickListener(v -> toggleMethodsDetail(false));
-        applyTactileTouch(methodsHeaderTitle);
+        if (methodsHeaderTitle != null) {
+            methodsHeaderTitle.setOnClickListener(v -> toggleMethodsDetail(false));
+            applyTactileTouch(methodsHeaderTitle);
+        }
 
         View methodsRow = view.findViewById(R.id.settings_row_methods);
-        methodsRow.setOnClickListener(v -> toggleMethodsDetail(true));
-        applyTactileTouch(methodsRow);
+        if (methodsRow != null) {
+            methodsRow.setOnClickListener(v -> toggleMethodsDetail(true));
+            applyTactileTouch(methodsRow);
+        }
 
         updateMethodsSubtitle();
 
-        // --- Hijri detail ---
+        // --- Hijri Detail ---
         calculationHijriDetailRoot = view.findViewById(R.id.settings_calculation_hijri_detail_root);
         hijriCards = new View[]{
                 view.findViewById(R.id.settings_card_hijri_astro),
@@ -187,25 +207,33 @@ public class SettingsFragment extends BaseFragment {
         String[] hijriIds = {"ASTRONOMICAL", "UMM_AL_QURA", "LOCAL_SIGHTING", "GLOBAL_SIGHTING", "MANUAL_OFFSET"};
         for (int i = 0; i < hijriCards.length; i++) {
             final String hid = hijriIds[i];
-            hijriCards[i].setOnClickListener(v -> handleInCardHijriSelection(hid));
-            applyTactileTouch(hijriCards[i]);
+            if (hijriCards[i] != null) {
+                hijriCards[i].setOnClickListener(v -> handleInCardHijriSelection(hid));
+                applyTactileTouch(hijriCards[i]);
+            }
         }
 
         View hijriBackBtn = view.findViewById(R.id.settings_button_hijri_back);
-        hijriBackBtn.setOnClickListener(v -> toggleHijriDetail(false));
-        applyTactileTouch(hijriBackBtn);
+        if (hijriBackBtn != null) {
+            hijriBackBtn.setOnClickListener(v -> toggleHijriDetail(false));
+            applyTactileTouch(hijriBackBtn);
+        }
 
         View hijriHeaderTitle = view.findViewById(R.id.settings_text_hijri_header_title);
-        hijriHeaderTitle.setOnClickListener(v -> toggleHijriDetail(false));
-        applyTactileTouch(hijriHeaderTitle);
+        if (hijriHeaderTitle != null) {
+            hijriHeaderTitle.setOnClickListener(v -> toggleHijriDetail(false));
+            applyTactileTouch(hijriHeaderTitle);
+        }
 
         View hijriRow = view.findViewById(R.id.settings_row_hijri);
-        hijriRow.setOnClickListener(v -> toggleHijriDetail(true));
-        applyTactileTouch(hijriRow);
+        if (hijriRow != null) {
+            hijriRow.setOnClickListener(v -> toggleHijriDetail(true));
+            applyTactileTouch(hijriRow);
+        }
 
         updateHijriSubtitle();
 
-        // --- Country detail ---
+        // --- Country Detail ---
         calculationCountryDetailRoot = view.findViewById(R.id.settings_calculation_country_detail_root);
         countryCards = new View[]{
                 view.findViewById(R.id.settings_card_country_south_asia),
@@ -223,21 +251,29 @@ public class SettingsFragment extends BaseFragment {
         String[] countryIds = {"SOUTH_ASIA", "SAUDI", "UAE", "QATAR", "EGYPT", "TURKEY", "NORTH_AMERICA", "SOUTHEAST_ASIA", "IRAN", "IRAQ"};
         for (int i = 0; i < countryCards.length; i++) {
             final String cid = countryIds[i];
-            countryCards[i].setOnClickListener(v -> handleInCardCountrySelection(cid));
-            applyTactileTouch(countryCards[i]);
+            if (countryCards[i] != null) {
+                countryCards[i].setOnClickListener(v -> handleInCardCountrySelection(cid));
+                applyTactileTouch(countryCards[i]);
+            }
         }
 
         View countryBackBtn = view.findViewById(R.id.settings_button_country_back);
-        countryBackBtn.setOnClickListener(v -> toggleCountryDetail(false));
-        applyTactileTouch(countryBackBtn);
+        if (countryBackBtn != null) {
+            countryBackBtn.setOnClickListener(v -> toggleCountryDetail(false));
+            applyTactileTouch(countryBackBtn);
+        }
 
         View countryHeaderTitle = view.findViewById(R.id.settings_text_country_header_title);
-        countryHeaderTitle.setOnClickListener(v -> toggleCountryDetail(false));
-        applyTactileTouch(countryHeaderTitle);
+        if (countryHeaderTitle != null) {
+            countryHeaderTitle.setOnClickListener(v -> toggleCountryDetail(false));
+            applyTactileTouch(countryHeaderTitle);
+        }
 
         View countryRow = view.findViewById(R.id.settings_row_country);
-        countryRow.setOnClickListener(v -> toggleCountryDetail(true));
-        applyTactileTouch(countryRow);
+        if (countryRow != null) {
+            countryRow.setOnClickListener(v -> toggleCountryDetail(true));
+            applyTactileTouch(countryRow);
+        }
 
         updateCountrySubtitle();
     }
@@ -247,14 +283,15 @@ public class SettingsFragment extends BaseFragment {
         isAsrDetailVisible = show;
 
         if (getView() == null) return;
-        android.transition.TransitionManager.beginDelayedTransition(getView().findViewById(R.id.settings_card_calculation));
+        View card = getView().findViewById(R.id.settings_card_calculation);
+        if (card != null) android.transition.TransitionManager.beginDelayedTransition((ViewGroup) card);
 
-        getView().findViewById(R.id.settings_label_calculation).setVisibility(show ? View.GONE : View.VISIBLE);
-        calculationListRoot.setVisibility(show ? View.GONE : View.VISIBLE);
-        calculationAsrDetailRoot.setVisibility(show ? View.VISIBLE : View.GONE);
+        View label = getView().findViewById(R.id.settings_label_calculation);
+        if (label != null) label.setVisibility(show ? View.GONE : View.VISIBLE);
+        if (calculationListRoot != null) calculationListRoot.setVisibility(show ? View.GONE : View.VISIBLE);
+        if (calculationAsrDetailRoot != null) calculationAsrDetailRoot.setVisibility(show ? View.VISIBLE : View.GONE);
 
-        if (show) {
-            // Entrance animation for sub-cards
+        if (show && asrCardStandard != null && asrCardHanafi != null) {
             asrCardStandard.setAlpha(0f);
             asrCardStandard.setTranslationX(50f);
             asrCardHanafi.setAlpha(0f);
@@ -270,17 +307,21 @@ public class SettingsFragment extends BaseFragment {
         isMethodsDetailVisible = show;
 
         if (getView() == null) return;
-        android.transition.TransitionManager.beginDelayedTransition(getView().findViewById(R.id.settings_card_calculation));
+        View card = getView().findViewById(R.id.settings_card_calculation);
+        if (card != null) android.transition.TransitionManager.beginDelayedTransition((ViewGroup) card);
 
-        getView().findViewById(R.id.settings_label_calculation).setVisibility(show ? View.GONE : View.VISIBLE);
-        calculationListRoot.setVisibility(show ? View.GONE : View.VISIBLE);
-        calculationMethodsDetailRoot.setVisibility(show ? View.VISIBLE : View.GONE);
+        View label = getView().findViewById(R.id.settings_label_calculation);
+        if (label != null) label.setVisibility(show ? View.GONE : View.VISIBLE);
+        if (calculationListRoot != null) calculationListRoot.setVisibility(show ? View.GONE : View.VISIBLE);
+        if (calculationMethodsDetailRoot != null) calculationMethodsDetailRoot.setVisibility(show ? View.VISIBLE : View.GONE);
 
-        if (show) {
+        if (show && methodCards != null) {
             for (int i = 0; i < methodCards.length; i++) {
-                methodCards[i].setAlpha(0f);
-                methodCards[i].setTranslationX(50f);
-                methodCards[i].animate().alpha(1f).translationX(0f).setDuration(300).setStartDelay(50L * i).start();
+                if (methodCards[i] != null) {
+                    methodCards[i].setAlpha(0f);
+                    methodCards[i].setTranslationX(50f);
+                    methodCards[i].animate().alpha(1f).translationX(0f).setDuration(300).setStartDelay(50L * i).start();
+                }
             }
         }
     }
@@ -290,17 +331,21 @@ public class SettingsFragment extends BaseFragment {
         isHijriDetailVisible = show;
 
         if (getView() == null) return;
-        android.transition.TransitionManager.beginDelayedTransition(getView().findViewById(R.id.settings_card_calculation));
+        View card = getView().findViewById(R.id.settings_card_calculation);
+        if (card != null) android.transition.TransitionManager.beginDelayedTransition((ViewGroup) card);
 
-        getView().findViewById(R.id.settings_label_calculation).setVisibility(show ? View.GONE : View.VISIBLE);
-        calculationListRoot.setVisibility(show ? View.GONE : View.VISIBLE);
-        calculationHijriDetailRoot.setVisibility(show ? View.VISIBLE : View.GONE);
+        View label = getView().findViewById(R.id.settings_label_calculation);
+        if (label != null) label.setVisibility(show ? View.GONE : View.VISIBLE);
+        if (calculationListRoot != null) calculationListRoot.setVisibility(show ? View.GONE : View.VISIBLE);
+        if (calculationHijriDetailRoot != null) calculationHijriDetailRoot.setVisibility(show ? View.VISIBLE : View.GONE);
 
-        if (show) {
+        if (show && hijriCards != null) {
             for (int i = 0; i < hijriCards.length; i++) {
-                hijriCards[i].setAlpha(0f);
-                hijriCards[i].setTranslationX(50f);
-                hijriCards[i].animate().alpha(1f).translationX(0f).setDuration(300).setStartDelay(50L * i).start();
+                if (hijriCards[i] != null) {
+                    hijriCards[i].setAlpha(0f);
+                    hijriCards[i].setTranslationX(50f);
+                    hijriCards[i].animate().alpha(1f).translationX(0f).setDuration(300).setStartDelay(50L * i).start();
+                }
             }
         }
     }
@@ -310,79 +355,67 @@ public class SettingsFragment extends BaseFragment {
         isCountryDetailVisible = show;
 
         if (getView() == null) return;
-        android.transition.TransitionManager.beginDelayedTransition(getView().findViewById(R.id.settings_card_calculation));
+        View card = getView().findViewById(R.id.settings_card_calculation);
+        if (card != null) android.transition.TransitionManager.beginDelayedTransition((ViewGroup) card);
 
-        getView().findViewById(R.id.settings_label_calculation).setVisibility(show ? View.GONE : View.VISIBLE);
-        calculationListRoot.setVisibility(show ? View.GONE : View.VISIBLE);
-        calculationCountryDetailRoot.setVisibility(show ? View.VISIBLE : View.GONE);
+        View label = getView().findViewById(R.id.settings_label_calculation);
+        if (label != null) label.setVisibility(show ? View.GONE : View.VISIBLE);
+        if (calculationListRoot != null) calculationListRoot.setVisibility(show ? View.GONE : View.VISIBLE);
+        if (calculationCountryDetailRoot != null) calculationCountryDetailRoot.setVisibility(show ? View.VISIBLE : View.GONE);
 
-        if (show) {
+        if (show && countryCards != null) {
             for (int i = 0; i < countryCards.length; i++) {
-                countryCards[i].setAlpha(0f);
-                countryCards[i].setTranslationX(50f);
-                countryCards[i].animate().alpha(1f).translationX(0f).setDuration(300).setStartDelay(50L * i).start();
+                if (countryCards[i] != null) {
+                    countryCards[i].setAlpha(0f);
+                    countryCards[i].setTranslationX(50f);
+                    countryCards[i].animate().alpha(1f).translationX(0f).setDuration(300).setStartDelay(50L * i).start();
+                }
             }
         }
     }
 
     private void handleInCardAsrSelection(boolean hanafi) {
         if (getContext() == null) return;
-
-        // Persist selection
         getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .edit().putBoolean("is_asr_hanafi", hanafi).apply();
-
         updateAsrSubtitle();
-        applyClaymorphism(getView()); // Refresh highlights
-
-        // Delay slightly for tactile feedback then slide back
-        calculationAsrDetailRoot.postDelayed(() -> toggleAsrDetail(false), 300);
+        applyClaymorphism(getView());
+        if (calculationAsrDetailRoot != null) calculationAsrDetailRoot.postDelayed(() -> toggleAsrDetail(false), 300);
     }
 
     private void handleInCardMethodSelection(String methodId) {
         if (getContext() == null) return;
-
         getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .edit().putString("calculation_method", methodId).apply();
-
         updateMethodsSubtitle();
         applyClaymorphism(getView());
-
-        calculationMethodsDetailRoot.postDelayed(() -> toggleMethodsDetail(false), 300);
+        if (calculationMethodsDetailRoot != null) calculationMethodsDetailRoot.postDelayed(() -> toggleMethodsDetail(false), 300);
     }
 
     private void handleInCardHijriSelection(String systemId) {
         if (getContext() == null) return;
-
         getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .edit().putString("hijri_system", systemId).apply();
-
         updateHijriSubtitle();
         applyClaymorphism(getView());
-
-        calculationHijriDetailRoot.postDelayed(() -> toggleHijriDetail(false), 300);
+        if (calculationHijriDetailRoot != null) calculationHijriDetailRoot.postDelayed(() -> toggleHijriDetail(false), 300);
     }
 
     private void handleInCardCountrySelection(String countryId) {
         if (getContext() == null) return;
-
         getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .edit().putString("selected_country", countryId).apply();
-
         updateCountrySubtitle();
         applyClaymorphism(getView());
-
-        calculationCountryDetailRoot.postDelayed(() -> toggleCountryDetail(false), 300);
+        if (calculationCountryDetailRoot != null) calculationCountryDetailRoot.postDelayed(() -> toggleCountryDetail(false), 300);
     }
 
     private void updateAsrSubtitle() {
         if (getView() == null || getContext() == null) return;
         TextView sub = getView().findViewById(R.id.settings_subtext_asr_madhab);
         if (sub == null) return;
-
         boolean isHanafi = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .getBoolean("is_asr_hanafi", false);
-
         sub.setText(isHanafi ? getString(R.string.asr_selector_hanafi_title) : getString(R.string.asr_selector_standard_title));
     }
 
@@ -390,10 +423,8 @@ public class SettingsFragment extends BaseFragment {
         if (getView() == null || getContext() == null) return;
         TextView sub = getView().findViewById(R.id.settings_subtext_methods);
         if (sub == null) return;
-
         String method = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .getString("calculation_method", "KARACHI");
-
         sub.setText(method.replace("_", " "));
     }
 
@@ -401,10 +432,8 @@ public class SettingsFragment extends BaseFragment {
         if (getView() == null || getContext() == null) return;
         TextView sub = getView().findViewById(R.id.settings_subtext_hijri);
         if (sub == null) return;
-
         String system = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .getString("hijri_system", "ASTRONOMICAL");
-
         sub.setText(system.replace("_", " "));
     }
 
@@ -412,11 +441,24 @@ public class SettingsFragment extends BaseFragment {
         if (getView() == null || getContext() == null) return;
         TextView sub = getView().findViewById(R.id.settings_subtext_country);
         if (sub == null) return;
-
         String countryId = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .getString("selected_country", "SOUTH_ASIA");
 
-        int resId = getContext().getResources().getIdentifier("country_" + countryId.toLowerCase(), "string", getContext().getPackageName());
+        int resId;
+        switch (countryId) {
+            case "SOUTH_ASIA": resId = R.string.country_south_asia; break;
+            case "SAUDI": resId = R.string.country_saudi; break;
+            case "UAE": resId = R.string.country_uae; break;
+            case "QATAR": resId = R.string.country_qatar; break;
+            case "EGYPT": resId = R.string.country_egypt; break;
+            case "TURKEY": resId = R.string.country_turkey; break;
+            case "NORTH_AMERICA": resId = R.string.country_north_america; break;
+            case "SOUTHEAST_ASIA": resId = R.string.country_southeast_asia; break;
+            case "IRAN": resId = R.string.country_iran; break;
+            case "IRAQ": resId = R.string.country_iraq; break;
+            default: resId = 0; break;
+        }
+
         if (resId != 0) {
             sub.setText(getString(resId));
         } else {
@@ -443,42 +485,27 @@ public class SettingsFragment extends BaseFragment {
         });
     }
 
-    // ================================================================
-    //  THEME SELECTION  (Do NOT call setDefaultNightMode if recreate
-    //  would navigate away; instead use recreate() only when truly needed)
-    // ================================================================
     private void onThemeSelected(int index) {
-        if (getContext() == null) return;
-        if (index == selectedThemeIndex) return; // Already selected, do nothing
-
+        if (getContext() == null || index == selectedThemeIndex) return;
         selectedThemeIndex = index;
         updateThemeToggleUI();
-
         int mode;
         switch (index) {
             case 1:  mode = AppCompatDelegate.MODE_NIGHT_NO;            break;
             case 2:  mode = AppCompatDelegate.MODE_NIGHT_YES;           break;
             default: mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM; break;
         }
-        // Save first, then apply – AppCompatDelegate.setDefaultNightMode causes an
-        // Activity recreate automatically; the Fragment back-stack is preserved.
         ThemeManager.setTheme(getContext(), mode);
-        // The activity recreates itself; no manual navigation happens.
     }
 
     private void updateStatusBarColor() {
         if (getActivity() != null && getActivity().getWindow() != null && getContext() != null) {
-            // Settings uses the default window background color (off_white_primary)
-            // Note: off_white_primary is overridden to dark_background in values-night
             int color = ContextCompat.getColor(getContext(), R.color.off_white_primary);
             getActivity().getWindow().setStatusBarColor(color);
-
             boolean isNightMode = (getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
                     == android.content.res.Configuration.UI_MODE_NIGHT_YES;
-
             androidx.core.view.WindowInsetsControllerCompat controller =
                     androidx.core.view.WindowCompat.getInsetsController(getActivity().getWindow(), getActivity().getWindow().getDecorView());
-
             controller.setAppearanceLightStatusBars(!isNightMode);
         }
     }
@@ -486,13 +513,13 @@ public class SettingsFragment extends BaseFragment {
     private void updateThemeToggleUI() {
         if (getContext() == null) return;
         Context ctx = getContext();
-
-        int activeBodyColor   = ContextCompat.getColor(ctx, R.color.status_active);
-        int activeTextColor   = ContextCompat.getColor(ctx, R.color.text_inverse);
+        int activeBodyColor = ContextCompat.getColor(ctx, R.color.status_active);
+        int activeTextColor = ContextCompat.getColor(ctx, R.color.text_inverse);
         int inactiveTextColor = ContextCompat.getColor(ctx, R.color.text_secondary);
 
         TextView[] tabs = { themeSystem, themeLight, themeDark };
         for (int i = 0; i < tabs.length; i++) {
+            if (tabs[i] == null) continue;
             boolean active = (i == selectedThemeIndex);
             if (active) {
                 tabs[i].setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.006f, 0.003f, 0f,
@@ -508,9 +535,6 @@ public class SettingsFragment extends BaseFragment {
         }
     }
 
-    // ================================================================
-    //  PERSISTENCE HELPERS
-    // ================================================================
     private boolean isSettingOn(String key) {
         if (getContext() == null) return true;
         return getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(key, true);
@@ -521,25 +545,28 @@ public class SettingsFragment extends BaseFragment {
         getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putBoolean(key, value).apply();
     }
 
-    // ================================================================
-    //  NOTIFICATION ICON
-    // ================================================================
     private void updateNotifIcon() {
-        toggleNotifications.setImageResource(isSettingOn(KEY_NOTIF)
-                ? R.drawable.ic_settings_notifications
-                : R.drawable.ic_settings_notifications_off);
+        if (toggleNotifications != null) {
+            toggleNotifications.setImageResource(isSettingOn(KEY_NOTIF)
+                    ? R.drawable.ic_settings_notifications
+                    : R.drawable.ic_settings_notifications_off);
+        }
     }
 
     private void updateVibIcon() {
-        toggleVibration.setImageResource(isSettingOn(KEY_VIB)
-                ? R.drawable.ic_settings_vibration_on
-                : R.drawable.ic_settings_vibration_off);
+        if (toggleVibration != null) {
+            toggleVibration.setImageResource(isSettingOn(KEY_VIB)
+                    ? R.drawable.ic_settings_vibration_on
+                    : R.drawable.ic_settings_vibration_off);
+        }
     }
 
     private void updateSoundIcon() {
-        toggleSound.setImageResource(isSettingOn(KEY_SOUND)
-                ? R.drawable.ic_settings_sound_on
-                : R.drawable.ic_settings_sound_off);
+        if (toggleSound != null) {
+            toggleSound.setImageResource(isSettingOn(KEY_SOUND)
+                    ? R.drawable.ic_settings_sound_on
+                    : R.drawable.ic_settings_sound_off);
+        }
     }
 
     private void updateAllToggleIcons() {
@@ -548,12 +575,8 @@ public class SettingsFragment extends BaseFragment {
         updateSoundIcon();
     }
 
-    // ================================================================
-    //  SYNC STATUS DOT
-    // ================================================================
     private void setSyncStatus() {
-        if (getContext() == null) return;
-        // Design: Defaulting to Live status
+        if (getContext() == null || syncStatusText == null || syncStatusDot == null) return;
         syncStatusText.setText(R.string.settings_sync_status_live);
         syncStatusText.setTextColor(ContextCompat.getColor(getContext(), R.color.emerald_primary));
         syncStatusDot.setBackground(makeDotDrawable(ContextCompat.getColor(getContext(), R.color.emerald_primary)));
@@ -566,29 +589,24 @@ public class SettingsFragment extends BaseFragment {
         return dot;
     }
 
-    // ================================================================
-    //  DYNAMIC SCALING
-    // ================================================================
     @Override
     protected void applyDynamicScaling(View view) {
         if (getContext() == null) return;
         Context ctx = getContext();
 
-        // Root padding (Applies top padding only now to allow cards to reach the edge)
         View root = view.findViewById(R.id.settings_root);
         int topPadding  = ScalingUtils.getScaledSize(ctx, 0.04f);
-        root.setPadding(0, topPadding, 0, 0);
+        if (root != null) root.setPadding(0, topPadding, 0, 0);
 
-        // Scroll root (Bottom padding for scroll space)
         View scrollRoot = view.findViewById(R.id.settings_scroll_root);
-        scrollRoot.setPadding(0, 0, 0, topPadding);
+        if (scrollRoot != null) scrollRoot.setPadding(0, 0, 0, topPadding);
 
-        // Screen Title
         TextView screenTitle = view.findViewById(R.id.settings_screen_title);
-        screenTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.065f));
-        ScalingUtils.applyScaledLayout(screenTitle, -1, -1, 0, 0.01f, 0.055f, 0);
+        if (screenTitle != null) {
+            screenTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.065f));
+            ScalingUtils.applyScaledLayout(screenTitle, -1, -1, 0, 0.01f, 0.055f, 0);
+        }
 
-        // Card Width & margins & padding
         int cardHorizPad = ScalingUtils.getScaledSize(ctx, 0.04f);
         int cardVertPad  = ScalingUtils.getScaledSize(ctx, 0.03f);
         float cardMarginV  = 0.03f;
@@ -598,35 +616,35 @@ public class SettingsFragment extends BaseFragment {
             View card = view.findViewById(id);
             if (card == null) continue;
             card.setPadding(cardHorizPad, cardVertPad, cardHorizPad, cardVertPad);
-            // Matching Home Header Width: 98% width, centered (0.01f margins)
             ScalingUtils.applyScaledLayout(card, 0.98f, -1, cardMarginV, cardMarginV, 0.01f, 0.01f);
         }
 
-        // Section labels (Set to zero margin for flush alignment)
         float sectionLabelSize = ScalingUtils.getScaledTextSize(ctx, 0.034f);
         for (int id : new int[]{R.id.settings_label_theme, R.id.settings_label_calculation,
                 R.id.settings_label_preferences, R.id.settings_label_data}) {
             TextView t = view.findViewById(id);
             if (t == null) continue;
             t.setTextSize(sectionLabelSize);
-            ScalingUtils.applyScaledLayout(t, -1, -1, 0, 0.015f, 0, 0); // Zero indent
+            ScalingUtils.applyScaledLayout(t, -1, -1, 0, 0.015f, 0, 0);
         }
 
-        // Theme toggle container: fixed height so tabs are vertically centered
         LinearLayout themeContainer = view.findViewById(R.id.settings_theme_toggle_container);
-        themeContainer.getLayoutParams().height = ScalingUtils.getScaledSize(ctx, 0.13f);
-        themeContainer.requestLayout();
+        if (themeContainer != null) {
+            themeContainer.getLayoutParams().height = ScalingUtils.getScaledSize(ctx, 0.13f);
+            themeContainer.requestLayout();
+        }
 
-        // Theme tab text size & inner padding
         int tabPadH = ScalingUtils.getScaledSize(ctx, 0.02f);
         int tabPadV = ScalingUtils.getScaledSize(ctx, 0.015f);
         float tabSize = ScalingUtils.getScaledTextSize(ctx, 0.038f);
-        for (TextView tab : new TextView[]{themeSystem, themeLight, themeDark}) {
-            tab.setTextSize(tabSize);
-            tab.setPadding(tabPadH, tabPadV, tabPadH, tabPadV);
+        TextView[] themeTabs = {themeSystem, themeLight, themeDark};
+        for (TextView tab : themeTabs) {
+            if (tab != null) {
+                tab.setTextSize(tabSize);
+                tab.setPadding(tabPadH, tabPadV, tabPadH, tabPadV);
+            }
         }
 
-        // Preference rows & icons
         int rowPadV = ScalingUtils.getScaledSize(ctx, 0.025f);
         int iconSize = ScalingUtils.getScaledSize(ctx, 0.065f);
         int iconMarginRight = ScalingUtils.getScaledSize(ctx, 0.04f);
@@ -634,83 +652,80 @@ public class SettingsFragment extends BaseFragment {
 
         for (int rowId : new int[]{R.id.settings_row_notifications, R.id.settings_row_vibration, R.id.settings_row_sound,
                 R.id.settings_row_asr_madhab, R.id.settings_row_methods, R.id.settings_row_hijri, R.id.settings_row_country}) {
-            view.findViewById(rowId).setPadding(0, rowPadV, 0, rowPadV);
+            View row = view.findViewById(rowId);
+            if (row != null) row.setPadding(0, rowPadV, 0, rowPadV);
         }
 
-        // Row left icons (removed from Preferences card - only sync & backup remain)
         for (int iconId : new int[]{R.id.settings_icon_sync, R.id.settings_icon_backup}) {
             ImageView icon = view.findViewById(iconId);
-            icon.getLayoutParams().width = iconSize;
-            icon.getLayoutParams().height = iconSize;
-            ViewGroup.MarginLayoutParams m = (ViewGroup.MarginLayoutParams) icon.getLayoutParams();
-            m.setMarginEnd(iconMarginRight);
-            icon.setLayoutParams(m);
+            if (icon != null) {
+                icon.getLayoutParams().width = iconSize;
+                icon.getLayoutParams().height = iconSize;
+                ViewGroup.MarginLayoutParams m = (ViewGroup.MarginLayoutParams) icon.getLayoutParams();
+                m.setMarginEnd(iconMarginRight);
+                icon.setLayoutParams(m);
+            }
         }
 
-        // Row right toggle icons (tappable)
         for (int id : new int[]{R.id.settings_toggle_notifications, R.id.settings_toggle_vibration, R.id.settings_toggle_sound}) {
-            ImageView toggle = view.findViewById(id);
-            toggle.getLayoutParams().width  = toggleIconSize;
-            toggle.getLayoutParams().height = toggleIconSize;
-            toggle.setLayoutParams(toggle.getLayoutParams());
+            ImageView icon = view.findViewById(id);
+            if (icon != null) {
+                icon.getLayoutParams().width  = toggleIconSize;
+                icon.getLayoutParams().height = toggleIconSize;
+                icon.setLayoutParams(icon.getLayoutParams());
+            }
         }
 
-        // Title text sizes
         float titleSize    = ScalingUtils.getScaledTextSize(ctx, 0.042f);
         float subtitleSize = ScalingUtils.getScaledTextSize(ctx, 0.033f);
         for (int id : new int[]{R.id.settings_text_notifications, R.id.settings_text_vibration,
                 R.id.settings_text_sound, R.id.settings_text_sync, R.id.settings_text_backup,
                 R.id.settings_text_asr_madhab, R.id.settings_text_methods, R.id.settings_text_hijri, R.id.settings_text_country}) {
-            ((TextView) view.findViewById(id)).setTextSize(titleSize);
+            TextView tv = view.findViewById(id);
+            if (tv != null) tv.setTextSize(titleSize);
         }
         for (int id : new int[]{R.id.settings_subtext_notifications, R.id.settings_subtext_vibration, R.id.settings_subtext_sound,
                 R.id.settings_subtext_asr_madhab, R.id.settings_subtext_methods, R.id.settings_subtext_hijri, R.id.settings_subtext_country}) {
-            ((TextView) view.findViewById(id)).setTextSize(subtitleSize);
+            TextView tv = view.findViewById(id);
+            if (tv != null) tv.setTextSize(subtitleSize);
         }
 
-        // New selection icons (chevrons)
         for (int id : new int[]{R.id.settings_icon_asr_madhab, R.id.settings_icon_methods, R.id.settings_icon_hijri, R.id.settings_icon_country}) {
             ImageView icon = view.findViewById(id);
-            icon.getLayoutParams().width = iconSize;
-            icon.getLayoutParams().height = iconSize;
-            icon.setLayoutParams(icon.getLayoutParams());
+            if (icon != null) {
+                icon.getLayoutParams().width = iconSize;
+                icon.getLayoutParams().height = iconSize;
+                icon.setLayoutParams(icon.getLayoutParams());
+            }
         }
 
-        // Sync dot
         int dotSize   = ScalingUtils.getScaledSize(ctx, 0.022f);
         int dotMargin = ScalingUtils.getScaledSize(ctx, 0.015f);
-        syncStatusDot.getLayoutParams().width  = dotSize;
-        syncStatusDot.getLayoutParams().height = dotSize;
-        ViewGroup.MarginLayoutParams dotParams = (ViewGroup.MarginLayoutParams) syncStatusDot.getLayoutParams();
-        dotParams.setMarginEnd(dotMargin);
-        syncStatusDot.setLayoutParams(dotParams);
-        syncStatusText.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.038f));
+        if (syncStatusDot != null) {
+            syncStatusDot.getLayoutParams().width  = dotSize;
+            syncStatusDot.getLayoutParams().height = dotSize;
+            ViewGroup.MarginLayoutParams dotParams = (ViewGroup.MarginLayoutParams) syncStatusDot.getLayoutParams();
+            dotParams.setMarginEnd(dotMargin);
+            syncStatusDot.setLayoutParams(dotParams);
+        }
+        if (syncStatusText != null) syncStatusText.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.038f));
 
-        // Sync pill padding
         int pillPadH = ScalingUtils.getScaledSize(ctx, 0.025f);
         int pillPadV = ScalingUtils.getScaledSize(ctx, 0.012f);
-        syncStatusPill.setPadding(pillPadH, pillPadV, pillPadH, pillPadV);
+        if (syncStatusPill != null) syncStatusPill.setPadding(pillPadH, pillPadV, pillPadH, pillPadV);
 
-        // Backup button padding & margin
         int backupPadH = ScalingUtils.getScaledSize(ctx, 0.03f);
         int backupPadV = ScalingUtils.getScaledSize(ctx, 0.025f);
-        backupButton.setPadding(backupPadH, backupPadV, backupPadH, backupPadV);
-        ScalingUtils.applyScaledLayout(backupButton, -1, -1, 0.025f, 0, 0, 0);
+        if (backupButton != null) {
+            backupButton.setPadding(backupPadH, backupPadV, backupPadH, backupPadV);
+            ScalingUtils.applyScaledLayout(backupButton, -1, -1, 0.025f, 0, 0, 0);
+        }
 
-        // Version text
         TextView versionText = view.findViewById(R.id.settings_version_text);
-        versionText.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.033f));
-        ScalingUtils.applyScaledLayout(versionText, -1, -1, 0.03f, 0.01f, 0, 0);
-
-        // --- In-Card Detail Scaling ---
-        // Assuming tagStandard and tagHanafi are TextViews and are defined/found elsewhere
-        // or are meant to be found here. Since they are not in the original code,
-        // I will define them as TextViews found by ID, assuming they exist in the layout.
-        TextView tagStandard = view.findViewById(R.id.settings_subtext_asr_standard); // Assuming this is the ID for the tag
-        TextView tagHanafi = view.findViewById(R.id.settings_subtext_asr_hanafi); // Assuming this is the ID for the tag
-
-        if (tagStandard != null) ScalingUtils.applyScaledLayout(tagStandard, -1, -1, 0.005f, 0, 0, 0);
-        if (tagHanafi != null) ScalingUtils.applyScaledLayout(tagHanafi, -1, -1, 0.005f, 0, 0, 0);
+        if (versionText != null) {
+            versionText.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.033f));
+            ScalingUtils.applyScaledLayout(versionText, -1, -1, 0.03f, 0.01f, 0, 0);
+        }
 
         int detailCardPadH = ScalingUtils.getScaledSize(ctx, 0.045f);
         int detailCardPadV = ScalingUtils.getScaledSize(ctx, 0.025f);
@@ -718,133 +733,134 @@ public class SettingsFragment extends BaseFragment {
         float detailTitleSize = ScalingUtils.getScaledTextSize(ctx, 0.04f);
         float detailTagSize   = ScalingUtils.getScaledTextSize(ctx, 0.03f);
 
-        for (View v : new View[]{asrCardStandard, asrCardHanafi}) {
-            v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
-            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
-            v.setLayoutParams(lp);
+        View[] asrCards = {asrCardStandard, asrCardHanafi};
+        for (View v : asrCards) {
+            if (v != null) {
+                v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
+                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+                lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
+                v.setLayoutParams(lp);
+            }
         }
 
-        ((TextView)view.findViewById(R.id.settings_text_asr_standard)).setTextSize(detailTitleSize);
-        ((TextView)view.findViewById(R.id.settings_text_asr_hanafi)).setTextSize(detailTitleSize);
-        ((TextView)view.findViewById(R.id.settings_subtext_asr_standard)).setTextSize(detailTagSize);
-        ((TextView)view.findViewById(R.id.settings_subtext_asr_hanafi)).setTextSize(detailTagSize);
+        TextView tvAsrStandard = view.findViewById(R.id.settings_text_asr_standard);
+        TextView tvAsrHanafi = view.findViewById(R.id.settings_text_asr_hanafi);
+        if (tvAsrStandard != null) tvAsrStandard.setTextSize(detailTitleSize);
+        if (tvAsrHanafi != null) tvAsrHanafi.setTextSize(detailTitleSize);
 
-        // --- Asr Header Scaling ---
-        View asrBackBtn = view.findViewById(R.id.settings_button_asr_back);
+        TextView tvAsrSubStandard = view.findViewById(R.id.settings_subtext_asr_standard);
+        TextView tvAsrSubHanafi = view.findViewById(R.id.settings_subtext_asr_hanafi);
+        if (tvAsrSubStandard != null) {
+            ScalingUtils.applyScaledLayout(tvAsrSubStandard, -1, -1, 0.005f, 0, 0, 0);
+            tvAsrSubStandard.setTextSize(detailTagSize);
+        }
+        if (tvAsrSubHanafi != null) {
+            ScalingUtils.applyScaledLayout(tvAsrSubHanafi, -1, -1, 0.005f, 0, 0, 0);
+            tvAsrSubHanafi.setTextSize(detailTagSize);
+        }
+
         int backIconSize = ScalingUtils.getScaledSize(ctx, 0.05f);
-        asrBackBtn.getLayoutParams().width = backIconSize;
-        asrBackBtn.getLayoutParams().height = backIconSize;
-        ViewGroup.MarginLayoutParams m = (ViewGroup.MarginLayoutParams) asrBackBtn.getLayoutParams();
-        m.setMarginEnd(ScalingUtils.getScaledSize(ctx, 0.02f));
-        asrBackBtn.setLayoutParams(m);
-
-        TextView asrHeaderTitle = view.findViewById(R.id.settings_text_asr_header_title);
-        asrHeaderTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.034f));
-        view.findViewById(R.id.settings_calculation_asr_header).setPadding(0, 0, 0, ScalingUtils.getScaledSize(ctx, 0.02f));
-
-        // --- Methods Header Scaling ---
-        View methBackBtn = view.findViewById(R.id.settings_button_methods_back);
-        methBackBtn.getLayoutParams().width = backIconSize;
-        methBackBtn.getLayoutParams().height = backIconSize;
-        ViewGroup.MarginLayoutParams m2 = (ViewGroup.MarginLayoutParams) methBackBtn.getLayoutParams();
-        m2.setMarginEnd(ScalingUtils.getScaledSize(ctx, 0.02f));
-        methBackBtn.setLayoutParams(m2);
-
-        TextView methHeaderTitle = view.findViewById(R.id.settings_text_methods_header_title);
-        methHeaderTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.034f));
-        view.findViewById(R.id.settings_calculation_methods_header).setPadding(0, 0, 0, ScalingUtils.getScaledSize(ctx, 0.02f));
-
-        // --- Hijri Header Scaling ---
-        View hijBackBtn = view.findViewById(R.id.settings_button_hijri_back);
-        hijBackBtn.getLayoutParams().width = backIconSize;
-        hijBackBtn.getLayoutParams().height = backIconSize;
-        ViewGroup.MarginLayoutParams m3 = (ViewGroup.MarginLayoutParams) hijBackBtn.getLayoutParams();
-        m3.setMarginEnd(ScalingUtils.getScaledSize(ctx, 0.02f));
-        hijBackBtn.setLayoutParams(m3);
-
-        TextView hijHeaderTitle = view.findViewById(R.id.settings_text_hijri_header_title);
-        hijHeaderTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.034f));
-        view.findViewById(R.id.settings_calculation_hijri_header).setPadding(0, 0, 0, ScalingUtils.getScaledSize(ctx, 0.02f));
-
-        // --- Country Header Scaling ---
-        View countBackBtn = view.findViewById(R.id.settings_button_country_back);
-        countBackBtn.getLayoutParams().width = backIconSize;
-        countBackBtn.getLayoutParams().height = backIconSize;
-        ViewGroup.MarginLayoutParams m4 = (ViewGroup.MarginLayoutParams) countBackBtn.getLayoutParams();
-        m4.setMarginEnd(ScalingUtils.getScaledSize(ctx, 0.02f));
-        countBackBtn.setLayoutParams(m4);
-
-        TextView countHeaderTitle = view.findViewById(R.id.settings_text_country_header_title);
-        countHeaderTitle.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.034f));
-        view.findViewById(R.id.settings_calculation_country_header).setPadding(0, 0, 0, ScalingUtils.getScaledSize(ctx, 0.02f));
-
-        // Scale method cards
-        for (View v : methodCards) {
-            v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
-            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
-            v.setLayoutParams(lp);
+        int[] backBtnIds = {R.id.settings_button_asr_back, R.id.settings_button_methods_back,
+                R.id.settings_button_hijri_back, R.id.settings_button_country_back};
+        for (int bid : backBtnIds) {
+            View btn = view.findViewById(bid);
+            if (btn != null) {
+                btn.getLayoutParams().width = backIconSize;
+                btn.getLayoutParams().height = backIconSize;
+                ViewGroup.MarginLayoutParams m = (ViewGroup.MarginLayoutParams) btn.getLayoutParams();
+                m.setMarginEnd(ScalingUtils.getScaledSize(ctx, 0.02f));
+                btn.setLayoutParams(m);
+            }
         }
 
-        // Subtext scaling for methods
+        int[] headerTitleIds = {R.id.settings_text_asr_header_title, R.id.settings_text_methods_header_title,
+                R.id.settings_text_hijri_header_title, R.id.settings_text_country_header_title};
+        for (int tid : headerTitleIds) {
+            TextView tv = view.findViewById(tid);
+            if (tv != null) tv.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.034f));
+        }
+
+        int[] headerIds = {R.id.settings_calculation_asr_header, R.id.settings_calculation_methods_header,
+                R.id.settings_calculation_hijri_header, R.id.settings_calculation_country_header};
+        for (int hid : headerIds) {
+            View h = view.findViewById(hid);
+            if (h != null) h.setPadding(0, 0, 0, ScalingUtils.getScaledSize(ctx, 0.02f));
+        }
+
+        if (methodCards != null) {
+            for (View v : methodCards) {
+                if (v != null) {
+                    v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
+                    ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+                    lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
+                    v.setLayoutParams(lp);
+                }
+            }
+        }
+
         for (int id : new int[]{R.id.settings_text_method_karachi, R.id.settings_text_method_mwl, R.id.settings_text_method_isna,
                 R.id.settings_text_method_ummalqura, R.id.settings_text_method_tehran, R.id.settings_text_method_turkey}) {
-            ((TextView)view.findViewById(id)).setTextSize(detailTitleSize);
+            TextView tv = view.findViewById(id);
+            if (tv != null) tv.setTextSize(detailTitleSize);
         }
         for (int id : new int[]{R.id.settings_subtext_method_karachi_info, R.id.settings_subtext_method_mwl_info, R.id.settings_subtext_method_isna_info,
                 R.id.settings_subtext_method_ummalqura_info, R.id.settings_subtext_method_tehran_info, R.id.settings_subtext_method_turkey_info,
                 R.id.settings_subtext_method_karachi_regions, R.id.settings_subtext_method_mwl_regions, R.id.settings_subtext_method_isna_regions,
                 R.id.settings_subtext_method_ummalqura_regions, R.id.settings_subtext_method_tehran_regions, R.id.settings_subtext_method_turkey_regions}) {
-            ((TextView)view.findViewById(id)).setTextSize(detailTagSize);
+            TextView tv = view.findViewById(id);
+            if (tv != null) tv.setTextSize(detailTagSize);
         }
 
-        // Scale Hijri cards
-        for (View v : hijriCards) {
-            v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
-            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
-            v.setLayoutParams(lp);
+        if (hijriCards != null) {
+            for (View v : hijriCards) {
+                if (v != null) {
+                    v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
+                    ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+                    lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
+                    v.setLayoutParams(lp);
+                }
+            }
         }
         for (int id : new int[]{R.id.settings_text_hijri_astro, R.id.settings_text_hijri_ummalqura, R.id.settings_text_hijri_local,
                 R.id.settings_text_hijri_global, R.id.settings_text_hijri_manual}) {
-            ((TextView)view.findViewById(id)).setTextSize(detailTitleSize);
+            TextView tv = view.findViewById(id);
+            if (tv != null) tv.setTextSize(detailTitleSize);
         }
         for (int id : new int[]{R.id.settings_subtext_hijri_astro_tag, R.id.settings_subtext_hijri_ummalqura_tag, R.id.settings_subtext_hijri_local_tag,
                 R.id.settings_subtext_hijri_global_tag, R.id.settings_subtext_hijri_manual_tag}) {
-            ((TextView)view.findViewById(id)).setTextSize(detailTagSize);
+            TextView tv = view.findViewById(id);
+            if (tv != null) tv.setTextSize(detailTagSize);
         }
 
-        // Scale Country cards
-        for (View v : countryCards) {
-            v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
-            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
-            v.setLayoutParams(lp);
+        if (countryCards != null) {
+            for (View v : countryCards) {
+                if (v != null) {
+                    v.setPadding(detailCardPadH, detailCardPadV, detailCardPadH, detailCardPadV);
+                    ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+                    lp.setMargins(0, detailCardMarginV, 0, detailCardMarginV);
+                    v.setLayoutParams(lp);
+                }
+            }
         }
         for (int id : new int[]{R.id.settings_text_country_south_asia, R.id.settings_text_country_saudi, R.id.settings_text_country_uae,
                 R.id.settings_text_country_qatar, R.id.settings_text_country_egypt, R.id.settings_text_country_turkey,
                 R.id.settings_text_country_north_america, R.id.settings_text_country_southeast_asia, R.id.settings_text_country_iran, R.id.settings_text_country_iraq}) {
-            ((TextView)view.findViewById(id)).setTextSize(detailTitleSize);
+            TextView tv = view.findViewById(id);
+            if (tv != null) tv.setTextSize(detailTitleSize);
         }
         for (int id : new int[]{R.id.settings_subtext_country_south_asia_tag, R.id.settings_subtext_country_saudi_tag, R.id.settings_subtext_country_uae_tag,
                 R.id.settings_subtext_country_qatar_tag, R.id.settings_subtext_country_egypt_tag, R.id.settings_subtext_country_turkey_tag,
                 R.id.settings_subtext_country_north_america_tag, R.id.settings_subtext_country_southeast_asia_tag, R.id.settings_subtext_country_iran_tag, R.id.settings_subtext_country_iraq_tag}) {
-            ((TextView)view.findViewById(id)).setTextSize(detailTagSize);
+            TextView tv = view.findViewById(id);
+            if (tv != null) tv.setTextSize(detailTagSize);
         }
     }
 
-    // ================================================================
-    //  CLAYMORPHISM (use BORDER-based clay instead of shadow-only
-    //  for better visibility of card edges in LIGHT theme)
-    // ================================================================
     @Override
     protected void applyClaymorphism(View view) {
         if (getContext() == null) return;
         Context ctx = getContext();
 
-        // use a distinctly visible card body color + a visible stroke
-        // so both left and top edges are fully visible in light theme.
         int cardBodyColor   = ContextCompat.getColor(ctx, R.color.off_white_primary);
         int shadowColor     = ContextCompat.getColor(ctx, R.color.off_white_surface_shadow);
         int highlightColor  = ContextCompat.getColor(ctx, R.color.off_white_surface_highlight);
@@ -855,167 +871,162 @@ public class SettingsFragment extends BaseFragment {
         for (int id : cards) {
             View card = view.findViewById(id);
             if (card == null) continue;
-            // Convex clay with a visible soft stroke for clear edges in light theme
-            card.setBackground(ScalingUtils.createClayDrawable(ctx,
-                    0.045f,   // cornerRadius %
-                    0.010f,   // shadowOffset %
-                    0.006f,   // innerInset %
-                    0.003f,   // strokeWidth % (visible border for light theme)
+            card.setBackground(ScalingUtils.createClayDrawable(ctx, 0.045f, 0.010f, 0.006f, 0.003f,
                     cardBodyColor, shadowColor, highlightColor, strokeColor));
         }
 
-        // Theme toggle bar: inset "trough" effect
         View themeContainer = view.findViewById(R.id.settings_theme_toggle_container);
-        themeContainer.setBackground(ScalingUtils.createInsetClayDrawable(ctx, 0.035f, 0.006f, 0.004f,
-                ContextCompat.getColor(ctx, R.color.off_derived),
-                shadowColor, highlightColor));
+        if (themeContainer != null) {
+            themeContainer.setBackground(ScalingUtils.createInsetClayDrawable(ctx, 0.035f, 0.006f, 0.004f,
+                    ContextCompat.getColor(ctx, R.color.off_derived), shadowColor, highlightColor));
+        }
 
-        // Backup button: distinct convex button
         View backupBtn = view.findViewById(R.id.settings_button_backup);
-        backupBtn.setBackground(ScalingUtils.createClayDrawable(ctx,
-                0.035f, 0.008f, 0.005f, 0.003f,
-                ContextCompat.getColor(ctx, R.color.off_derived),
-                shadowColor, highlightColor, strokeColor));
+        if (backupBtn != null) {
+            backupBtn.setBackground(ScalingUtils.createClayDrawable(ctx, 0.035f, 0.008f, 0.005f, 0.003f,
+                    ContextCompat.getColor(ctx, R.color.off_derived), shadowColor, highlightColor, strokeColor));
+        }
 
-        // Sync status pill: rounded pill
-        applyPillBackground(view.findViewById(R.id.settings_sync_status_pill), ctx);
+        View syncPill = view.findViewById(R.id.settings_sync_status_pill);
+        if (syncPill != null) applyPillBackground(syncPill, ctx);
 
-        // Re-apply theme toggle highlights
         updateThemeToggleUI();
 
-        // --- In-Card Detail Styling ---
         boolean isStandardActive = !ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
                 .getBoolean("is_asr_hanafi", false);
 
         int activeColor   = ContextCompat.getColor(ctx, R.color.emerald_primary);
         int detailBodyColor = ContextCompat.getColor(ctx, R.color.off_white_primary);
 
-        asrCardStandard.setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
-                isStandardActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
-                isStandardActive ? activeColor : strokeColor));
+        if (asrCardStandard != null) {
+            asrCardStandard.setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
+                    isStandardActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
+                    isStandardActive ? activeColor : strokeColor));
+        }
+        if (asrCardHanafi != null) {
+            asrCardHanafi.setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
+                    !isStandardActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
+                    !isStandardActive ? activeColor : strokeColor));
+        }
 
-        asrCardHanafi.setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
-                !isStandardActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
-                !isStandardActive ? activeColor : strokeColor));
-
-        // Text & Subtext colors (Active vs Inactive)
         boolean isNight = (ctx.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
                 == android.content.res.Configuration.UI_MODE_NIGHT_YES;
-
         int activeSubColor = ContextCompat.getColor(ctx, R.color.prayer_card_active_secondary_text);
         int inactiveSubColor = ContextCompat.getColor(ctx, R.color.text_secondary);
 
         TextView subStandard = view.findViewById(R.id.settings_subtext_asr_standard);
         TextView subHanafi = view.findViewById(R.id.settings_subtext_asr_hanafi);
+        TextView tvAsrStandardTitle = view.findViewById(R.id.settings_text_asr_standard);
+        TextView tvAsrHanafiTitle = view.findViewById(R.id.settings_text_asr_hanafi);
 
-        // Titles
-        ((TextView)view.findViewById(R.id.settings_text_asr_standard)).setTextColor(isStandardActive ? detailBodyColor : activeColor);
-        ((TextView)view.findViewById(R.id.settings_text_asr_hanafi)).setTextColor(!isStandardActive ? detailBodyColor : activeColor);
+        if (tvAsrStandardTitle != null) tvAsrStandardTitle.setTextColor(isStandardActive ? detailBodyColor : activeColor);
+        if (tvAsrHanafiTitle != null) tvAsrHanafiTitle.setTextColor(!isStandardActive ? detailBodyColor : activeColor);
 
-        // Subtexts (Regional Tags) - Matching Home Screen "AZAN/JAMAT" logic
-        if (isStandardActive && !isNight) {
-            subStandard.setTextColor(activeSubColor);
-        } else {
-            subStandard.setTextColor(inactiveSubColor);
+        if (subStandard != null) {
+            subStandard.setTextColor(isStandardActive && !isNight ? activeSubColor : inactiveSubColor);
+            subStandard.setAlpha(0.8f);
         }
-        subStandard.setAlpha(0.8f);
-
-        if (!isStandardActive && !isNight) {
-            subHanafi.setTextColor(activeSubColor);
-        } else {
-            subHanafi.setTextColor(inactiveSubColor);
+        if (subHanafi != null) {
+            subHanafi.setTextColor(!isStandardActive && !isNight ? activeSubColor : inactiveSubColor);
+            subHanafi.setAlpha(0.8f);
         }
-        // --- Methods Detail Styling ---
-        String selectedMethod = ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
-                .getString("calculation_method", "KARACHI");
+
+        String selectedMethod = ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE).getString("calculation_method", "KARACHI");
         String[] methodIds = {"KARACHI", "MWL", "ISNA", "UMM_AL_QURA", "TEHRAN", "TURKEY"};
+        if (methodCards != null) {
+            for (int i = 0; i < methodCards.length; i++) {
+                if (methodCards[i] == null) continue;
+                boolean isActive = methodIds[i].equals(selectedMethod);
+                methodCards[i].setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
+                        isActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
+                        isActive ? activeColor : strokeColor));
 
-        for (int i = 0; i < methodCards.length; i++) {
-            boolean isActive = methodIds[i].equals(selectedMethod);
-            methodCards[i].setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
-                    isActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
-                    isActive ? activeColor : strokeColor));
-
-            // Set text colors
-            int titleId = 0, infoId = 0, regId = 0;
-            switch(i) {
-                case 0: titleId = R.id.settings_text_method_karachi; infoId = R.id.settings_subtext_method_karachi_info; regId = R.id.settings_subtext_method_karachi_regions; break;
-                case 1: titleId = R.id.settings_text_method_mwl; infoId = R.id.settings_subtext_method_mwl_info; regId = R.id.settings_subtext_method_mwl_regions; break;
-                case 2: titleId = R.id.settings_text_method_isna; infoId = R.id.settings_subtext_method_isna_info; regId = R.id.settings_subtext_method_isna_regions; break;
-                case 3: titleId = R.id.settings_text_method_ummalqura; infoId = R.id.settings_subtext_method_ummalqura_info; regId = R.id.settings_subtext_method_ummalqura_regions; break;
-                case 4: titleId = R.id.settings_text_method_tehran; infoId = R.id.settings_subtext_method_tehran_info; regId = R.id.settings_subtext_method_tehran_regions; break;
-                case 5: titleId = R.id.settings_text_method_turkey; infoId = R.id.settings_subtext_method_turkey_info; regId = R.id.settings_subtext_method_turkey_regions; break;
+                int titleId = 0, infoId = 0, regId = 0;
+                switch(i) {
+                    case 0: titleId = R.id.settings_text_method_karachi; infoId = R.id.settings_subtext_method_karachi_info; regId = R.id.settings_subtext_method_karachi_regions; break;
+                    case 1: titleId = R.id.settings_text_method_mwl; infoId = R.id.settings_subtext_method_mwl_info; regId = R.id.settings_subtext_method_mwl_regions; break;
+                    case 2: titleId = R.id.settings_text_method_isna; infoId = R.id.settings_subtext_method_isna_info; regId = R.id.settings_subtext_method_isna_regions; break;
+                    case 3: titleId = R.id.settings_text_method_ummalqura; infoId = R.id.settings_subtext_method_ummalqura_info; regId = R.id.settings_subtext_method_ummalqura_regions; break;
+                    case 4: titleId = R.id.settings_text_method_tehran; infoId = R.id.settings_subtext_method_tehran_info; regId = R.id.settings_subtext_method_tehran_regions; break;
+                    case 5: titleId = R.id.settings_text_method_turkey; infoId = R.id.settings_subtext_method_turkey_info; regId = R.id.settings_subtext_method_turkey_regions; break;
+                }
+                TextView tvMTitle = view.findViewById(titleId);
+                if (tvMTitle != null) tvMTitle.setTextColor(isActive ? detailBodyColor : activeColor);
+                TextView tvInfo = view.findViewById(infoId);
+                TextView tvReg = view.findViewById(regId);
+                if (tvInfo != null) {
+                    tvInfo.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
+                    tvInfo.setAlpha(0.8f);
+                }
+                if (tvReg != null) {
+                    tvReg.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
+                    tvReg.setAlpha(0.8f);
+                }
             }
-
-            ((TextView)view.findViewById(titleId)).setTextColor(isActive ? detailBodyColor : activeColor);
-
-            TextView tvInfo = view.findViewById(infoId);
-            TextView tvReg = view.findViewById(regId);
-            tvInfo.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
-            tvReg.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
-            tvInfo.setAlpha(0.8f);
-            tvReg.setAlpha(0.8f);
         }
 
-        // --- Hijri Detail Styling ---
-        String selectedHijri = ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
-                .getString("hijri_system", "ASTRONOMICAL");
+        String selectedHijri = ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE).getString("hijri_system", "ASTRONOMICAL");
         String[] hijriIds = {"ASTRONOMICAL", "UMM_AL_QURA", "LOCAL_SIGHTING", "GLOBAL_SIGHTING", "MANUAL_OFFSET"};
-
-        for (int i = 0; i < hijriCards.length; i++) {
-            boolean isActive = hijriIds[i].equals(selectedHijri);
-            hijriCards[i].setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
-                    isActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
-                    isActive ? activeColor : strokeColor));
-
-            int titleId = 0, tagId = 0;
-            switch(i) {
-                case 0: titleId = R.id.settings_text_hijri_astro; tagId = R.id.settings_subtext_hijri_astro_tag; break;
-                case 1: titleId = R.id.settings_text_hijri_ummalqura; tagId = R.id.settings_subtext_hijri_ummalqura_tag; break;
-                case 2: titleId = R.id.settings_text_hijri_local; tagId = R.id.settings_subtext_hijri_local_tag; break;
-                case 3: titleId = R.id.settings_text_hijri_global; tagId = R.id.settings_subtext_hijri_global_tag; break;
-                case 4: titleId = R.id.settings_text_hijri_manual; tagId = R.id.settings_subtext_hijri_manual_tag; break;
+        if (hijriCards != null) {
+            for (int i = 0; i < hijriCards.length; i++) {
+                if (hijriCards[i] == null) continue;
+                boolean isActive = hijriIds[i].equals(selectedHijri);
+                hijriCards[i].setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
+                        isActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
+                        isActive ? activeColor : strokeColor));
+                int titleId = 0, tagId = 0;
+                switch(i) {
+                    case 0: titleId = R.id.settings_text_hijri_astro; tagId = R.id.settings_subtext_hijri_astro_tag; break;
+                    case 1: titleId = R.id.settings_text_hijri_ummalqura; tagId = R.id.settings_subtext_hijri_ummalqura_tag; break;
+                    case 2: titleId = R.id.settings_text_hijri_local; tagId = R.id.settings_subtext_hijri_local_tag; break;
+                    case 3: titleId = R.id.settings_text_hijri_global; tagId = R.id.settings_subtext_hijri_global_tag; break;
+                    case 4: titleId = R.id.settings_text_hijri_manual; tagId = R.id.settings_subtext_hijri_manual_tag; break;
+                }
+                TextView tvHTitle = view.findViewById(titleId);
+                if (tvHTitle != null) tvHTitle.setTextColor(isActive ? detailBodyColor : activeColor);
+                TextView tvTagH = view.findViewById(tagId);
+                if (tvTagH != null) {
+                    tvTagH.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
+                    tvTagH.setAlpha(0.8f);
+                }
             }
-
-            ((TextView)view.findViewById(titleId)).setTextColor(isActive ? detailBodyColor : activeColor);
-            TextView tvTag = view.findViewById(tagId);
-            tvTag.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
-            tvTag.setAlpha(0.8f);
         }
 
-        // --- Country Detail Styling ---
-        String selectedCountry = ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
-                .getString("selected_country", "SOUTH_ASIA");
+        String selectedCountry = ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE).getString("selected_country", "SOUTH_ASIA");
         String[] countryIds = {"SOUTH_ASIA", "SAUDI", "UAE", "QATAR", "EGYPT", "TURKEY", "NORTH_AMERICA", "SOUTHEAST_ASIA", "IRAN", "IRAQ"};
-
-        for (int i = 0; i < countryCards.length; i++) {
-            boolean isActive = countryIds[i].equals(selectedCountry);
-            countryCards[i].setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
-                    isActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
-                    isActive ? activeColor : strokeColor));
-
-            int titleId = 0, tagId = 0;
-            switch(i) {
-                case 0: titleId = R.id.settings_text_country_south_asia; tagId = R.id.settings_subtext_country_south_asia_tag; break;
-                case 1: titleId = R.id.settings_text_country_saudi; tagId = R.id.settings_subtext_country_saudi_tag; break;
-                case 2: titleId = R.id.settings_text_country_uae; tagId = R.id.settings_subtext_country_uae_tag; break;
-                case 3: titleId = R.id.settings_text_country_qatar; tagId = R.id.settings_subtext_country_qatar_tag; break;
-                case 4: titleId = R.id.settings_text_country_egypt; tagId = R.id.settings_subtext_country_egypt_tag; break;
-                case 5: titleId = R.id.settings_text_country_turkey; tagId = R.id.settings_subtext_country_turkey_tag; break;
-                case 6: titleId = R.id.settings_text_country_north_america; tagId = R.id.settings_subtext_country_north_america_tag; break;
-                case 7: titleId = R.id.settings_text_country_southeast_asia; tagId = R.id.settings_subtext_country_southeast_asia_tag; break;
-                case 8: titleId = R.id.settings_text_country_iran; tagId = R.id.settings_subtext_country_iran_tag; break;
-                case 9: titleId = R.id.settings_text_country_iraq; tagId = R.id.settings_subtext_country_iraq_tag; break;
+        if (countryCards != null) {
+            for (int i = 0; i < countryCards.length; i++) {
+                if (countryCards[i] == null) continue;
+                boolean isActive = countryIds[i].equals(selectedCountry);
+                countryCards[i].setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.012f, 0.006f, 0.004f,
+                        isActive ? activeColor : detailBodyColor, shadowColor, highlightColor,
+                        isActive ? activeColor : strokeColor));
+                int titleId = 0, tagId = 0;
+                switch(i) {
+                    case 0: titleId = R.id.settings_text_country_south_asia; tagId = R.id.settings_subtext_country_south_asia_tag; break;
+                    case 1: titleId = R.id.settings_text_country_saudi; tagId = R.id.settings_subtext_country_saudi_tag; break;
+                    case 2: titleId = R.id.settings_text_country_uae; tagId = R.id.settings_subtext_country_uae_tag; break;
+                    case 3: titleId = R.id.settings_text_country_qatar; tagId = R.id.settings_subtext_country_qatar_tag; break;
+                    case 4: titleId = R.id.settings_text_country_egypt; tagId = R.id.settings_subtext_country_egypt_tag; break;
+                    case 5: titleId = R.id.settings_text_country_turkey; tagId = R.id.settings_subtext_country_turkey_tag; break;
+                    case 6: titleId = R.id.settings_text_country_north_america; tagId = R.id.settings_subtext_country_north_america_tag; break;
+                    case 7: titleId = R.id.settings_text_country_southeast_asia; tagId = R.id.settings_subtext_country_southeast_asia_tag; break;
+                    case 8: titleId = R.id.settings_text_country_iran; tagId = R.id.settings_subtext_country_iran_tag; break;
+                    case 9: titleId = R.id.settings_text_country_iraq; tagId = R.id.settings_subtext_country_iraq_tag; break;
+                }
+                TextView tvCTitle = view.findViewById(titleId);
+                if (tvCTitle != null) tvCTitle.setTextColor(isActive ? detailBodyColor : activeColor);
+                TextView tvTagC = view.findViewById(tagId);
+                if (tvTagC != null) {
+                    tvTagC.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
+                    tvTagC.setAlpha(0.8f);
+                }
             }
-
-            ((TextView)view.findViewById(titleId)).setTextColor(isActive ? detailBodyColor : activeColor);
-            TextView tvTag = view.findViewById(tagId);
-            tvTag.setTextColor(isActive && !isNight ? activeSubColor : inactiveSubColor);
-            tvTag.setAlpha(0.8f);
         }
     }
 
     private void applyPillBackground(View pill, Context ctx) {
+        if (pill == null || ctx == null) return;
         GradientDrawable bg = new GradientDrawable();
         bg.setShape(GradientDrawable.RECTANGLE);
         bg.setCornerRadius(ScalingUtils.getScaledSize(ctx, 0.06f));
