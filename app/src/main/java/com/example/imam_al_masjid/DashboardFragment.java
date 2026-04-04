@@ -151,10 +151,13 @@ public class DashboardFragment extends BaseFragment {
         txtDeviceAddress = view.findViewById(R.id.txt_device_address);
 
         // Pre-load last known address from persistence to avoid "Detecting..." flicker
-        android.content.SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String savedAddress = prefs.getString(KEY_LAST_ADDRESS, null);
-        if (savedAddress != null && txtDeviceAddress != null) {
-            txtDeviceAddress.setText(savedAddress);
+        Context ctx = getContext();
+        if (ctx != null) {
+            android.content.SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            String savedAddress = prefs.getString(KEY_LAST_ADDRESS, null);
+            if (savedAddress != null && txtDeviceAddress != null) {
+                txtDeviceAddress.setText(savedAddress);
+            }
         }
 
         txtAnnouncementsTitle = view.findViewById(R.id.txt_announcements_title);
@@ -579,10 +582,13 @@ public class DashboardFragment extends BaseFragment {
 
         if (txtName != null) txtName.setText(name);
 
-        if (imgSound != null && getContext() != null) {
-            boolean isOn = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-                    .getBoolean(KEY_SPEAKER_PREFIX + prefKey, true);
-            updateSpeakerIcon(imgSound, isOn, false);
+        if (imgSound != null) {
+            Context ctx = getContext();
+            if (ctx != null) {
+                boolean isOn = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                        .getBoolean(KEY_SPEAKER_PREFIX + prefKey, true);
+                updateSpeakerIcon(imgSound, isOn, false);
+            }
             imgSound.setOnClickListener(v -> toggleAzanSound(imgSound, prefKey));
         }
 
@@ -647,8 +653,9 @@ public class DashboardFragment extends BaseFragment {
     }
 
     private void toggleAzanSound(ImageView icon, String prefKey) {
-        if (getContext() == null) return;
-        android.content.SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        Context ctx = getContext();
+        if (ctx == null) return;
+        android.content.SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         boolean currentState = prefs.getBoolean(KEY_SPEAKER_PREFIX + prefKey, true);
         boolean newState = !currentState;
 
@@ -679,10 +686,11 @@ public class DashboardFragment extends BaseFragment {
     }
 
     private void playAzanSound() {
-        if (isPlaying || getContext() == null) return;
+        Context ctx = getContext();
+        if (isPlaying || ctx == null) return;
         try {
             // Using placeholder notification sound as requested
-            mediaPlayer = MediaPlayer.create(requireContext(), android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
+            mediaPlayer = MediaPlayer.create(ctx, android.provider.Settings.System.DEFAULT_NOTIFICATION_URI);
             mediaPlayer.setOnCompletionListener(mp -> {
                 isPlaying = false;
                 mediaPlayer.release();
@@ -694,7 +702,8 @@ public class DashboardFragment extends BaseFragment {
     }
 
     private void detectCurrentLocation() {
-        if (getContext() == null || ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
+        Context ctx = getContext();
+        if (ctx == null || ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
 
         fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
             if (!isAdded() || getContext() == null) return;
@@ -908,9 +917,12 @@ public class DashboardFragment extends BaseFragment {
             // Update Speaker Icon Color for Active State
             ImageView imgSound = targetRow.findViewById(R.id.img_azan_sound_toggle);
             if (imgSound != null) {
-                boolean isOn = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-                        .getBoolean(KEY_SPEAKER_PREFIX + currentWaqtName.toLowerCase(), true);
-                updateSpeakerIcon(imgSound, isOn, true);
+                Context ctx = getContext();
+                if (ctx != null) {
+                    boolean isOn = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                            .getBoolean(KEY_SPEAKER_PREFIX + currentWaqtName.toLowerCase(), true);
+                    updateSpeakerIcon(imgSound, isOn, true);
+                }
             }
 
             // Update Celestial Orbit Dial (matches border color)
@@ -969,9 +981,12 @@ public class DashboardFragment extends BaseFragment {
         // Re-apply speaker state icons with Inactive Color
         ImageView imgSound = row.findViewById(R.id.img_azan_sound_toggle);
         if (imgSound != null) {
-            boolean isOn = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-                    .getBoolean(KEY_SPEAKER_PREFIX + prefKey, true);
-            updateSpeakerIcon(imgSound, isOn, false);
+            Context ctx = getContext();
+            if (ctx != null) {
+                boolean isOn = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                        .getBoolean(KEY_SPEAKER_PREFIX + prefKey, true);
+                updateSpeakerIcon(imgSound, isOn, false);
+            }
         }
 
         // Reset Celestial Orbit Dial to match Active Card's border color
@@ -1066,10 +1081,11 @@ public class DashboardFragment extends BaseFragment {
     }
 
     private void updateAddressFromLocation(Location location) {
-        if (!isAdded() || getContext() == null) return;
+        Context ctx = getContext();
+        if (!isAdded() || ctx == null) return;
 
         try {
-            Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+            Geocoder geocoder = new Geocoder(ctx, Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             if (addresses != null && !addresses.isEmpty()) {
                 Address address = addresses.get(0);
@@ -1077,12 +1093,12 @@ public class DashboardFragment extends BaseFragment {
                 txtDeviceAddress.setText(fullAddress);
 
                 // Persist successful address for offline fallback
-                requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                         .edit().putString(KEY_LAST_ADDRESS, fullAddress).apply();
             }
         } catch (Exception e) {
             // Fallback to last known address if network is unavailable
-            android.content.SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            android.content.SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
             String savedAddress = prefs.getString(KEY_LAST_ADDRESS, null);
             txtDeviceAddress.setText(Objects.requireNonNullElseGet(savedAddress, () -> getString(R.string.dashboard_address_error)));
         }
@@ -1101,9 +1117,10 @@ public class DashboardFragment extends BaseFragment {
     }
 
     private void checkAndTriggerAzan(long nowMs) {
-        if (latestPrayerTimes == null || getContext() == null) return;
+        Context ctx = getContext();
+        if (latestPrayerTimes == null || ctx == null) return;
 
-        android.content.SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        android.content.SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         long tolerance = 2000;
 
         // Use the relative date from location-based prayer times as reference for static times
@@ -1419,9 +1436,10 @@ public class DashboardFragment extends BaseFragment {
         headerSection.setTranslationY(-shift);
 
         // Dates start "tucked in" AT the divider (Scale from center)
-        if (getContext() == null) return;
+        Context ctx = getContext();
+        if (ctx == null) return;
         txtHijriDate.setAlpha(0f);
-        txtHijriDate.setPivotX(ScalingUtils.getScaledSize(requireContext(), 1.0f, false));
+        txtHijriDate.setPivotX(ScalingUtils.getScaledSize(ctx, 1.0f, false));
         txtHijriDate.setScaleX(0f);
         txtHijriDate.setTranslationY(40f); // Ready for Clockwork Roll
 
@@ -1595,14 +1613,15 @@ public class DashboardFragment extends BaseFragment {
     }
 
     private void refreshAddress() {
-        if (getContext() == null) return;
+        Context ctx = getContext();
+        if (ctx == null) return;
 
         if (!isInternetAvailable()) {
             showCustomToast(getString(R.string.toast_internet_error), true);
             return;
         }
 
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             showCustomToast(getString(R.string.toast_permission_denied), true);
             return;
         }
@@ -1620,15 +1639,17 @@ public class DashboardFragment extends BaseFragment {
     }
 
     private boolean isInternetAvailable() {
-        if (getContext() == null) return false;
-        ConnectivityManager cm = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        Context ctx = getContext();
+        if (ctx == null) return false;
+        ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm == null) return false;
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     private void showCustomToast(String message, boolean isError) {
-        if (!isAdded() || getContext() == null) return;
+        Context ctx = getContext();
+        if (!isAdded() || ctx == null) return;
 
         View layout = getLayoutInflater().inflate(R.layout.layout_custom_toast, (android.view.ViewGroup) getView(), false);
         View root = layout.findViewById(R.id.toast_root);
@@ -1637,28 +1658,28 @@ public class DashboardFragment extends BaseFragment {
         if (text != null) {
             text.setText(message);
             // Dynamic text size based on accessibility-aware scaling (3.5% of width)
-            text.setTextSize(ScalingUtils.getScaledTextSize(getContext(), 0.035f));
+            text.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.035f));
         }
 
         if (root != null) {
-            int bodyColor = ContextCompat.getColor(getContext(), isError ? R.color.error_red : R.color.emerald_primary);
-            int shadowColor = ContextCompat.getColor(getContext(), R.color.clay_dark_shadow);
-            int highlightColor = ContextCompat.getColor(getContext(), R.color.clay_light_shadow);
+            int bodyColor = ContextCompat.getColor(ctx, isError ? R.color.error_red : R.color.emerald_primary);
+            int shadowColor = ContextCompat.getColor(ctx, R.color.clay_dark_shadow);
+            int highlightColor = ContextCompat.getColor(ctx, R.color.clay_light_shadow);
 
             // Dynamic internal padding for the toast box (~6% horizontal, ~3% vertical)
-            int hPad = ScalingUtils.getScaledSize(getContext(), 0.06f);
-            int vPad = ScalingUtils.getScaledSize(getContext(), 0.03f);
+            int hPad = ScalingUtils.getScaledSize(ctx, 0.06f);
+            int vPad = ScalingUtils.getScaledSize(ctx, 0.03f);
             root.setPadding(hPad, vPad, hPad, vPad);
 
             // Apply premium claymorphic background
-            root.setBackground(ScalingUtils.createClayDrawable(getContext(), 0.04f, 0.008f, 0.004f, 0.002f,
+            root.setBackground(ScalingUtils.createClayDrawable(ctx, 0.04f, 0.008f, 0.004f, 0.002f,
                     bodyColor, shadowColor, highlightColor, bodyColor));
         }
 
-        Toast toast = new Toast(requireContext());
+        Toast toast = new Toast(ctx);
         toast.setDuration(Toast.LENGTH_SHORT);
         // Position it slightly above the nav bar dynamically
-        int yOffset = ScalingUtils.getScaledSize(getContext(), 0.08f, true);
+        int yOffset = ScalingUtils.getScaledSize(ctx, 0.08f, true);
         toast.setGravity(android.view.Gravity.BOTTOM | android.view.Gravity.CENTER_HORIZONTAL, 0, yOffset);
         toast.setView(layout);
         toast.show();
