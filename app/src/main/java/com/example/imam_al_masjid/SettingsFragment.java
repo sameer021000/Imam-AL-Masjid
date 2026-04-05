@@ -48,6 +48,16 @@ public class SettingsFragment extends BaseFragment {
     // Current theme selection index (0=System, 1=Light, 2=Dark)
     private int selectedThemeIndex = 0;
 
+    private android.content.SharedPreferences appPrefs;
+    private android.content.SharedPreferences prayerPrefs;
+
+    @Override
+    public void onAttach(@androidx.annotation.NonNull android.content.Context context) {
+        super.onAttach(context);
+        appPrefs = context.getSharedPreferences(PREFS_NAME, android.content.Context.MODE_PRIVATE);
+        prayerPrefs = context.getSharedPreferences("PrayerSettings", android.content.Context.MODE_PRIVATE);
+    }
+
     @Override
     protected int getLayoutId() { return R.layout.fragment_settings; }
 
@@ -375,74 +385,70 @@ public class SettingsFragment extends BaseFragment {
     }
 
     private void handleInCardAsrSelection(boolean hanafi) {
-        if (getContext() == null) return;
-        getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
-                .edit().putBoolean("is_asr_hanafi", hanafi).apply();
+        if (prayerPrefs != null) {
+            prayerPrefs.edit().putBoolean("is_asr_hanafi", hanafi).apply();
+        }
         updateAsrSubtitle();
         applyClaymorphism(getView());
         if (calculationAsrDetailRoot != null) calculationAsrDetailRoot.postDelayed(() -> toggleAsrDetail(false), 300);
     }
 
     private void handleInCardMethodSelection(String methodId) {
-        if (getContext() == null) return;
-        getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
-                .edit().putString("calculation_method", methodId).apply();
+        if (prayerPrefs != null) {
+            prayerPrefs.edit().putString("calculation_method", methodId).apply();
+        }
         updateMethodsSubtitle();
         applyClaymorphism(getView());
         if (calculationMethodsDetailRoot != null) calculationMethodsDetailRoot.postDelayed(() -> toggleMethodsDetail(false), 300);
     }
 
     private void handleInCardHijriSelection(String systemId) {
-        if (getContext() == null) return;
-        getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
-                .edit().putString("hijri_system", systemId).apply();
+        if (prayerPrefs != null) {
+            prayerPrefs.edit().putString("hijri_system", systemId).apply();
+        }
         updateHijriSubtitle();
         applyClaymorphism(getView());
         if (calculationHijriDetailRoot != null) calculationHijriDetailRoot.postDelayed(() -> toggleHijriDetail(false), 300);
     }
 
     private void handleInCardCountrySelection(String countryId) {
-        if (getContext() == null) return;
-        getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
-                .edit().putString("selected_country", countryId).apply();
+        if (prayerPrefs != null) {
+            prayerPrefs.edit().putString("selected_country", countryId).apply();
+        }
         updateCountrySubtitle();
         applyClaymorphism(getView());
         if (calculationCountryDetailRoot != null) calculationCountryDetailRoot.postDelayed(() -> toggleCountryDetail(false), 300);
     }
 
     private void updateAsrSubtitle() {
-        if (getView() == null || getContext() == null) return;
+        if (getView() == null || prayerPrefs == null) return;
         TextView sub = getView().findViewById(R.id.settings_subtext_asr_madhab);
         if (sub == null) return;
-        boolean isHanafi = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
-                .getBoolean("is_asr_hanafi", false);
+        boolean isHanafi = prayerPrefs.getBoolean("is_asr_hanafi", false);
         sub.setText(isHanafi ? getString(R.string.asr_selector_hanafi_title) : getString(R.string.asr_selector_standard_title));
     }
 
     private void updateMethodsSubtitle() {
-        if (getView() == null || getContext() == null) return;
+        if (getView() == null || prayerPrefs == null) return;
         TextView sub = getView().findViewById(R.id.settings_subtext_methods);
         if (sub == null) return;
-        String method = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
-                .getString("calculation_method", "KARACHI");
+        String method = prayerPrefs.getString("calculation_method", "KARACHI");
         sub.setText(method.replace("_", " "));
     }
 
     private void updateHijriSubtitle() {
-        if (getView() == null || getContext() == null) return;
+        if (getView() == null || prayerPrefs == null) return;
         TextView sub = getView().findViewById(R.id.settings_subtext_hijri);
         if (sub == null) return;
-        String system = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
-                .getString("hijri_system", "ASTRONOMICAL");
+        String system = prayerPrefs.getString("hijri_system", "ASTRONOMICAL");
         sub.setText(system.replace("_", " "));
     }
 
     private void updateCountrySubtitle() {
-        if (getView() == null || getContext() == null) return;
+        if (getView() == null || getContext() == null || prayerPrefs == null) return;
         TextView sub = getView().findViewById(R.id.settings_subtext_country);
         if (sub == null) return;
-        String countryId = getContext().getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
-                .getString("selected_country", "SOUTH_ASIA");
+        String countryId = prayerPrefs.getString("selected_country", "SOUTH_ASIA");
 
         int resId;
         switch (countryId) {
@@ -536,13 +542,14 @@ public class SettingsFragment extends BaseFragment {
     }
 
     private boolean isSettingOn(String key) {
-        if (getContext() == null) return true;
-        return getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(key, true);
+        if (appPrefs == null) return true;
+        return appPrefs.getBoolean(key, true);
     }
 
     private void saveSetting(String key, boolean value) {
-        if (getContext() == null) return;
-        getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putBoolean(key, value).apply();
+        if (appPrefs != null) {
+            appPrefs.edit().putBoolean(key, value).apply();
+        }
     }
 
     private void updateNotifIcon() {
@@ -892,8 +899,8 @@ public class SettingsFragment extends BaseFragment {
 
         updateThemeToggleUI();
 
-        boolean isStandardActive = !ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE)
-                .getBoolean("is_asr_hanafi", false);
+        if (prayerPrefs == null) return;
+        boolean isStandardActive = !prayerPrefs.getBoolean("is_asr_hanafi", false);
 
         int activeColor   = ContextCompat.getColor(ctx, R.color.emerald_primary);
         int detailBodyColor = ContextCompat.getColor(ctx, R.color.off_white_primary);
@@ -931,7 +938,7 @@ public class SettingsFragment extends BaseFragment {
             subHanafi.setAlpha(0.8f);
         }
 
-        String selectedMethod = ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE).getString("calculation_method", "KARACHI");
+        String selectedMethod = prayerPrefs.getString("calculation_method", "KARACHI");
         String[] methodIds = {"KARACHI", "MWL", "ISNA", "UMM_AL_QURA", "TEHRAN", "TURKEY"};
         if (methodCards != null) {
             for (int i = 0; i < methodCards.length; i++) {
@@ -965,7 +972,7 @@ public class SettingsFragment extends BaseFragment {
             }
         }
 
-        String selectedHijri = ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE).getString("hijri_system", "ASTRONOMICAL");
+        String selectedHijri = prayerPrefs.getString("hijri_system", "ASTRONOMICAL");
         String[] hijriIds = {"ASTRONOMICAL", "UMM_AL_QURA", "LOCAL_SIGHTING", "GLOBAL_SIGHTING", "MANUAL_OFFSET"};
         if (hijriCards != null) {
             for (int i = 0; i < hijriCards.length; i++) {
@@ -992,7 +999,7 @@ public class SettingsFragment extends BaseFragment {
             }
         }
 
-        String selectedCountry = ctx.getSharedPreferences("PrayerSettings", Context.MODE_PRIVATE).getString("selected_country", "SOUTH_ASIA");
+        String selectedCountry = prayerPrefs.getString("selected_country", "SOUTH_ASIA");
         String[] countryIds = {"SOUTH_ASIA", "SAUDI", "UAE", "QATAR", "EGYPT", "TURKEY", "NORTH_AMERICA", "SOUTHEAST_ASIA", "IRAN", "IRAQ"};
         if (countryCards != null) {
             for (int i = 0; i < countryCards.length; i++) {

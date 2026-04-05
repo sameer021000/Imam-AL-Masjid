@@ -80,6 +80,8 @@ public class DashboardFragment extends BaseFragment {
     private final android.os.Handler countdownHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private Runnable countdownRunnable;
 
+    private android.content.SharedPreferences prefs;
+
     private final ActivityResultLauncher<String[]> locationPermissionRequest =
 
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
@@ -99,6 +101,7 @@ public class DashboardFragment extends BaseFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+        prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -1097,8 +1100,9 @@ public class DashboardFragment extends BaseFragment {
                             if (txtDeviceAddress != null) txtDeviceAddress.setText(fullAddress);
 
                             // Persist successful address for offline fallback
-                            ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-                                    .edit().putString(KEY_LAST_ADDRESS, fullAddress).apply();
+                            if (prefs != null) {
+                                prefs.edit().putString(KEY_LAST_ADDRESS, fullAddress).apply();
+                            }
                         }
                     });
                 }
@@ -1106,8 +1110,7 @@ public class DashboardFragment extends BaseFragment {
                 if (isAdded() && getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         // Fallback to last known address if network is unavailable or call fails
-                        android.content.SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                        String savedAddress = prefs.getString(KEY_LAST_ADDRESS, null);
+                        String savedAddress = (prefs != null) ? prefs.getString(KEY_LAST_ADDRESS, null) : null;
                         if (txtDeviceAddress != null) {
                             txtDeviceAddress.setText(Objects.requireNonNullElseGet(savedAddress, () -> getString(R.string.dashboard_address_error)));
                         }
@@ -1131,9 +1134,8 @@ public class DashboardFragment extends BaseFragment {
 
     private void checkAndTriggerAzan(long nowMs) {
         Context ctx = getContext();
-        if (latestPrayerTimes == null || ctx == null) return;
+        if (latestPrayerTimes == null || ctx == null || prefs == null) return;
 
-        android.content.SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         long tolerance = 2000;
 
         // Use the relative date from location-based prayer times as reference for static times
