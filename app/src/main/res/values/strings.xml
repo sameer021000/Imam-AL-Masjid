@@ -62,6 +62,11 @@
     <string name="title_edit_timings">Edit Timings</string>
     <string name="title_events">Events &amp; Announcements</string>
     <string name="title_settings">Settings</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_events">Events</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_edit">Edit</string>
+    <string name="nav_settings">Settings</string>
     <string name="dashboard_tab_masjid_times">Masjid Times</string>
     <string name="dashboard_tab_waqt_details">Waqt Details</string>
     <string name="dashboard_btn_edit">EDIT</string>

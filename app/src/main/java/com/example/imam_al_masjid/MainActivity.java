@@ -65,11 +65,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupNavigation(int initialNavIndex) {
-        addNavItem(R.drawable.ic_profile, "Profile", 0, initialNavIndex);
-        addNavItem(R.drawable.ic_calendar, "Events", 1, initialNavIndex);
-        addNavItem(R.drawable.ic_home, "Home", 2, initialNavIndex);
-        addNavItem(R.drawable.ic_edit, "Edit", 3, initialNavIndex);
-        addNavItem(R.drawable.ic_settings, "Settings", 4, initialNavIndex);
+        addNavItem(R.drawable.ic_profile, getString(R.string.nav_profile), 0, initialNavIndex);
+        addNavItem(R.drawable.ic_calendar, getString(R.string.nav_events), 1, initialNavIndex);
+        addNavItem(R.drawable.ic_home, getString(R.string.nav_home), 2, initialNavIndex);
+        addNavItem(R.drawable.ic_edit, getString(R.string.nav_edit), 3, initialNavIndex);
+        addNavItem(R.drawable.ic_settings, getString(R.string.nav_settings), 4, initialNavIndex);
     }
 
     private void addNavItem(int iconRes, String title, int index, int initialNavIndex) {
