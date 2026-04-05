@@ -1121,6 +1121,25 @@ public class DashboardFragment extends BaseFragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (countdownRunnable != null) {
+            countdownHandler.removeCallbacks(countdownRunnable);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Resync calculation and countdown on return
+        if (latestPreciseTimes != null && lastCoordinates != null) {
+            highlightActiveWaqt(latestPreciseTimes, lastCoordinates);
+        } else if (fusedLocationClient != null) {
+            detectCurrentLocation();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mediaPlayer != null) {
