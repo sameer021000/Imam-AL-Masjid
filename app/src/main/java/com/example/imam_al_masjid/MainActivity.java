@@ -123,13 +123,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void switchFragment(int index) {
-        Fragment fragment;
-        switch (index) {
-            case 0: fragment = new ProfileFragment(); break;
-            case 1: fragment = new EventsFragment(); break;
-            case 3: fragment = new EditTimingsFragment(); break;
-            case 4: fragment = new SettingsFragment(); break;
-            default: fragment = new DashboardFragment(); break;
+        String tag = "FRAG_INDEX_" + index;
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+
+        if (fragment == null) {
+            switch (index) {
+                case 0: fragment = new ProfileFragment(); break;
+                case 1: fragment = new EventsFragment(); break;
+                case 3: fragment = new EditTimingsFragment(); break;
+                case 4: fragment = new SettingsFragment(); break;
+                default: fragment = new DashboardFragment(); break;
+            }
         }
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -143,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         
-        ft.replace(R.id.fragment_container, fragment);
+        ft.replace(R.id.fragment_container, fragment, tag);
         ft.commit();
         
         currentNavIndex = index;
