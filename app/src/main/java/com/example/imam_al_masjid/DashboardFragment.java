@@ -1636,16 +1636,26 @@ public class DashboardFragment extends BaseFragment {
             return;
         }
 
-        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
-            if (!isAdded() || getContext() == null) return;
-            if (location != null) {
-                updateAddressFromLocation(location);
-                calculateLocationBasedWaqts(location.getLatitude(), location.getLongitude());
-                showCustomToast(getString(R.string.toast_address_updated), false);
-            } else {
-                showCustomToast(getString(R.string.toast_location_failed), true);
+        // Single reliable high-accuracy update for immediate "Refresh" feedback
+        com.google.android.gms.location.LocationRequest lr = new com.google.android.gms.location.LocationRequest.Builder(
+                com.google.android.gms.location.Priority.PRIORITY_BALANCED_POWER_ACCURACY, 100)
+                .setMaxUpdates(1)
+                .build();
+
+        fusedLocationClient.requestLocationUpdates(lr, new com.google.android.gms.location.LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull com.google.android.gms.location.LocationResult locationResult) {
+                if (!isAdded() || getContext() == null) return;
+                Location location = locationResult.getLastLocation();
+                if (location != null) {
+                    updateAddressFromLocation(location);
+                    calculateLocationBasedWaqts(location.getLatitude(), location.getLongitude());
+                    showCustomToast(getString(R.string.toast_address_updated), false);
+                } else {
+                    showCustomToast(getString(R.string.toast_location_failed), true);
+                }
             }
-        });
+        }, android.os.Looper.getMainLooper());
     }
 
     private boolean isInternetAvailable() {
