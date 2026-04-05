@@ -125,7 +125,9 @@ public class MainActivity extends AppCompatActivity {
     private void switchFragment(int index) {
         String tag = "FRAG_INDEX_" + index;
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
+        // 1. Initial creation if not already in cache
         if (fragment == null) {
             switch (index) {
                 case 0: fragment = new ProfileFragment(); break;
@@ -134,22 +136,20 @@ public class MainActivity extends AppCompatActivity {
                 case 4: fragment = new SettingsFragment(); break;
                 default: fragment = new DashboardFragment(); break;
             }
+            ft.add(R.id.fragment_container, fragment, tag);
         }
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        
-        // Premium Transitions (Slide + Scale/Fade)
-        if (currentNavIndex != -1) {
-            if (index > currentNavIndex) {
-                ft.setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_left);
-            } else {
-                ft.setCustomAnimations(R.anim.slide_in_left, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_right);
+        // 2. Clear out other visible fragments (Hide instead of Remove)
+        for (Fragment f : getSupportFragmentManager().getFragments()) {
+            if (f != null && f.isAdded() && f != fragment) {
+                ft.hide(f);
             }
         }
-        
-        ft.replace(R.id.fragment_container, fragment, tag);
+
+        // 3. Bring the target fragment back to the front instantly
+        ft.show(fragment);
         ft.commit();
-        
+
         currentNavIndex = index;
     }
 
