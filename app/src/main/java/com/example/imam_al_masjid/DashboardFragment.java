@@ -1084,24 +1084,37 @@ public class DashboardFragment extends BaseFragment {
         Context ctx = getContext();
         if (!isAdded() || ctx == null) return;
 
-        try {
-            Geocoder geocoder = new Geocoder(ctx, Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                Address address = addresses.get(0);
-                String fullAddress = address.getAddressLine(0);
-                txtDeviceAddress.setText(fullAddress);
+        new Thread(() -> {
+            try {
+                Geocoder geocoder = new Geocoder(ctx, Locale.getDefault());
+                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                
+                if (isAdded() && getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        if (addresses != null && !addresses.isEmpty()) {
+                            Address address = addresses.get(0);
+                            String fullAddress = address.getAddressLine(0);
+                            if (txtDeviceAddress != null) txtDeviceAddress.setText(fullAddress);
 
-                // Persist successful address for offline fallback
-                ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-                        .edit().putString(KEY_LAST_ADDRESS, fullAddress).apply();
+                            // Persist successful address for offline fallback
+                            ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                                    .edit().putString(KEY_LAST_ADDRESS, fullAddress).apply();
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                if (isAdded() && getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        // Fallback to last known address if network is unavailable or call fails
+                        android.content.SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                        String savedAddress = prefs.getString(KEY_LAST_ADDRESS, null);
+                        if (txtDeviceAddress != null) {
+                            txtDeviceAddress.setText(Objects.requireNonNullElseGet(savedAddress, () -> getString(R.string.dashboard_address_error)));
+                        }
+                    });
+                }
             }
-        } catch (Exception e) {
-            // Fallback to last known address if network is unavailable
-            android.content.SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            String savedAddress = prefs.getString(KEY_LAST_ADDRESS, null);
-            txtDeviceAddress.setText(Objects.requireNonNullElseGet(savedAddress, () -> getString(R.string.dashboard_address_error)));
-        }
+        }).start();
     }
 
     @Override
@@ -1397,9 +1410,6 @@ public class DashboardFragment extends BaseFragment {
             tabTrack.setBackground(ScalingUtils.createInsetClayDrawable(getContext(), 0.035f, 0.006f, 0.004f,
                     ContextCompat.getColor(getContext(), R.color.off_derived),
                     shadowColor, highlightColor));
-
-            // Note: Individual tab backgrounds and colors are handled in switchPanel(true)
-            // called by setupTabSwitcher() to ensure consistency with the Settings toggle logic.
         }
 
         // Start entrance animations sequence
