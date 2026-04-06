@@ -171,13 +171,9 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         break;
                     case MotionEvent.ACTION_UP:
-                        v1.performClick();
-                        longPressHandler.removeCallbacks(longPressRunnable);
-                        // Visual Release
-                        v1.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
-                        break;
                     case MotionEvent.ACTION_CANCEL:
                         longPressHandler.removeCallbacks(longPressRunnable);
+                        // Visual Release
                         v1.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
                         break;
                 }

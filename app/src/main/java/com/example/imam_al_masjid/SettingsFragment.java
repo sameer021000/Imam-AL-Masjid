@@ -482,12 +482,9 @@ public class SettingsFragment extends BaseFragment {
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                     v1.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        v1.performClick();
-                    }
                     break;
             }
-            return true;
+            return false;
         });
     }
 
