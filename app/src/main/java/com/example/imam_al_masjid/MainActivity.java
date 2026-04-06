@@ -29,17 +29,17 @@ public class MainActivity extends AppCompatActivity {
         // Apply persisted theme BEFORE inflating any layout
         ThemeManager.applyTheme(this, false);
         androidx.activity.EdgeToEdge.enable(this,
-            androidx.activity.SystemBarStyle.auto(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT),
-            androidx.activity.SystemBarStyle.auto(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
+                androidx.activity.SystemBarStyle.auto(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT),
+                androidx.activity.SystemBarStyle.auto(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
         );
         setContentView(R.layout.activity_main);
-        
+
         androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             androidx.core.graphics.Insets systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        
+
         initViews();
 
         // Determine which nav item to highlight (restore after theme-change recreate)
@@ -76,29 +76,29 @@ public class MainActivity extends AppCompatActivity {
         View itemView = getLayoutInflater().inflate(R.layout.nav_item, navDock, false);
         ImageView icon = itemView.findViewById(R.id.nav_icon);
         android.widget.TextView titleView = itemView.findViewById(R.id.nav_title);
-        
+
         icon.setImageResource(iconRes);
         titleView.setText(title);
 
         // Scaling for nav item (Reduced to prevent text wrapping)
-        int padding = ScalingUtils.getScaledSize(this, 0.02f); 
+        int padding = ScalingUtils.getScaledSize(this, 0.02f);
         int iconSize = ScalingUtils.getScaledSize(this, 0.052f);
-        
+
         ViewGroup.LayoutParams iconParams = icon.getLayoutParams();
         iconParams.width = iconSize;
         iconParams.height = iconSize;
         icon.setLayoutParams(iconParams);
-        
+
         // Dynamically scale text size and force single line
         titleView.setTextSize(ScalingUtils.getScaledTextSize(this, 0.027f));
         titleView.setSingleLine(true);
         titleView.setEllipsize(android.text.TextUtils.TruncateAt.END);
-        
+
         // Dynamically scale margins and heights to strictly remove hardcoded values in XML
         ScalingUtils.applyScaledLayout(titleView, -1, -1, 0.01f, 0, 0, 0); // 1% margin top
         View underlineView = itemView.findViewById(R.id.nav_underline);
         ScalingUtils.applyScaledLayout(underlineView, -1, 0.005f, 0.01f, 0, 0, 0); // 0.5% height, 1% margin top
-        
+
         itemView.setPadding(padding, padding, padding, padding);
 
         // Add Horizontal Margin between items
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateNavUI(int selectedIndex) {
         if (navDock == null) return;
-        
+
         for (int i = 0; i < navDock.getChildCount(); i++) {
             View itemView = navDock.getChildAt(i);
             if (itemView == null) continue;
@@ -172,12 +172,12 @@ public class MainActivity extends AppCompatActivity {
         // Dock scaling
         ScalingUtils.applyScaledLayout(navDock, -1, -1, 0, 0, 0, 0);
         navDock.setPadding(
-            ScalingUtils.getScaledSize(this, 0.02f),
-            ScalingUtils.getScaledSize(this, 0.01f),
-            ScalingUtils.getScaledSize(this, 0.02f),
-            ScalingUtils.getScaledSize(this, 0.01f)
+                ScalingUtils.getScaledSize(this, 0.02f),
+                ScalingUtils.getScaledSize(this, 0.01f),
+                ScalingUtils.getScaledSize(this, 0.02f),
+                ScalingUtils.getScaledSize(this, 0.01f)
         );
-        
+
         // Dynamic bottom padding for the container (replaces hardcoded 16dp)
         View navDockContainer = findViewById(R.id.nav_dock_container);
         navDockContainer.setPadding(0, 0, 0, ScalingUtils.getScaledSize(this, 0.04f));
@@ -185,9 +185,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void applyClaymorphism() {
         // Main Dock is Raised (Convex) - Restoring the floating effect
-        ScalingUtils.applyClaymorphism(navDock, 
-            0.05f, 
-            false, 
-            ContextCompat.getColor(this, R.color.off_white_primary));
+        ScalingUtils.applyClaymorphism(navDock,
+                0.05f,
+                false,
+                ContextCompat.getColor(this, R.color.off_white_primary));
     }
 }

@@ -1091,7 +1091,7 @@ public class DashboardFragment extends BaseFragment {
             try {
                 Geocoder geocoder = new Geocoder(ctx, Locale.getDefault());
                 List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                
+
                 if (isAdded() && getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         if (addresses != null && !addresses.isEmpty()) {
