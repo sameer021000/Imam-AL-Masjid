@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout navDock;
     private int currentNavIndex = -1;
+    private Fragment currentFragment;
 
     private static final String KEY_NAV_INDEX = "active_nav_index";
     private static final int DEFAULT_NAV_INDEX = 2; // Home/Dashboard
@@ -132,17 +133,16 @@ public class MainActivity extends AppCompatActivity {
             ft.add(R.id.fragment_container, fragment, tag);
         }
 
-        // 2. Clear out other visible fragments (Hide instead of Remove)
-        for (Fragment f : getSupportFragmentManager().getFragments()) {
-            if (f != null && f.isAdded() && f != fragment) {
-                ft.hide(f);
-            }
+        // 2. Efficiently hide the current visible fragment
+        if (currentFragment != null && currentFragment != fragment) {
+            ft.hide(currentFragment);
         }
 
         // 3. Bring the target fragment back to the front instantly
         ft.show(fragment);
-        ft.commit();
+        ft.commitAllowingStateLoss(); // Safer for UI-driven changes
 
+        currentFragment = fragment;
         currentNavIndex = index;
         updateNavUI(index);
     }
