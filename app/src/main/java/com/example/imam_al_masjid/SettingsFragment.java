@@ -472,6 +472,7 @@ public class SettingsFragment extends BaseFragment {
         }
     }
 
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
     private void applyTactileTouch(View v) {
         if (v == null) return;
         v.setOnTouchListener((v1, event) -> {
