@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat;
 public class MainActivity extends AppCompatActivity {
 
     private LinearLayout navDock;
-    private View activeNavView;
     private int currentNavIndex = -1;
 
     private static final String KEY_NAV_INDEX = "active_nav_index";
@@ -41,14 +40,14 @@ public class MainActivity extends AppCompatActivity {
         });
         
         initViews();
-        
+
         // Determine which nav item to highlight (restore after theme-change recreate)
         int navIndex = DEFAULT_NAV_INDEX;
         if (savedInstanceState != null) {
             navIndex = savedInstanceState.getInt(KEY_NAV_INDEX, DEFAULT_NAV_INDEX);
         }
-        
-        setupNavigation(navIndex);
+
+        setupNavigation();
         switchFragment(navIndex);
     }
 
@@ -64,15 +63,15 @@ public class MainActivity extends AppCompatActivity {
         applyClaymorphism();
     }
 
-    private void setupNavigation(int initialNavIndex) {
-        addNavItem(R.drawable.ic_profile, getString(R.string.nav_profile), 0, initialNavIndex);
-        addNavItem(R.drawable.ic_calendar, getString(R.string.nav_events), 1, initialNavIndex);
-        addNavItem(R.drawable.ic_home, getString(R.string.nav_home), 2, initialNavIndex);
-        addNavItem(R.drawable.ic_edit, getString(R.string.nav_edit), 3, initialNavIndex);
-        addNavItem(R.drawable.ic_settings, getString(R.string.nav_settings), 4, initialNavIndex);
+    private void setupNavigation() {
+        addNavItem(R.drawable.ic_profile, getString(R.string.nav_profile), 0);
+        addNavItem(R.drawable.ic_calendar, getString(R.string.nav_events), 1);
+        addNavItem(R.drawable.ic_home, getString(R.string.nav_home), 2);
+        addNavItem(R.drawable.ic_edit, getString(R.string.nav_edit), 3);
+        addNavItem(R.drawable.ic_settings, getString(R.string.nav_settings), 4);
     }
 
-    private void addNavItem(int iconRes, String title, int index, int initialNavIndex) {
+    private void addNavItem(int iconRes, String title, int index) {
         View itemView = getLayoutInflater().inflate(R.layout.nav_item, navDock, false);
         ImageView icon = itemView.findViewById(R.id.nav_icon);
         android.widget.TextView titleView = itemView.findViewById(R.id.nav_title);
@@ -110,16 +109,10 @@ public class MainActivity extends AppCompatActivity {
         itemView.setOnClickListener(v -> {
             if (currentNavIndex != index) {
                 switchFragment(index);
-                updateNavUI(itemView);
             }
         });
 
         navDock.addView(itemView);
-        
-        // Highlight the restored/initial nav item
-        if (index == initialNavIndex) {
-            updateNavUI(itemView);
-        }
     }
 
     private void switchFragment(int index) {
@@ -151,30 +144,27 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
 
         currentNavIndex = index;
+        updateNavUI(index);
     }
 
-    private void updateNavUI(View selectedView) {
-        // Reset previous active view
-        if (activeNavView != null) {
-            ImageView oldIcon = activeNavView.findViewById(R.id.nav_icon);
-            TextView oldTitle = activeNavView.findViewById(R.id.nav_title);
-            View oldUnderline = activeNavView.findViewById(R.id.nav_underline);
+    private void updateNavUI(int selectedIndex) {
+        if (navDock == null) return;
+        
+        for (int i = 0; i < navDock.getChildCount(); i++) {
+            View itemView = navDock.getChildAt(i);
+            if (itemView == null) continue;
 
-            if (oldIcon != null) oldIcon.setColorFilter(ContextCompat.getColor(this, R.color.text_secondary));
-            if (oldTitle != null) oldTitle.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
-            if (oldUnderline != null) oldUnderline.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
-        }
+            ImageView icon = itemView.findViewById(R.id.nav_icon);
+            TextView title = itemView.findViewById(R.id.nav_title);
+            View underline = itemView.findViewById(R.id.nav_underline);
 
-        // Apply new active view
-        activeNavView = selectedView;
-        if (selectedView != null) {
-            ImageView newIcon = selectedView.findViewById(R.id.nav_icon);
-            TextView newTitle = selectedView.findViewById(R.id.nav_title);
-            View newUnderline = selectedView.findViewById(R.id.nav_underline);
+            boolean isActive = (i == selectedIndex);
+            int color = ContextCompat.getColor(this, isActive ? R.color.input_active : R.color.text_secondary);
+            int underlineColor = ContextCompat.getColor(this, isActive ? R.color.input_active : android.R.color.transparent);
 
-            if (newIcon != null) newIcon.setColorFilter(ContextCompat.getColor(this, R.color.input_active));
-            if (newTitle != null) newTitle.setTextColor(ContextCompat.getColor(this, R.color.input_active));
-            if (newUnderline != null) newUnderline.setBackgroundColor(ContextCompat.getColor(this, R.color.input_active));
+            if (icon != null) icon.setColorFilter(color);
+            if (title != null) title.setTextColor(color);
+            if (underline != null) underline.setBackgroundColor(underlineColor);
         }
     }
 
