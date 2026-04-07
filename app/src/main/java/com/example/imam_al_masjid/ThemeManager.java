@@ -72,4 +72,13 @@ public class ThemeManager {
         editor.putInt(KEY_THEME_MODE, mode);
         editor.apply();
     }
+
+    /**
+     * Helper to check if the app is currently in night mode.
+     */
+    public static boolean isNightMode(Context context) {
+        if (context == null) return false;
+        return (context.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
+                == android.content.res.Configuration.UI_MODE_NIGHT_YES;
+    }
 }

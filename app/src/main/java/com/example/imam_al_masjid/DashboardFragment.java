@@ -105,6 +105,18 @@ public class DashboardFragment extends BaseFragment {
     }
 
     @Override
+    protected void applySystemInsetPadding(View view) {
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
+            androidx.core.graphics.Insets bars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+            if (layoutTopAccent != null) {
+                layoutTopAccent.setPadding(layoutTopAccent.getPaddingLeft(), bars.top,
+                        layoutTopAccent.getPaddingRight(), layoutTopAccent.getPaddingBottom());
+            }
+            return insets;
+        });
+    }
+
+    @Override
     protected void initViews(View view) {
         // 1. Bind Sections
         layoutTopAccent = view.findViewById(R.id.layout_top_accent_container);
@@ -181,7 +193,7 @@ public class DashboardFragment extends BaseFragment {
         setupTimingRow(rowIsha, "ISHA", "isha");
 
         // Match status bar color with top accent
-        updateStatusBarColor();
+        updateStatusBar();
 
         // Glass Hero Background Initial Styling
         if (getContext() != null) {
@@ -488,22 +500,21 @@ public class DashboardFragment extends BaseFragment {
         list.add(new ChronosDialView.WaqtSegment(name, startSec, endSec, preciseStart, preciseEnd, roundedStart, roundedEnd));
     }
 
-    private void updateStatusBarColor() {
+    @Override
+    protected void updateStatusBar() {
         if (getActivity() != null && getActivity().getWindow() != null && getContext() != null) {
-            int color = ContextCompat.getColor(getContext(), R.color.dashboard_top_accent_bg);
-            getActivity().getWindow().setStatusBarColor(color);
-
-            // Adjust light/dark icons based on background darkness
-            boolean isNightMode = (getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
-                    == android.content.res.Configuration.UI_MODE_NIGHT_YES;
-
+            // Set status bar to transparent to allow header background/gradient to flow behind it
+            getActivity().getWindow().setStatusBarColor(android.graphics.Color.TRANSPARENT);
+            
+            boolean isNightMode = ThemeManager.isNightMode(getContext());
             androidx.core.view.WindowInsetsControllerCompat controller =
                     androidx.core.view.WindowCompat.getInsetsController(getActivity().getWindow(), getActivity().getWindow().getDecorView());
-
+            
             // If it's NOT night mode, the background is light, so we need dark icons
             controller.setAppearanceLightStatusBars(!isNightMode);
         }
     }
+
 
     private void updateHeaderDates() {
         updateHeaderDates(true);
