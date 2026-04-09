@@ -229,4 +229,23 @@
     <string name="toast_internet_error">Internet not available</string>
     <string name="toast_location_failed">Failed to refresh location</string>
     <string name="toast_permission_denied">Location permission needed</string>
+
+    <!-- ========================== -->
+    <!-- ==== Edit Timings Screen == -->
+    <!-- ========================== -->
+    <string name="edit_timings_header_subtitle">Update Azan &amp; Jamat Schedule</string>
+    <string name="label_azan_plain">AZAN</string>
+    <string name="label_jamat_plain">JAMAT</string>
+    <string name="label_copy_yesterday">Copy Yesterday</string>
+    <string name="label_apply_all_7_days">Apply to All 7 Days</string>
+    <string name="error_jamat_after_azan">Jamat must be after Azan</string>
+    <string name="toast_syncing_prayer">Syncing %1$s from yesterday…</string>
+    <string name="sync_dialog_title">Intelligent Replication</string>
+    <string name="sync_dialog_message">This will copy today\'s Jamat schedule to the next 6 days. Proceed?</string>
+    <string name="sync_dialog_positive">Sync Now</string>
+    <string name="sync_dialog_negative">Cancel</string>
+
+    <!-- Placeholders -->
+    <string name="placeholder_day_name">MON</string>
+    <string name="placeholder_day_num">08</string>
 </resources>

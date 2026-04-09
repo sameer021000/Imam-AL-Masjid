@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/day_card_root"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:clickable="true"
+    android:focusable="true">
+
+    <TextView
+        android:id="@+id/text_day_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/placeholder_day_name"
+        android:textColor="@color/text_secondary"
+        android:fontFamily="@font/chillax_medium_font" />
+
+    <TextView
+        android:id="@+id/text_day_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/placeholder_day_num"
+        android:textColor="@color/emerald_dark"
+        android:fontFamily="@font/janna_it_bold_font" />
+
+    <View
+        android:id="@+id/selection_indicator"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/celestial_gold"
+        android:visibility="gone" />
+</LinearLayout>

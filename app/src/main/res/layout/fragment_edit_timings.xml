@@ -1,17 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/edit_root"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/edit_timings_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:background="@color/off_white_primary">
 
+    <!-- Header Section -->
+    <LinearLayout
+        android:id="@+id/edit_timings_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/edit_timings_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_edit_timings"
+            android:textColor="@color/emerald_primary"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/saleha_font"/>
+
+        <TextView
+            android:id="@+id/edit_timings_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_timings_header_subtitle"
+            android:textColor="@color/text_secondary"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/chillax_medium_font" />
+
+        <!-- 7-Day Ribbon -->
+        <HorizontalScrollView
+            android:id="@+id/scroll_day_ribbon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/layout_day_ribbon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+    </LinearLayout>
+
+    <!-- Scrollable Prayer Content -->
+    <ScrollView
+        android:id="@+id/scroll_edit_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        android:contentDescription="@string/title_edit_timings"
+        app:layout_constraintTop_toBottomOf="@id/edit_timings_header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/layout_prayer_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <!-- Global Action Bar (Bottom Floating Overlay) -->
     <TextView
-        android:id="@+id/txt_edit_title"
+        android:id="@+id/card_sync_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title_edit_timings"
-        android:textColor="@color/emerald_primary"
-        android:fontFamily="@font/saleha_font" />
+        android:text="@string/label_apply_all_7_days"
+        android:textColor="@color/off_white_primary"
+        android:fontFamily="@font/janna_it_bold_font"
+        android:gravity="center"
+        android:minHeight="48dp"
+        android:minWidth="48dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/label_apply_all_7_days"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
