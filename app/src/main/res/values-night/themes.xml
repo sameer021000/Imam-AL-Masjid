@@ -9,10 +9,55 @@
         <!-- Status Bar Customization for Dark Mode -->
         <item name="android:statusBarColor">@color/dark_background</item>
         <item name="android:windowLightStatusBar">false</item> <!-- Light icons on dark background -->
+
+        <!-- Global TimePicker Style Pointing -->
+        <item name="materialTimePickerStyle">@style/Widget.ImamALMasjid.TimePicker</item>
     </style>
 
     <!-- Splash Screen Theme for Dark Mode -->
     <style name="Theme.ImamALMasjid.Splash" parent="Base.Theme.ImamALMasjid">
         <item name="android:windowSplashScreenBackground" tools:targetApi="31">@color/dark_background</item>
+    </style>
+
+    <style name="Theme.ImamALMasjid" parent="Base.Theme.ImamALMasjid" />
+
+    <!-- 1. The Widget Style (Dark Mode Internal Mapping) -->
+    <style name="Widget.ImamALMasjid.TimePicker" parent="Widget.Material3.MaterialTimePicker">
+        <item name="clockFaceBackgroundColor">@color/dark_surface</item>
+        <item name="clockNumberTextColor">@color/dark_text_primary</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.Material3.Button.OutlinedButton</item>
+    </style>
+
+    <!-- 2. The Theme Overlay (Dark Mode Palette) -->
+    <style name="Theme.ImamALMasjid.TimePicker" parent="ThemeOverlay.Material3.MaterialTimePicker">
+        <!-- Buttons and Major Accents (Using Branding Emerald) -->
+        <item name="colorPrimary">@color/emerald_primary</item>
+        <item name="colorOnPrimary">@color/off_white_primary</item>
+        
+        <!-- Selection Highlight (Selected Hour/Minute Box background and Handle) -->
+        <!-- Fixed Visibility Issue: High contrast emerald with off-white text -->
+        <item name="colorPrimaryContainer">@color/emerald_primary</item>
+        <item name="colorOnPrimaryContainer">@color/off_white_primary</item>
+        
+        <!-- Unselected Elements backgrounds -->
+        <item name="colorSecondaryContainer">@color/dark_surface</item>
+        <item name="colorOnSecondaryContainer">@color/dark_text_secondary</item>
+        
+        <!-- Tertiary (Hand and Selector Handle) -->
+        <item name="colorTertiaryContainer">@color/emerald_primary</item>
+        <item name="colorOnTertiaryContainer">@color/off_white_primary</item>
+        
+        <!-- Surface and Backgrounds -->
+        <item name="colorSurface">@color/dark_background</item>
+        <item name="colorOnSurface">@color/dark_text_primary</item>
+        <item name="colorSurfaceVariant">@color/dark_surface</item>
+        <item name="colorOnSurfaceVariant">@color/dark_text_secondary</item>
+        
+        <!-- Surface Tokens for M3 v1.13+ -->
+        <item name="colorSurfaceContainer">@color/dark_background</item>
+        <item name="colorSurfaceContainerHigh">@color/dark_background</item>
+        <item name="colorSurfaceContainerHighest">@color/dark_background</item>
+        
+        <item name="colorOutline">@color/dark_accent_secondary</item>
     </style>
 </resources>

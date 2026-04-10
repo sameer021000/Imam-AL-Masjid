@@ -7,6 +7,9 @@
         <item name="android:windowBackground">@color/off_white_primary</item>
         <item name="android:statusBarColor">@color/off_white_primary</item>
         <item name="android:windowLightStatusBar">true</item>
+        
+        <!-- Global TimePicker Style Pointing -->
+        <item name="materialTimePickerStyle">@style/Widget.ImamALMasjid.TimePicker</item>
     </style>
 
     <!-- Splash Screen Theme -->
@@ -16,4 +19,43 @@
     </style>
 
     <style name="Theme.ImamALMasjid" parent="Base.Theme.ImamALMasjid" />
+
+    <!-- 1. The Widget Style (Controls internal mapping) -->
+    <style name="Widget.ImamALMasjid.TimePicker" parent="Widget.Material3.MaterialTimePicker">
+        <item name="clockFaceBackgroundColor">@color/off_white_dark</item>
+        <item name="clockNumberTextColor">@color/text_primary</item>
+        <!-- This ensures chips don't use default purple surface variant -->
+        <item name="materialButtonOutlinedStyle">@style/Widget.Material3.Button.OutlinedButton</item>
+    </style>
+
+    <!-- 2. The Theme Overlay (Controls palette colors) -->
+    <style name="Theme.ImamALMasjid.TimePicker" parent="ThemeOverlay.Material3.MaterialTimePicker">
+        <item name="colorPrimary">@color/emerald_primary</item>
+        <item name="colorOnPrimary">@color/off_white_primary</item>
+        
+        <!-- Selection Highlight (The Hand and Selected Chip) -->
+        <item name="colorPrimaryContainer">@color/emerald_very_light</item>
+        <item name="colorOnPrimaryContainer">@color/emerald_dark</item>
+        
+        <!-- Unselected Elements -->
+        <item name="colorSecondaryContainer">@color/off_white_dark</item>
+        <item name="colorOnSecondaryContainer">@color/text_secondary</item>
+        
+        <!-- Tertiary (Selection Handle/Hand) -->
+        <item name="colorTertiaryContainer">@color/emerald_primary</item>
+        <item name="colorOnTertiaryContainer">@color/off_white_primary</item>
+        
+        <!-- Surface and Background (Crucial for violet removal) -->
+        <item name="colorSurface">@color/off_white_primary</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorSurfaceVariant">@color/off_white_accent</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        
+        <!-- Recent M3 Surface Tokens -->
+        <item name="colorSurfaceContainer">@color/off_white_primary</item>
+        <item name="colorSurfaceContainerHigh">@color/off_white_primary</item>
+        <item name="colorSurfaceContainerHighest">@color/off_white_primary</item>
+        
+        <item name="colorOutline">@color/emerald_alpha_20</item>
+    </style>
 </resources>

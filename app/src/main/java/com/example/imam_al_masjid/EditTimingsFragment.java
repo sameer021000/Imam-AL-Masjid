@@ -160,6 +160,7 @@ public class EditTimingsFragment extends BaseFragment {
         if (getContext() == null) return;
 
         MaterialTimePicker picker = new MaterialTimePicker.Builder()
+                .setTheme(R.style.Theme_ImamALMasjid_TimePicker)
                 .setTimeFormat(TimeFormat.CLOCK_12H)
                 .setHour(12)
                 .setMinute(0)
