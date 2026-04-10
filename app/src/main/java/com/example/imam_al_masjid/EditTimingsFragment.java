@@ -90,7 +90,6 @@ public class EditTimingsFragment extends BaseFragment {
             indicator.setVisibility(isSelected ? View.VISIBLE : View.GONE);
 
             if (isSelected) {
-                // ACTIVE State Coloring (Matches Active Prayer Card)
                 int bodyColor = ContextCompat.getColor(getContext(), R.color.prayer_card_bg_active);
                 int shadowColor = ContextCompat.getColor(getContext(), R.color.clay_dark_shadow);
                 int highlightColor = ContextCompat.getColor(getContext(), R.color.clay_light_shadow);
@@ -106,7 +105,6 @@ public class EditTimingsFragment extends BaseFragment {
                 // Lift selected card slightly
                 child.animate().translationZ(10f).scaleY(1.05f).scaleX(1.05f).setDuration(300).start();
             } else {
-                // INACTIVE State Coloring (Matches Non-Active Prayer Card)
                 int bodyColor = ContextCompat.getColor(getContext(), R.color.off_white_primary);
                 int shadowColor = ContextCompat.getColor(getContext(), R.color.off_white_surface_shadow);
                 int highlightColor = ContextCompat.getColor(getContext(), R.color.off_white_surface_highlight);
@@ -126,6 +124,7 @@ public class EditTimingsFragment extends BaseFragment {
     }
 
     private void loadPrayerCards(LayoutInflater inflater) {
+        Context ctx = inflater.getContext();
         layoutPrayerList.removeAllViews();
         for (String prayer : PRAYERS) {
             View card = inflater.inflate(R.layout.item_dashboard_edit_prayer_session, layoutPrayerList, false);
@@ -135,6 +134,11 @@ public class EditTimingsFragment extends BaseFragment {
             View btnCopy = card.findViewById(R.id.btn_copy_yesterday);
 
             txtName.setText(prayer);
+            
+            // Sets sun/moon icons based on prayer name
+            // Pass the Active Border color even for inactive cards to match Dashboard's gold-ring aesthetic
+            int activeBorderColor = ContextCompat.getColor(ctx, R.color.prayer_card_border_active);
+            updateCelestialOrbit(card, prayer, activeBorderColor);
 
             card.findViewById(R.id.layout_edit_azan).setOnClickListener(v -> 
                 showTimePicker(txtAzan, prayer + " Azan", null));
@@ -144,7 +148,7 @@ public class EditTimingsFragment extends BaseFragment {
             
             btnCopy.setOnClickListener(v -> {
                 String msg = getString(R.string.toast_syncing_prayer, prayer);
-                android.widget.Toast.makeText(getContext(), msg, android.widget.Toast.LENGTH_SHORT).show();
+                android.widget.Toast.makeText(ctx, msg, android.widget.Toast.LENGTH_SHORT).show();
             });
 
             setupPrayerCardStyling(card);
@@ -235,9 +239,18 @@ public class EditTimingsFragment extends BaseFragment {
         ScalingUtils.applyScaledLayout(card.findViewById(R.id.text_copy_label), -1, -1, 0, 0, 0.015f, 0);
         ((TextView)card.findViewById(R.id.text_copy_label)).setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.025f));
 
+        // Orbit View Scaling (Match Dashboard visually, but increase buffer to prevent node cut-off)
+        // By setting layout size to 0.12f and scaling down to 0.66f, we get exactly 0.08f visual 
+        // diameter while providing maximum internal canvas space for the sun/moon nodes.
+        View orbit = card.findViewById(R.id.view_celestial_orbit);
+        ScalingUtils.applyScaledLayout(orbit, 0.12f, 0.12f, 0, 0, 0, 0.035f);
+        orbit.setScaleX(0.66f);
+        orbit.setScaleY(0.66f);
+
         // Prayer Name Scaling
         TextView name = card.findViewById(R.id.text_prayer_name);
         name.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.045f));
+        ScalingUtils.applyScaledLayout(name, -1, -1, 0, 0, 0, 0.02f); // Synchronized margin after scaling
 
         // Edit Boxes Layout
         ScalingUtils.applyScaledLayout(card.findViewById(R.id.layout_edit_container), -1, -1, 0.01f, 0, 0, 0);
@@ -286,6 +299,22 @@ public class EditTimingsFragment extends BaseFragment {
         int hPad = ScalingUtils.getScaledSize(ctx, 0.04f);
         int vPad = ScalingUtils.getScaledSize(ctx, 0.03f);
         card.findViewById(R.id.prayer_card_root).setPadding(hPad, vPad, hPad, vPad);
+    }
+
+    private void updateCelestialOrbit(View row, String waqtKey, int color) {
+        CelestialOrbitView orbit = row.findViewById(R.id.view_celestial_orbit);
+        if (orbit != null) {
+            float deg = 0f;
+            boolean isNight = false;
+            switch(waqtKey.toLowerCase()) {
+                case "fajr": deg = 270f; break;
+                case "zuhr": deg = 0f; break;
+                case "asr": deg = 45f; break;
+                case "maghrib": deg = 90f; break;
+                case "isha": deg = 180f; isNight = true; break;
+            }
+            orbit.setOrbitState(deg, isNight, color, false);
+        }
     }
 
     @Override

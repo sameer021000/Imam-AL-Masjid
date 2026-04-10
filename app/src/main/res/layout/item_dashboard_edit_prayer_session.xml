@@ -3,19 +3,30 @@
     android:id="@+id/prayer_card_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <RelativeLayout
         android:id="@+id/layout_header_group"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <com.example.imam_al_masjid.CelestialOrbitView
+            android:id="@+id/view_celestial_orbit"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true" />
 
         <TextView
             android:id="@+id/text_prayer_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
+            android:layout_toEndOf="@id/view_celestial_orbit"
             android:layout_toStartOf="@id/btn_copy_yesterday"
             android:letterSpacing="0.05"
             android:text="@string/placeholder_waqt_name"
