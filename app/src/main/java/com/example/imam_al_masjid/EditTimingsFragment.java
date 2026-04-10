@@ -237,7 +237,7 @@ public class EditTimingsFragment extends BaseFragment {
 
         // Prayer Name Scaling
         TextView name = card.findViewById(R.id.text_prayer_name);
-        name.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.04f));
+        name.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.045f));
 
         // Edit Boxes Layout
         ScalingUtils.applyScaledLayout(card.findViewById(R.id.layout_edit_container), -1, -1, 0.01f, 0, 0, 0);
@@ -249,7 +249,7 @@ public class EditTimingsFragment extends BaseFragment {
         TextView txtJamatTime = card.findViewById(R.id.text_jamat_time);
 
         float labelSize = ScalingUtils.getScaledTextSize(ctx, 0.028f);
-        float timeSize = ScalingUtils.getScaledTextSize(ctx, 0.05f);
+        float timeSize = ScalingUtils.getScaledTextSize(ctx, 0.04f);
 
         lblAzan.setTextSize(labelSize);
         txtAzanTime.setTextSize(timeSize);
