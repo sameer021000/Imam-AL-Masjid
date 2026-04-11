@@ -234,7 +234,7 @@ public class EditTimingsFragment extends BaseFragment {
         // Copy Button Scaling
         View btnCopy = card.findViewById(R.id.btn_copy_yesterday);
         int cpHP = ScalingUtils.getScaledSize(ctx, 0.025f);
-        int cpVP = ScalingUtils.getScaledSize(ctx, 0.01f);
+        int cpVP = ScalingUtils.getScaledSize(ctx, 0.02f);
         btnCopy.setPadding(cpHP, cpVP, cpHP, cpVP);
         ScalingUtils.applyScaledLayout(card.findViewById(R.id.img_copy_icon), 0.03f, 0.03f, 0, 0, 0, 0);
         ScalingUtils.applyScaledLayout(card.findViewById(R.id.text_copy_label), -1, -1, 0, 0, 0.015f, 0);
@@ -244,7 +244,7 @@ public class EditTimingsFragment extends BaseFragment {
         // By setting layout size to 0.12f and scaling down to 0.66f, we get exactly 0.08f visual 
         // diameter while providing maximum internal canvas space for the sun/moon nodes.
         View orbit = card.findViewById(R.id.view_celestial_orbit);
-        ScalingUtils.applyScaledLayout(orbit, 0.12f, 0.12f, 0, 0, 0, 0.035f);
+        ScalingUtils.applyScaledLayout(orbit, 0.12f, 0.12f, 0, 0, 0, 0.015f); // Reduced gap from 0.035f to 0.015f
         orbit.setScaleX(0.66f);
         orbit.setScaleY(0.66f);
 
