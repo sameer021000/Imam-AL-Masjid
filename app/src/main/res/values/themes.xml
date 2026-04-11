@@ -57,5 +57,14 @@
         <item name="colorSurfaceContainerHighest">@color/off_white_primary</item>
         
         <item name="colorOutline">@color/emerald_alpha_20</item>
+        
+        <!-- Customizing Title Appearance -->
+        <item name="materialTimePickerTitleStyle">@style/Widget.ImamALMasjid.TimePicker.TitleText</item>
+    </style>
+
+    <style name="Widget.ImamALMasjid.TimePicker.TitleText" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/janna_it_bold_font</item>
+        <item name="android:textColor">@color/emerald_dark</item>
     </style>
 </resources>

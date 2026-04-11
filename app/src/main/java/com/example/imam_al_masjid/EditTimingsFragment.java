@@ -18,7 +18,7 @@ public class EditTimingsFragment extends BaseFragment {
 
     private LinearLayout layoutDayRibbon;
     private LinearLayout layoutPrayerList;
-    private final String[] PRAYERS = {"FAJR", "ZUHR", "ASR", "MAGHRIB", "ISHA"};
+    private final String[] PRAYERS = {"Fajr", "Zuhr", "Asr", "Maghrib", "Isha"};
 
     public EditTimingsFragment() {
         // Required empty public constructor
