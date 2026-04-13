@@ -2,6 +2,7 @@ package com.example.imam_al_masjid;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -235,18 +236,31 @@ public class EditTimingsFragment extends BaseFragment {
     private void handlePrayerSubmit(View v, String prayer) {
         if (getContext() == null) return;
         
-        // Tactile Press Feedback
-        v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).withEndAction(() -> {
-            v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).start();
-            
-            // Success Logic
-            String msg = getString(R.string.toast_prayer_updated, prayer);
-            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-            
-            // Pulse Glow Animation (Conceptual visual success)
-            v.animate().alpha(0.7f).setDuration(200).withEndAction(() -> 
-                v.animate().alpha(1.0f).setDuration(200).start()).start();
-        }).start();
+        // Success Logic (Feedback provided by applyTactileTouch + Success Pulse)
+        String msg = getString(R.string.toast_prayer_updated, prayer);
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        
+        // Success Pulse Animation (Fades out and in to signal completion)
+        v.animate().alpha(0.7f).setDuration(200).withEndAction(() -> 
+            v.animate().alpha(1.0f).setDuration(200).start()).start();
+    }
+
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
+    private void applyTactileTouch(View v) {
+        if (v == null) return;
+        v.setOnTouchListener((v1, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    // Match Settings Screen: 0.97f scale, 0.85f alpha
+                    v1.animate().scaleX(0.97f).scaleY(0.97f).alpha(0.85f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v1.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
+                    break;
+            }
+            return false;
+        });
     }
 
     @android.annotation.SuppressLint("ClickableViewAccessibility")
@@ -356,6 +370,7 @@ public class EditTimingsFragment extends BaseFragment {
         ScalingUtils.applyScaledLayout(btnSubmit, -1, -1, 0.025f, 0, 0, 0);
         
         ScalingUtils.applyClaymorphism(btnSubmit, 0.045f, false, ContextCompat.getColor(ctx, R.color.emerald_primary));
+        applyTactileTouch(btnSubmit);
 
         // Orbit and Name
         View orbit = card.findViewById(R.id.view_celestial_orbit);
