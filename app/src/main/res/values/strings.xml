@@ -237,13 +237,14 @@
     <string name="label_azan_plain">AZAN</string>
     <string name="label_jamat_plain">JAMAT</string>
     <string name="label_copy_yesterday">Copy Yesterday</string>
-    <string name="label_apply_all_7_days">Apply to All 7 Days</string>
+    <string name="label_submit_prayer">SUBMIT</string>
+    <string name="label_propagate_forward">Propagate</string>
+    <string name="propagate_3_days">To 3 Days</string>
+    <string name="propagate_5_days">To 5 Days</string>
+    <string name="propagate_7_days">To 7 Days</string>
     <string name="error_jamat_after_azan">Jamat must be after Azan</string>
-    <string name="toast_syncing_prayer">Syncing %1$s from yesterday…</string>
-    <string name="sync_dialog_title">Intelligent Replication</string>
-    <string name="sync_dialog_message">This will copy today\'s Jamat schedule to the next 6 days. Proceed?</string>
-    <string name="sync_dialog_positive">Sync Now</string>
-    <string name="sync_dialog_negative">Cancel</string>
+    <string name="toast_prayer_updated">%1$s timing updated successfully</string>
+    <string name="toast_propagation_success">%1$s schedule propagated for %2$d days</string>
 
     <!-- Placeholders -->
     <string name="placeholder_day_name">MON</string>

@@ -27,14 +27,14 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/view_celestial_orbit"
-            android:layout_toStartOf="@id/btn_copy_yesterday"
+            android:layout_toStartOf="@id/layout_contextual_action"
             android:letterSpacing="0.05"
             android:text="@string/placeholder_waqt_name"
             android:fontFamily="@font/janna_it_bold_font"
             android:textColor="@color/emerald_primary" />
 
         <LinearLayout
-            android:id="@+id/btn_copy_yesterday"
+            android:id="@+id/layout_contextual_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -46,7 +46,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/img_copy_icon"
+                android:id="@+id/img_contextual_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_settings_backup"
@@ -55,7 +55,7 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto" />
 
             <TextView
-                android:id="@+id/text_copy_label"
+                android:id="@+id/text_contextual_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_copy_yesterday"
@@ -134,4 +134,16 @@
                 android:fontFamily="@font/janna_it_bold_font" />
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn_submit_prayer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_submit_prayer"
+        android:textColor="@color/off_white_primary"
+        android:fontFamily="@font/janna_it_bold_font"
+        android:gravity="center"
+        android:letterSpacing="0.1"
+        android:clickable="true"
+        android:focusable="true"/>
 </LinearLayout>

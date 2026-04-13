@@ -1,11 +1,12 @@
 package com.example.imam_al_masjid;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.view.ViewGroup;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
@@ -19,6 +20,11 @@ public class EditTimingsFragment extends BaseFragment {
     private LinearLayout layoutDayRibbon;
     private LinearLayout layoutPrayerList;
     private final String[] PRAYERS = {"Fajr", "Zuhr", "Asr", "Maghrib", "Isha"};
+    private int selectedDayIndex = 0;
+    
+    // Preference Keys for persistence (survives theme changes)
+    private static final String PREFS_EDIT = "imam_edit_timings_prefs";
+    private static final String KEY_PROP_PREFIX = "prop_preference_";
 
     public EditTimingsFragment() {
         // Required empty public constructor
@@ -38,17 +44,6 @@ public class EditTimingsFragment extends BaseFragment {
         if (getContext() != null) {
             loadPrayerCards(LayoutInflater.from(getContext()));
         }
-
-        view.findViewById(R.id.card_sync_all).setOnClickListener(v -> {
-            if (getContext() == null) return;
-            new androidx.appcompat.app.AlertDialog.Builder(getContext())
-                    .setTitle(R.string.sync_dialog_title)
-                    .setMessage(R.string.sync_dialog_message)
-                    .setPositiveButton(R.string.sync_dialog_positive, (dialog, which) -> 
-                        android.widget.Toast.makeText(getContext(), "Schedule replicated across 7 days", android.widget.Toast.LENGTH_SHORT).show())
-                    .setNegativeButton(R.string.sync_dialog_negative, null)
-                    .show();
-        });
     }
 
     private void setupDayRibbon() {
@@ -79,6 +74,7 @@ public class EditTimingsFragment extends BaseFragment {
 
     private void selectDay(int index) {
         if (getContext() == null) return;
+        selectedDayIndex = index;
         
         for (int i = 0; i < layoutDayRibbon.getChildCount(); i++) {
             View child = layoutDayRibbon.getChildAt(i);
@@ -121,35 +117,50 @@ public class EditTimingsFragment extends BaseFragment {
                 child.animate().translationZ(0f).scaleY(1.0f).scaleX(1.0f).setDuration(300).start();
             }
         }
+        // Reload cards to reflect context changes (IsToday vs IsFuture)
+        loadPrayerCards(LayoutInflater.from(getContext()));
     }
 
     private void loadPrayerCards(LayoutInflater inflater) {
         Context ctx = inflater.getContext();
         layoutPrayerList.removeAllViews();
+        boolean isToday = (selectedDayIndex == 0);
+
         for (String prayer : PRAYERS) {
             View card = inflater.inflate(R.layout.item_dashboard_edit_prayer_session, layoutPrayerList, false);
             TextView txtName = card.findViewById(R.id.text_prayer_name);
             TextView txtAzan = card.findViewById(R.id.text_azan_time);
             TextView txtJamat = card.findViewById(R.id.text_jamat_time);
-            View btnCopy = card.findViewById(R.id.btn_copy_yesterday);
+            View layoutContextual = card.findViewById(R.id.layout_contextual_action);
+            TextView txtContextual = card.findViewById(R.id.text_contextual_label);
+            android.widget.ImageView imgContextual = card.findViewById(R.id.img_contextual_icon);
+            View btnSubmit = card.findViewById(R.id.btn_submit_prayer);
 
             txtName.setText(prayer);
-            
-            // Sets sun/moon icons based on prayer name
-            // Pass the Active Border color even for inactive cards to match Dashboard's gold-ring aesthetic
-            int activeBorderColor = ContextCompat.getColor(ctx, R.color.prayer_card_border_active);
-            updateCelestialOrbit(card, prayer, activeBorderColor);
+            updateCelestialOrbit(card, prayer, ContextCompat.getColor(ctx, R.color.prayer_card_border_active));
+
+            if (isToday) {
+                // Propagate dropdown for Today
+                txtContextual.setText(R.string.label_propagate_forward);
+                imgContextual.setImageResource(R.drawable.ic_settings_sync);
+                layoutContextual.setOnClickListener(v -> showPropagateMenu(v, prayer));
+            } else {
+                // Default for future days
+                txtContextual.setText(R.string.label_copy_yesterday);
+                imgContextual.setImageResource(R.drawable.ic_settings_backup);
+                layoutContextual.setOnClickListener(v -> {
+                    String msg = getString(R.string.toast_prayer_updated, prayer);
+                    Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            btnSubmit.setOnClickListener(v -> handlePrayerSubmit(v, prayer));
 
             card.findViewById(R.id.layout_edit_azan).setOnClickListener(v -> 
                 showTimePicker(txtAzan, prayer + " Azan", null));
             
             card.findViewById(R.id.layout_edit_jamat).setOnClickListener(v -> 
                 showTimePicker(txtJamat, prayer + " Jamat", txtAzan.getText().toString()));
-            
-            btnCopy.setOnClickListener(v -> {
-                String msg = getString(R.string.toast_syncing_prayer, prayer);
-                android.widget.Toast.makeText(ctx, msg, android.widget.Toast.LENGTH_SHORT).show();
-            });
 
             setupPrayerCardStyling(card);
             layoutPrayerList.addView(card);
@@ -216,42 +227,145 @@ public class EditTimingsFragment extends BaseFragment {
         name.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.025f));
         num.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.045f));
 
-        // Dynamically scale inner margins and dimensions to satisfy prompt Requirement #4
+        // Dynamically scale inner margins and dimensions
         ScalingUtils.applyScaledLayout(num, -1, -1, 0.01f, 0, 0, 0); // 1% top margin
         ScalingUtils.applyScaledLayout(indicator, 0.04f, 0.005f, 0.015f, 0, 0, 0); // 4% width, 0.5% height, 1.5% margin
+    }
+
+    private void handlePrayerSubmit(View v, String prayer) {
+        if (getContext() == null) return;
+        
+        // Tactile Press Feedback
+        v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).withEndAction(() -> {
+            v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).start();
+            
+            // Success Logic
+            String msg = getString(R.string.toast_prayer_updated, prayer);
+            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            
+            // Pulse Glow Animation (Conceptual visual success)
+            v.animate().alpha(0.7f).setDuration(200).withEndAction(() -> 
+                v.animate().alpha(1.0f).setDuration(200).start()).start();
+        }).start();
+    }
+
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
+    private void showPropagateMenu(View anchor, String prayer) {
+        Context ctx = getContext();
+        if (ctx == null) return;
+
+        // Create Custom Claymorphic Dropdown via PopupWindow (Match LoginActivity architecture)
+        LinearLayout itemsContainer = new LinearLayout(ctx);
+        itemsContainer.setOrientation(LinearLayout.VERTICAL);
+        
+        // Exact Clay specs from LoginActivity
+        int bgColor = ContextCompat.getColor(ctx, R.color.off_white_primary);
+        int shadowColor = ContextCompat.getColor(ctx, R.color.off_white_surface_shadow);
+        int highlightColor = ContextCompat.getColor(ctx, R.color.off_white_surface_highlight);
+        itemsContainer.setBackground(ScalingUtils.createClayDrawable(ctx, 
+                0.04f, 0.01f, 0.01f, 0, bgColor, shadowColor, highlightColor, 0));
+
+        // Increase width to prevent text wrapping (Using fixed width instead of anchor width)
+        int popupWidth = ScalingUtils.getScaledSize(ctx, 0.45f);
+        android.widget.PopupWindow popup = new android.widget.PopupWindow(itemsContainer, 
+                popupWidth, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+
+        String[] options = {
+            getString(R.string.propagate_3_days),
+            getString(R.string.propagate_5_days),
+            getString(R.string.propagate_7_days)
+        };
+
+        int horizontalPadding = ScalingUtils.getScaledSize(ctx, 0.045f); 
+        int verticalPadding = ScalingUtils.getScaledSize(ctx, 0.025f);
+        float inputTextSize = 0.040f;
+
+        // Highlighting Logic (Persistent from SharedPreferences)
+        android.content.SharedPreferences prefs = ctx.getSharedPreferences(PREFS_EDIT, Context.MODE_PRIVATE);
+        int currentSelection = prefs.getInt(KEY_PROP_PREFIX + prayer, -1);
+        int highlightBody = ContextCompat.getColor(ctx, R.color.emerald_alpha_20);
+
+        for (int i = 0; i < options.length; i++) {
+            final int days = (i == 0) ? 3 : (i == 1) ? 5 : 7;
+            String option = options[i];
+            
+            TextView item = (TextView) getLayoutInflater().inflate(R.layout.dropdown_item, itemsContainer, false);
+            item.setText(option);
+            item.setTextSize(ScalingUtils.getScaledTextSize(ctx, inputTextSize));
+            item.setTextColor(ContextCompat.getColor(ctx, R.color.emerald_primary));
+            item.setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
+            
+            // Highlight if selected
+            if (days == currentSelection) {
+                item.setBackground(ScalingUtils.createInsetClayDrawable(ctx, 0.02f, 0.005f, 0.01f,
+                        highlightBody, shadowColor, highlightColor));
+            }
+
+            // Apply Tactile Touch Animation from Login Screen
+            item.setOnTouchListener((v, event) -> {
+                switch (event.getAction()) {
+                    case android.view.MotionEvent.ACTION_DOWN:
+                        v.animate().scaleX(0.97f).scaleY(0.97f).alpha(0.85f).setDuration(100).start();
+                        break;
+                    case android.view.MotionEvent.ACTION_UP:
+                    case android.view.MotionEvent.ACTION_CANCEL:
+                        v.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
+                        break;
+                }
+                return false;
+            });
+
+            item.setOnClickListener(v -> {
+                // Save Preference Persistently
+                prefs.edit().putInt(KEY_PROP_PREFIX + prayer, days).apply();
+                
+                String msg = getString(R.string.toast_propagation_success, prayer, days);
+                Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
+                popup.dismiss();
+            });
+            
+            itemsContainer.addView(item);
+        }
+
+        popup.setElevation(ScalingUtils.getScaledSize(ctx, 0.02f));
+        popup.showAsDropDown(anchor);
     }
 
     private void setupPrayerCardStyling(View card) {
         Context ctx = getContext();
         if (ctx == null) return;
         
-        // Root Claymorphism (already scaled)
+        // Root Claymorphism
         ScalingUtils.applyScaledLayout(card.findViewById(R.id.prayer_card_root), 0.94f, -1, 0.025f, 0.005f, 0.03f, 0.03f);
-
-        // Header Group Layout (originally 8dp margins)
         ScalingUtils.applyScaledLayout(card.findViewById(R.id.layout_header_group), -1, -1, 0, 0.02f, 0.02f, 0.02f);
 
-        // Copy Button Scaling
-        View btnCopy = card.findViewById(R.id.btn_copy_yesterday);
+        // Contextual Action Scaling
+        View layoutAction = card.findViewById(R.id.layout_contextual_action);
         int cpHP = ScalingUtils.getScaledSize(ctx, 0.025f);
-        int cpVP = ScalingUtils.getScaledSize(ctx, 0.02f);
-        btnCopy.setPadding(cpHP, cpVP, cpHP, cpVP);
-        ScalingUtils.applyScaledLayout(card.findViewById(R.id.img_copy_icon), 0.03f, 0.03f, 0, 0, 0, 0);
-        ScalingUtils.applyScaledLayout(card.findViewById(R.id.text_copy_label), -1, -1, 0, 0, 0.015f, 0);
-        ((TextView)card.findViewById(R.id.text_copy_label)).setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.025f));
+        int cpVP = ScalingUtils.getScaledSize(ctx, 0.025f); // Increased from 0.015f to 0.025f
+        layoutAction.setPadding(cpHP, cpVP, cpHP, cpVP);
+        ScalingUtils.applyScaledLayout(card.findViewById(R.id.img_contextual_icon), 0.03f, 0.03f, 0, 0, 0, 0);
+        ScalingUtils.applyScaledLayout(card.findViewById(R.id.text_contextual_label), -1, -1, 0, 0, 0.015f, 0);
+        ((TextView)card.findViewById(R.id.text_contextual_label)).setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.025f));
 
-        // Orbit View Scaling (Match Dashboard visually, but increase buffer to prevent node cut-off)
-        // By setting layout size to 0.12f and scaling down to 0.66f, we get exactly 0.08f visual 
-        // diameter while providing maximum internal canvas space for the sun/moon nodes.
+        // Submit Button Scaling & Styling
+        TextView btnSubmit = card.findViewById(R.id.btn_submit_prayer);
+        btnSubmit.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.035f));
+        int sVP = ScalingUtils.getScaledSize(ctx, 0.02f);
+        btnSubmit.setPadding(0, sVP, 0, sVP);
+        ScalingUtils.applyScaledLayout(btnSubmit, -1, -1, 0.025f, 0, 0, 0);
+        
+        ScalingUtils.applyClaymorphism(btnSubmit, 0.045f, false, ContextCompat.getColor(ctx, R.color.emerald_primary));
+
+        // Orbit and Name
         View orbit = card.findViewById(R.id.view_celestial_orbit);
-        ScalingUtils.applyScaledLayout(orbit, 0.12f, 0.12f, 0, 0, 0, 0.015f); // Reduced gap from 0.035f to 0.015f
+        ScalingUtils.applyScaledLayout(orbit, 0.12f, 0.12f, 0, 0, 0, 0.015f);
         orbit.setScaleX(0.66f);
         orbit.setScaleY(0.66f);
 
-        // Prayer Name Scaling
         TextView name = card.findViewById(R.id.text_prayer_name);
         name.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.045f));
-        ScalingUtils.applyScaledLayout(name, -1, -1, 0, 0, 0, 0.02f); // Synchronized margin after scaling
+        ScalingUtils.applyScaledLayout(name, -1, -1, 0, 0, 0, 0.02f);
 
         // Edit Boxes Layout
         ScalingUtils.applyScaledLayout(card.findViewById(R.id.layout_edit_container), -1, -1, 0.01f, 0, 0, 0);
@@ -275,31 +389,33 @@ public class EditTimingsFragment extends BaseFragment {
         ScalingUtils.applyScaledLayout(lblJamat, -1, -1, 0.01f, 0, 0, 0);
         ScalingUtils.applyScaledLayout(txtJamatTime, -1, -1, 0.01f, 0, 0, 0);
 
-        // Divider Scaling
+        // Divider
         ScalingUtils.applyScaledLayout(card.findViewById(R.id.edit_divider), 0.002f, 0.10f, 0, 0, 0.02f, 0.02f);
 
-        // 2. Claymorphic Backgrounds
-        int bodyColor = ContextCompat.getColor(ctx, R.color.off_white_primary);
-        int shadowColor = ContextCompat.getColor(ctx, R.color.off_white_surface_shadow);
-        int highlightColor = ContextCompat.getColor(ctx, R.color.off_white_surface_highlight);
-        int strokeColor = ContextCompat.getColor(ctx, R.color.off_white_grayish);
+        // Restore Edit Boxes Claymorphism
+        int fieldBodyColor = ContextCompat.getColor(ctx, R.color.off_white_primary);
+        int fieldShadowColor = ContextCompat.getColor(ctx, R.color.off_white_surface_shadow);
+        int fieldHighlightColor = ContextCompat.getColor(ctx, R.color.off_white_surface_highlight);
+        int fieldStrokeColor = ContextCompat.getColor(ctx, R.color.off_white_grayish);
 
-        // Applying exact 9-param claymorphism from Home Screen rows
-        card.findViewById(R.id.prayer_card_root).setBackground(ScalingUtils.createClayDrawable(ctx,
-                0.045f, 0.010f, 0.006f, 0.002f, 
-                bodyColor, shadowColor, highlightColor, strokeColor));
-
-        Drawable fieldClay = ScalingUtils.createClayDrawable(ctx,
+        android.graphics.drawable.Drawable fieldClay = ScalingUtils.createClayDrawable(ctx,
                 0.035f, 0.008f, 0.005f, 0.002f, 
-                bodyColor, shadowColor, highlightColor, strokeColor);
+                fieldBodyColor, fieldShadowColor, fieldHighlightColor, fieldStrokeColor);
 
         card.findViewById(R.id.layout_edit_azan).setBackground(fieldClay);
         card.findViewById(R.id.layout_edit_jamat).setBackground(fieldClay);
+
+        // Main Card Background
+        card.findViewById(R.id.prayer_card_root).setBackground(ScalingUtils.createClayDrawable(ctx,
+                0.045f, 0.010f, 0.006f, 0.002f, 
+                ContextCompat.getColor(ctx, R.color.off_white_primary), 
+                ContextCompat.getColor(ctx, R.color.off_white_surface_shadow), 
+                ContextCompat.getColor(ctx, R.color.off_white_surface_highlight), 
+                ContextCompat.getColor(ctx, R.color.off_white_grayish)));
         
-        // 3. Spacing Padding
-        int hPad = ScalingUtils.getScaledSize(ctx, 0.04f);
-        int vPad = ScalingUtils.getScaledSize(ctx, 0.03f);
-        card.findViewById(R.id.prayer_card_root).setPadding(hPad, vPad, hPad, vPad);
+        int rowHPad = ScalingUtils.getScaledSize(ctx, 0.04f);
+        int rowVPad = ScalingUtils.getScaledSize(ctx, 0.03f);
+        card.findViewById(R.id.prayer_card_root).setPadding(rowHPad, rowVPad, rowHPad, rowVPad);
     }
 
     private void updateCelestialOrbit(View row, String waqtKey, int color) {
@@ -340,37 +456,14 @@ public class EditTimingsFragment extends BaseFragment {
         ScalingUtils.applyScaledLayout(ribbon, 1.0f, -1, 0.02f, 0, 0, 0);
         ScalingUtils.applyScaledLayout(view.findViewById(R.id.layout_prayer_list), 1.0f, -1, 0, 0, 0, 0);
 
-        // List Bottom Padding (to avoid overlapping with the floating action bar)
+        // List Bottom Padding
         int listBottomPad = ScalingUtils.getScaledSize(ctx, 0.15f); // ~15% of screen height
         view.findViewById(R.id.layout_prayer_list).setPadding(0, 0, 0, listBottomPad);
-
-        // Sync Action Bar Scaling (Refactored to single TextView for lint optimization)
-        TextView syncBar = view.findViewById(R.id.card_sync_all);
-        int sHP = ScalingUtils.getScaledSize(ctx, 0.06f);
-        int sVP = ScalingUtils.getScaledSize(ctx, 0.03f);
-        syncBar.setPadding(sHP, sVP, sHP, sVP);
-        syncBar.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.04f));
-
-        // Scale the compound drawable (icon) manually to maintain proportional design
-        android.graphics.drawable.Drawable syncIcon = ContextCompat.getDrawable(ctx, R.drawable.ic_settings_sync);
-        if (syncIcon != null) {
-            int iconSize = ScalingUtils.getScaledSize(ctx, 0.05f);
-            syncIcon.setBounds(0, 0, iconSize, iconSize);
-            syncIcon.setTint(ContextCompat.getColor(ctx, R.color.off_white_primary));
-            syncBar.setCompoundDrawablesRelative(syncIcon, null, null, null);
-            syncBar.setCompoundDrawablePadding(ScalingUtils.getScaledSize(ctx, 0.03f));
-        }
-
-        // Floating Position
-        ScalingUtils.applyScaledLayout(syncBar, -1, -1, 0, 0.06f, 0, 0);
     }
 
     @Override
     protected void applyClaymorphism(View view) {
-        // Apply Claymorphism to the Sync FAB inner layout to fix border mismatch
-        if (getContext() != null) {
-            ScalingUtils.applyClaymorphism(view.findViewById(R.id.card_sync_all), 0.045f, false, 
-                    ContextCompat.getColor(getContext(), R.color.emerald_primary));
-        }
+        // Claymorphism is now applied per-card in setupPrayerCardStyling
     }
 }
+

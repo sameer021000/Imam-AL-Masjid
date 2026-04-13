@@ -70,22 +70,4 @@
             android:clipToPadding="false" />
     </ScrollView>
 
-    <!-- Global Action Bar (Bottom Floating Overlay) -->
-    <TextView
-        android:id="@+id/card_sync_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/label_apply_all_7_days"
-        android:textColor="@color/off_white_primary"
-        android:fontFamily="@font/janna_it_bold_font"
-        android:gravity="center"
-        android:minHeight="48dp"
-        android:minWidth="48dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:contentDescription="@string/label_apply_all_7_days"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
