@@ -242,7 +242,7 @@
     <string name="propagate_3_days">To 3 Days</string>
     <string name="propagate_5_days">To 5 Days</string>
     <string name="propagate_7_days">To 7 Days</string>
-    <string name="error_jamat_after_azan">Jamat must be after Azan</string>
+    <string name="error_jamat_after_azan">Jamat time must be after Azan time</string>
     <string name="toast_prayer_updated">%1$s timing updated successfully</string>
     <string name="toast_propagation_success">%1$s schedule propagated for %2$d days</string>
 

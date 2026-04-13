@@ -138,6 +138,9 @@ public class EditTimingsFragment extends BaseFragment {
             View btnSubmit = card.findViewById(R.id.btn_submit_prayer);
 
             txtName.setText(prayer);
+            txtAzan.setText(getDefaultAzan(prayer));
+            txtJamat.setText(getDefaultJamat(prayer));
+            
             updateCelestialOrbit(card, prayer, ContextCompat.getColor(ctx, R.color.prayer_card_border_active));
 
             if (isToday) {
@@ -155,20 +158,42 @@ public class EditTimingsFragment extends BaseFragment {
                 });
             }
 
-            btnSubmit.setOnClickListener(v -> handlePrayerSubmit(v, prayer));
+            btnSubmit.setOnClickListener(v -> handlePrayerSubmit(card, prayer));
 
             card.findViewById(R.id.layout_edit_azan).setOnClickListener(v -> 
-                showTimePicker(txtAzan, prayer + " Azan", null));
+                showTimePicker(txtAzan, prayer + " Azan"));
             
             card.findViewById(R.id.layout_edit_jamat).setOnClickListener(v -> 
-                showTimePicker(txtJamat, prayer + " Jamat", txtAzan.getText().toString()));
+                showTimePicker(txtJamat, prayer + " Jamat"));
 
             setupPrayerCardStyling(card);
             layoutPrayerList.addView(card);
         }
     }
 
-    private void showTimePicker(TextView targetText, String title, String azanTimeForValidation) {
+    private String getDefaultAzan(String prayer) {
+        switch (prayer.toLowerCase()) {
+            case "fajr": return "05:00 AM";
+            case "zuhr": return "01:05 PM";
+            case "asr": return "04:45 PM";
+            case "maghrib": return "06:26 PM";
+            case "isha": return "08:00 PM";
+            default: return "00:00 AM";
+        }
+    }
+
+    private String getDefaultJamat(String prayer) {
+        switch (prayer.toLowerCase()) {
+            case "fajr": return "05:30 AM";
+            case "zuhr": return "01:20 PM";
+            case "asr": return "05:00 PM";
+            case "maghrib": return "06:29 PM";
+            case "isha": return "08:15 PM";
+            default: return "00:00 AM";
+        }
+    }
+
+    private void showTimePicker(TextView targetText, String title) {
         if (getContext() == null) return;
 
         MaterialTimePicker picker = new MaterialTimePicker.Builder()
@@ -185,14 +210,6 @@ public class EditTimingsFragment extends BaseFragment {
                     picker.getMinute(),
                     picker.getHour() < 12 ? "AM" : "PM");
 
-            if (azanTimeForValidation != null && !azanTimeForValidation.equals(getString(R.string.placeholder_waqt_time))) {
-                // Validate Jamat is after Azan
-                if (!isTimeAfter(selectedTime, azanTimeForValidation)) {
-                    android.widget.Toast.makeText(getContext(), R.string.error_jamat_after_azan, android.widget.Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-
             targetText.setText(selectedTime);
         });
 
@@ -205,6 +222,7 @@ public class EditTimingsFragment extends BaseFragment {
             Date jamat = sdf.parse(jamatStr);
             Date azan = sdf.parse(azanStr);
             if (jamat != null && azan != null) {
+                // Jamat must be AT LEAST 1 minute AFTER Azan (Equal is not allowed)
                 return jamat.after(azan);
             }
         } catch (Exception ignored) {}
@@ -233,16 +251,26 @@ public class EditTimingsFragment extends BaseFragment {
         ScalingUtils.applyScaledLayout(indicator, 0.04f, 0.005f, 0.015f, 0, 0, 0); // 4% width, 0.5% height, 1.5% margin
     }
 
-    private void handlePrayerSubmit(View v, String prayer) {
-        if (getContext() == null) return;
+    private void handlePrayerSubmit(View card, String prayer) {
+        if (getContext() == null || card == null) return;
         
-        // Success Logic (Feedback provided by applyTactileTouch + Success Pulse)
+        TextView txtAzan = card.findViewById(R.id.text_azan_time);
+        TextView txtJamat = card.findViewById(R.id.text_jamat_time);
+        View btnSubmit = card.findViewById(R.id.btn_submit_prayer);
+
+        // Requirement #1: Final validation before update
+        if (!isTimeAfter(txtJamat.getText().toString(), txtAzan.getText().toString())) {
+            Toast.makeText(getContext(), R.string.error_jamat_after_azan, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Success logic and animation
         String msg = getString(R.string.toast_prayer_updated, prayer);
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
         
-        // Success Pulse Animation (Fades out and in to signal completion)
-        v.animate().alpha(0.7f).setDuration(200).withEndAction(() -> 
-            v.animate().alpha(1.0f).setDuration(200).start()).start();
+        // Success Pulse Animation
+        btnSubmit.animate().alpha(0.7f).setDuration(200).withEndAction(() -> 
+            btnSubmit.animate().alpha(1.0f).setDuration(200).start()).start();
     }
 
     @android.annotation.SuppressLint("ClickableViewAccessibility")
