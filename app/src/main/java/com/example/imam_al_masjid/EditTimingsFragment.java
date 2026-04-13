@@ -472,7 +472,7 @@ public class EditTimingsFragment extends BaseFragment {
         ScalingUtils.applyScaledLayout(view.findViewById(R.id.layout_prayer_list), 1.0f, -1, 0, 0, 0, 0);
 
         // List Bottom Padding
-        int listBottomPad = ScalingUtils.getScaledSize(ctx, 0.15f); // ~15% of screen height
+        int listBottomPad = ScalingUtils.getScaledSize(ctx, 0.04f); // Reduced from 0.15f after FAB removal
         view.findViewById(R.id.layout_prayer_list).setPadding(0, 0, 0, listBottomPad);
     }
 
