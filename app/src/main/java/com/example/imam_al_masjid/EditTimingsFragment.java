@@ -20,12 +20,16 @@ public class EditTimingsFragment extends BaseFragment {
 
     private LinearLayout layoutDayRibbon;
     private LinearLayout layoutPrayerList;
+    private TextView textEmptyState;
     private final String[] PRAYERS = {"Fajr", "Zuhr", "Asr", "Maghrib", "Isha"};
     private int selectedDayIndex = 0;
     
-    // Preference Keys for persistence (survives theme changes)
+    // Persistence (Survives theme changes)
     private static final String PREFS_EDIT = "imam_edit_timings_prefs";
     private static final String KEY_PROP_PREFIX = "prop_preference_";
+
+    // Session-level Mock Storage for UI demonstration
+    private static final java.util.Map<String, String> sessionSavedTimings = new java.util.HashMap<>();
 
     public EditTimingsFragment() {
         // Required empty public constructor
@@ -38,9 +42,10 @@ public class EditTimingsFragment extends BaseFragment {
 
     @Override
     protected void initViews(View view) {
-        layoutPrayerList = view.findViewById(R.id.layout_prayer_list);
         layoutDayRibbon = view.findViewById(R.id.layout_day_ribbon);
-
+        layoutPrayerList = view.findViewById(R.id.layout_prayer_list);
+        textEmptyState = view.findViewById(R.id.text_empty_state_msg);
+        
         setupDayRibbon();
         if (getContext() != null) {
             loadPrayerCards(LayoutInflater.from(getContext()));
@@ -126,9 +131,16 @@ public class EditTimingsFragment extends BaseFragment {
         Context ctx = inflater.getContext();
         layoutPrayerList.removeAllViews();
         boolean isToday = (selectedDayIndex == 0);
+        int addedCount = 0;
 
         for (String prayer : PRAYERS) {
+            // Hide card if current time is within 15min of Azan (only for Today)
+            if (isToday) {
+                if (isPrayerLocked(prayer)) continue;
+            }
+
             View card = inflater.inflate(R.layout.item_dashboard_edit_prayer_session, layoutPrayerList, false);
+            addedCount++;
             TextView txtName = card.findViewById(R.id.text_prayer_name);
             TextView txtAzan = card.findViewById(R.id.text_azan_time);
             TextView txtJamat = card.findViewById(R.id.text_jamat_time);
@@ -138,13 +150,15 @@ public class EditTimingsFragment extends BaseFragment {
             View btnSubmit = card.findViewById(R.id.btn_submit_prayer);
 
             txtName.setText(prayer);
-            txtAzan.setText(getDefaultAzan(prayer));
-            txtJamat.setText(getDefaultJamat(prayer));
+            txtAzan.setText(getSavedOrDefault(selectedDayIndex, prayer, "azan"));
+            txtJamat.setText(getSavedOrDefault(selectedDayIndex, prayer, "jamat"));
             
             updateCelestialOrbit(card, prayer, ContextCompat.getColor(ctx, R.color.prayer_card_border_active));
 
-            if (isToday) {
-                // Propagate dropdown for Today
+            // Propagate option if it's the first editable date for this prayer
+            boolean showPropagate = isToday || (selectedDayIndex == 1 && isPrayerLocked(prayer));
+            
+            if (showPropagate) {
                 txtContextual.setText(R.string.label_propagate_forward);
                 imgContextual.setImageResource(R.drawable.ic_settings_sync);
                 layoutContextual.setOnClickListener(v -> showPropagateMenu(v, prayer));
@@ -169,6 +183,50 @@ public class EditTimingsFragment extends BaseFragment {
             setupPrayerCardStyling(card);
             layoutPrayerList.addView(card);
         }
+
+        // Show empty state if all cards are filtered out
+        if (textEmptyState != null) {
+            textEmptyState.setVisibility(addedCount == 0 ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private boolean isPrayerLocked(String prayer) {
+        try {
+            String azanTime = getDefaultAzan(prayer);
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            Date date = sdf.parse(azanTime);
+            if (date == null) return false;
+
+            Calendar azanCal = Calendar.getInstance();
+            azanCal.setTime(date);
+            int azanMins = azanCal.get(Calendar.HOUR_OF_DAY) * 60 + azanCal.get(Calendar.MINUTE);
+
+            Calendar now = Calendar.getInstance();
+            int nowMins = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
+
+            return nowMins >= (azanMins - 15);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private int getTimeInMinutes(String timeStr) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            Date date = sdf.parse(timeStr);
+            if (date == null) return 0;
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
+        } catch (Exception e) { return 0; }
+    }
+
+    private String getSavedOrDefault(int dayIndex, String prayer, String type) {
+        String key = dayIndex + "_" + prayer + "_" + type;
+        if (sessionSavedTimings.containsKey(key)) {
+            return sessionSavedTimings.get(key);
+        }
+        return type.equals("azan") ? getDefaultAzan(prayer) : getDefaultJamat(prayer);
     }
 
     private String getDefaultAzan(String prayer) {
@@ -229,6 +287,26 @@ public class EditTimingsFragment extends BaseFragment {
         return true;
     }
 
+    private boolean isAzanInFuture(String azanStr) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            Date date = sdf.parse(azanStr);
+            if (date == null) return true;
+
+            Calendar azanCal = Calendar.getInstance();
+            azanCal.setTime(date);
+            int azanMins = azanCal.get(Calendar.HOUR_OF_DAY) * 60 + azanCal.get(Calendar.MINUTE);
+
+            Calendar now = Calendar.getInstance();
+            int nowMins = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE);
+
+            // Azan must be > (now + 15)
+            return azanMins > (nowMins + 15);
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
     private void setupDayCardScaling(View card) {
         Context ctx = getContext();
         if (ctx == null) return;
@@ -258,14 +336,84 @@ public class EditTimingsFragment extends BaseFragment {
         TextView txtJamat = card.findViewById(R.id.text_jamat_time);
         View btnSubmit = card.findViewById(R.id.btn_submit_prayer);
 
-        // Requirement #1: Final validation before update
+        // Real-time Lockout Check (Edge case: time crosses threshold while user is on screen)
+        if (selectedDayIndex == 0) {
+            if (isPrayerLocked(prayer)) {
+                Toast.makeText(getContext(), R.string.error_prayer_locked_after_load, Toast.LENGTH_SHORT).show();
+                loadPrayerCards(LayoutInflater.from(getContext()));
+                return;
+            }
+            // Validate that newly entered Azan is also > (now + 15)
+            if (!isAzanInFuture(txtAzan.getText().toString())) {
+                Toast.makeText(getContext(), R.string.error_azan_too_early, Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        // Final validation before update
         if (!isTimeAfter(txtJamat.getText().toString(), txtAzan.getText().toString())) {
             Toast.makeText(getContext(), R.string.error_jamat_after_azan, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Success logic and animation
-        String msg = getString(R.string.toast_prayer_updated, prayer);
+        // Requirement: Validate 20-minute gap between consecutive prayers
+        int prayerIdx = -1;
+        for (int i = 0; i < PRAYERS.length; i++) {
+            if (PRAYERS[i].equals(prayer)) {
+                prayerIdx = i;
+                break;
+            }
+        }
+
+        int curAzanMins = getTimeInMinutes(txtAzan.getText().toString());
+        int curJamatMins = getTimeInMinutes(txtJamat.getText().toString());
+
+        // Check Previous Prayer's Jamat
+        if (prayerIdx > 0) {
+            String prevJamatStr = getSavedOrDefault(selectedDayIndex, PRAYERS[prayerIdx - 1], "jamat");
+            int prevJamatMins = getTimeInMinutes(prevJamatStr);
+            if (curAzanMins - prevJamatMins < 20) {
+                Toast.makeText(getContext(), R.string.error_prayer_gap_too_short, Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        // Check Next Prayer's Azan
+        if (prayerIdx < PRAYERS.length - 1) {
+            String nextAzanStr = getSavedOrDefault(selectedDayIndex, PRAYERS[prayerIdx + 1], "azan");
+            int nextAzanMins = getTimeInMinutes(nextAzanStr);
+            if (nextAzanMins - curJamatMins < 20) {
+                Toast.makeText(getContext(), R.string.error_prayer_gap_too_short, Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        // Save to Session Storage
+        String azan = txtAzan.getText().toString();
+        String jamat = txtJamat.getText().toString();
+        sessionSavedTimings.put(selectedDayIndex + "_" + prayer + "_azan", azan);
+        sessionSavedTimings.put(selectedDayIndex + "_" + prayer + "_jamat", jamat);
+
+        // Propagation Logic
+        android.content.SharedPreferences prefs = getContext().getSharedPreferences(PREFS_EDIT, Context.MODE_PRIVATE);
+        int daysToPropagate = prefs.getInt(KEY_PROP_PREFIX + prayer, -1);
+        
+        String msg;
+        if (daysToPropagate > 0) {
+            // Apply timings to future days in the range
+            for (int i = 1; i < daysToPropagate; i++) {
+                int targetDay = selectedDayIndex + i;
+                // Constraints: Ribbon only shows 7 days
+                if (targetDay < 7) {
+                    sessionSavedTimings.put(targetDay + "_" + prayer + "_azan", azan);
+                    sessionSavedTimings.put(targetDay + "_" + prayer + "_jamat", jamat);
+                }
+            }
+            msg = getString(R.string.toast_propagation_success, prayer, daysToPropagate);
+        } else {
+            msg = getString(R.string.toast_prayer_updated, prayer);
+        }
+
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
         
         // Success Pulse Animation
@@ -384,11 +532,11 @@ public class EditTimingsFragment extends BaseFragment {
         // Contextual Action Scaling
         View layoutAction = card.findViewById(R.id.layout_contextual_action);
         int cpHP = ScalingUtils.getScaledSize(ctx, 0.025f);
-        int cpVP = ScalingUtils.getScaledSize(ctx, 0.025f); // Increased from 0.015f to 0.025f
+        int cpVP = ScalingUtils.getScaledSize(ctx, 0.012f); // Slimmer vertical profile
         layoutAction.setPadding(cpHP, cpVP, cpHP, cpVP);
-        ScalingUtils.applyScaledLayout(card.findViewById(R.id.img_contextual_icon), 0.03f, 0.03f, 0, 0, 0, 0);
+        ScalingUtils.applyScaledLayout(card.findViewById(R.id.img_contextual_icon), 0.045f, 0.045f, 0, 0, 0, 0); // Larger icon
         ScalingUtils.applyScaledLayout(card.findViewById(R.id.text_contextual_label), -1, -1, 0, 0, 0.015f, 0);
-        ((TextView)card.findViewById(R.id.text_contextual_label)).setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.025f));
+        ((TextView)card.findViewById(R.id.text_contextual_label)).setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.030f)); // Larger text
 
         // Submit Button Scaling & Styling
         TextView btnSubmit = card.findViewById(R.id.btn_submit_prayer);
@@ -502,6 +650,11 @@ public class EditTimingsFragment extends BaseFragment {
         // List Bottom Padding
         int listBottomPad = ScalingUtils.getScaledSize(ctx, 0.04f); // Reduced from 0.15f after FAB removal
         view.findViewById(R.id.layout_prayer_list).setPadding(0, 0, 0, listBottomPad);
+
+        if (textEmptyState != null) {
+            textEmptyState.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.04f));
+            textEmptyState.setLineSpacing(0, 1.2f);
+        }
     }
 
     @Override
@@ -509,4 +662,3 @@ public class EditTimingsFragment extends BaseFragment {
         // Claymorphism is now applied per-card in setupPrayerCardStyling
     }
 }
-

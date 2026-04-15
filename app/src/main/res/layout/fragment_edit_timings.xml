@@ -69,5 +69,20 @@
             android:clipChildren="false"
             android:clipToPadding="false" />
     </ScrollView>
+    
+    <!-- Empty State Message -->
+    <TextView
+        android:id="@+id/text_empty_state_msg"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_edit_locked_today"
+        android:textColor="@color/text_secondary"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/edit_timings_header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="32dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
