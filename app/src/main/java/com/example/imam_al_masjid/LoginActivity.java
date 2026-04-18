@@ -68,6 +68,11 @@ public class LoginActivity extends AppCompatActivity {
         dropdownMasjid.setOnClickListener(v -> showMasjidDropdown());
         btnSubmit.setOnClickListener(v -> performLogin());
         btnTogglePassword.setOnClickListener(v -> togglePasswordVisibility());
+        findViewById(R.id.btn_goto_register).setOnClickListener(v -> {
+            Intent intent = new Intent(this, MasjidRegistrationActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        });
     }
 
     private boolean isPasswordVisible = false;
@@ -83,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
             btnTogglePassword.setImageResource(R.drawable.ic_eye_hidden);
         }
         
-        // RE-APPLY FONT: Changing inputType resets the typeface to system default (P1 Fix)
+        // RE-APPLY FONT: Changing inputType resets the typeface to system default
         if (janna_it_boldFont != null) edtPassword.setTypeface(janna_it_boldFont);
         
         // Force cursor to the end
@@ -109,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
         int highlightLight = ContextCompat.getColor(this, R.color.clay_light_shadow);
 
         int horizontalPadding = ScalingUtils.getScaledSize(this, 0.045f); 
-        int verticalPadding = ScalingUtils.getScaledSize(this, 0.025f); // Reduced height gap (P4)
+        int verticalPadding = ScalingUtils.getScaledSize(this, 0.025f); // Reduced height gap
         float inputTextSize = 0.040f; 
         
         for (String masjid : masjids) {
@@ -197,7 +202,7 @@ public class LoginActivity extends AppCompatActivity {
         String address = name.equals("Masjid-E-Alamgeer") ? getString(R.string.address_alamgeer) : getString(R.string.address_hajia);
         String mapLink = name.equals("Masjid-E-Alamgeer") ? getString(R.string.map_link_alamgeer) : getString(R.string.map_link_hajia);
 
-        // Resolve layout parameters correctly by passing parent (Requirement #4 compliance)
+        // Resolve layout parameters correctly by passing parent
         ViewGroup root = findViewById(android.R.id.content);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_masjid_details, root, false);
         
@@ -428,14 +433,14 @@ public class LoginActivity extends AppCompatActivity {
         txtTitleLogin.setTextSize(titleTextSize);
         ScalingUtils.applyScaledLayout(layoutLoginTitle, -1, -1, 0.02f, 0, 0, 0);
 
-        // 3. Login Card - 88% width, 4% top gap, 12% bottom gap (Pushed down more)
-        ScalingUtils.applyScaledLayout(loginCard, 0.88f, -1, 0.04f, 0.12f, 0, 0);
+        // 3. Login Card - 98% width, 4% top gap, 12% bottom gap (Pushed down more)
+        ScalingUtils.applyScaledLayout(loginCard, 0.98f, -1, 0.04f, 0.12f, 0, 0);
         
         // 4. Form Spacing
         float inputPadding = 0.045f;
         float itemMargin = 0.045f; // Increased from 3.5% for better vertical presence
         float inputHeight = 0.075f; 
-        float inputTextSize = 0.040f; // Decreased text size percentage (P4)
+        float inputTextSize = 0.040f; // Decreased text size percentage
 
         applyInputScaling(edtFullName, inputPadding, 0.02f, inputHeight); // Added 2% top margin
         edtFullName.setTextSize(ScalingUtils.getScaledTextSize(this, inputTextSize));
@@ -453,7 +458,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // 5. Submit Button Scaling
         // Reduced top margin as the error container handles most of the gap
-        ScalingUtils.applyScaledLayout(btnSubmitContainer, 0.60f, -1, 0.02f, 0.05f, 0, 0);
+        ScalingUtils.applyScaledLayout(btnSubmitContainer, 0.75f, -1, 0.02f, 0.05f, 0, 0);
         btnSubmit.setTextSize(ScalingUtils.getScaledTextSize(this, 0.035f));
         btnSubmit.setCornerRadius(ScalingUtils.getScaledSize(this, 0.035f));
 
@@ -462,12 +467,21 @@ public class LoginActivity extends AppCompatActivity {
 
         // 6. Masjid Hint Scaling
         txtMasjidHint.setTextSize(ScalingUtils.getScaledTextSize(this, 0.030f)); // Smaller than main text
-        ScalingUtils.applyScaledLayout(txtMasjidHint, -1, -1, 0.010f, 0, 0, 0);
+        ScalingUtils.applyScaledLayout(txtMasjidHint, 0.80f, -1, 0.010f, 0, 0, 0);
 
         // 7. Error Text Scaling
         txtError.setTextSize(ScalingUtils.getScaledTextSize(this, 0.035f));
         // Error container with fixed height (5% of screen) to ensure vertical centering in the gap
-        ScalingUtils.applyScaledLayout(errorMessageContainer, -1, 0.05f, 0.02f, 0.03f, 0, 0);
+        ScalingUtils.applyScaledLayout(errorMessageContainer, 0.80f, 0.05f, 0.02f, 0.03f, 0, 0);
+
+        // 8. Register Link Scaling
+        ScalingUtils.applyScaledLayout(findViewById(R.id.layout_register_link_container), -1, -1, 0.04f, 0.05f, 0, 0);
+        ((TextView)findViewById(R.id.txt_not_registered)).setTextSize(ScalingUtils.getScaledTextSize(this, 0.035f));
+        ((TextView)findViewById(R.id.btn_goto_register)).setTextSize(ScalingUtils.getScaledTextSize(this, 0.035f));
+        
+        // Dynamic horizontal padding for the link (1% of screen width)
+        int linkPadding = ScalingUtils.getScaledSize(this, 0.01f);
+        findViewById(R.id.btn_goto_register).setPadding(linkPadding, 0, linkPadding, 0);
     }
 
     private void applyInputScaling(View view, float paddingPercent, float marginTopPercent, float heightPercent) {
@@ -477,7 +491,7 @@ public class LoginActivity extends AppCompatActivity {
         
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
         params.topMargin = ScalingUtils.getScaledSize(this, marginTopPercent);
-        params.width = ScalingUtils.getScaledSize(this, 0.70f); // Decreased width a bit (P4)
+        params.width = ScalingUtils.getScaledSize(this, 0.84f); // Increased width to match broad card
         params.height = ScalingUtils.getScaledSize(this, heightPercent, true); // Strict compliance
         view.setLayoutParams(params);
     }

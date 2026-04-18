@@ -185,6 +185,33 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Register Link -->
+        <LinearLayout
+            android:id="@+id/layout_register_link_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txt_not_registered"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_not_registered"
+                android:textColor="@color/text_secondary"
+                android:fontFamily="@font/janna_it_bold_font" />
+
+            <TextView
+                android:id="@+id/btn_goto_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_join_community_link"
+                android:textColor="@color/emerald_primary"
+                android:fontFamily="@font/janna_it_bold_font"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>
