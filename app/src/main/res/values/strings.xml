@@ -66,6 +66,7 @@
     <string name="nav_events">Events</string>
     <string name="nav_home">Home</string>
     <string name="nav_edit">Edit</string>
+    <string name="phone_prefix">+91</string>
     <string name="nav_settings">Settings</string>
     <string name="dashboard_tab_masjid_times">Masjid Times</string>
     <string name="dashboard_tab_waqt_details">Waqt Details</string>
@@ -249,6 +250,81 @@
     <string name="error_prayer_locked_after_load">This prayer timing is now locked and cannot be updated for Today.</string>
     <string name="error_azan_too_early">Azan time must be at least 15 minutes in the future for today.</string>
     <string name="error_prayer_gap_too_short">There must be at least a 20-minute gap between consecutive prayers.</string>
+
+    <!-- Masjid Registration -->
+    <string name="title_masjid_registration">Masjid Registration</string>
+    <string name="section_masjid_info">Masjid Information</string>
+    <string name="section_imam_info">Imam Information</string>
+    <string name="section_location_info">Location Details</string>
+    
+    <string name="hint_masjid_full_name">Masjid Full Name</string>
+    <string name="hint_imam_full_name">Imam\'s Full Name</string>
+    <string name="hint_masjid_phone">Masjid Phone Number</string>
+    <string name="hint_imam_phone">Imam\'s Phone Number</string>
+    <string name="hint_email_address">Email Address</string>
+    <string name="hint_state">Select State</string>
+    <string name="hint_pin_code">Pin Code</string>
+    <string name="hint_district">District</string>
+    <string name="hint_address">Full Address</string>
+    
+    <string name="label_send_verification">Send for Verification</string>
+    <string name="label_already_registered">Already registered?</string>
+    <string name="label_signin_link">SignIn</string>
+    <string name="label_not_registered">Not registered?</string>
+    <string name="label_join_community_link">Join the Community</string>
+    
+    <string name="msg_verification_notice">Registration requires 48 hours for manual verification and approval. We may contact you via phone or email during this period.</string>
+    
+    <string name="hint_search_state">Search State...</string>
+    
+    <!-- Errors -->
+    <string name="error_invalid_masjid_name">Invalid Masjid Name characters</string>
+    <string name="error_invalid_imam_name">Only alphabets allowed</string>
+    <string name="error_invalid_phone">10 digits required</string>
+    <string name="error_phone_mandatory">At least one contact number is mandatory</string>
+    <string name="error_invalid_email">Invalid email format (must end in .com)</string>
+    <string name="error_invalid_pincode">6 digits required</string>
+    <string name="error_invalid_district">Only alphabets allowed</string>
+    <string name="error_invalid_address">Special characters not allowed</string>
+
+    <string-array name="indian_states">
+        <item>Andhra Pradesh</item>
+        <item>Arunachal Pradesh</item>
+        <item>Assam</item>
+        <item>Bihar</item>
+        <item>Chhattisgarh</item>
+        <item>Goa</item>
+        <item>Gujarat</item>
+        <item>Haryana</item>
+        <item>Himachal Pradesh</item>
+        <item>Jharkhand</item>
+        <item>Karnataka</item>
+        <item>Kerala</item>
+        <item>Madhya Pradesh</item>
+        <item>Maharashtra</item>
+        <item>Manipur</item>
+        <item>Meghalaya</item>
+        <item>Mizoram</item>
+        <item>Nagaland</item>
+        <item>Odisha</item>
+        <item>Punjab</item>
+        <item>Rajasthan</item>
+        <item>Sikkim</item>
+        <item>Tamil Nadu</item>
+        <item>Telangana</item>
+        <item>Tripura</item>
+        <item>Uttar Pradesh</item>
+        <item>Uttarakhand</item>
+        <item>West Bengal</item>
+        <item>Andaman and Nicobar Islands</item>
+        <item>Chandigarh</item>
+        <item>Dadra and Nagar Haveli and Daman and Diu</item>
+        <item>Delhi</item>
+        <item>Jammu and Kashmir</item>
+        <item>Ladakh</item>
+        <item>Lakshadweep</item>
+        <item>Puducherry</item>
+    </string-array>
 
     <!-- Placeholders -->
     <string name="placeholder_day_name">MON</string>

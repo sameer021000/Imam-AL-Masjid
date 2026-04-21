@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="false"
+    android:background="@color/off_white_primary"
+    tools:context=".MasjidRegistrationActivity">
+
+    <LinearLayout
+        android:id="@+id/registration_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- Title Section -->
+        <TextView
+            android:id="@+id/txt_registration_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_masjid_registration"
+            android:textColor="@color/emerald_primary"
+            android:fontFamily="@font/saleha_font"
+            android:gravity="center" />
+
+        <!-- Container 1: Masjid Information -->
+        <LinearLayout
+            android:id="@+id/card_masjid_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <TextView
+                android:id="@+id/txt_label_masjid_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/section_masjid_info"
+                android:textColor="@color/emerald_primary"
+                android:fontFamily="@font/janna_it_bold_font" />
+
+            <EditText
+                android:id="@+id/edt_masjid_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_masjid_full_name"
+                android:fontFamily="@font/janna_it_bold_font"
+                android:inputType="textPersonName"
+                android:textColor="@color/emerald_primary"
+                android:textColorHint="@color/input_placeholder"
+                android:background="@android:color/transparent"
+                android:textCursorDrawable="@null"
+                android:importantForAutofill="no" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:id="@+id/layout_masjid_phone_container">
+
+                <TextView
+                    android:id="@+id/txt_prefix_masjid_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/phone_prefix"
+                    android:textColor="@color/emerald_primary"
+                    android:fontFamily="@font/janna_it_bold_font" />
+
+                <EditText
+                    android:id="@+id/edt_masjid_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_masjid_phone"
+                    android:fontFamily="@font/janna_it_bold_font"
+                    android:inputType="phone"
+                    android:maxLength="10"
+                    android:textColor="@color/emerald_primary"
+                    android:textColorHint="@color/input_placeholder"
+                    android:background="@android:color/transparent"
+                    android:textCursorDrawable="@null"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Container 2: Imam Information -->
+        <LinearLayout
+            android:id="@+id/card_imam_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <TextView
+                android:id="@+id/txt_label_imam_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/section_imam_info"
+                android:textColor="@color/emerald_primary"
+                android:fontFamily="@font/janna_it_bold_font" />
+
+            <EditText
+                android:id="@+id/edt_imam_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_imam_full_name"
+                android:fontFamily="@font/janna_it_bold_font"
+                android:inputType="textPersonName"
+                android:textColor="@color/emerald_primary"
+                android:textColorHint="@color/input_placeholder"
+                android:background="@android:color/transparent"
+                android:textCursorDrawable="@null"
+                android:importantForAutofill="no" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:id="@+id/layout_imam_phone_container">
+
+                <TextView
+                    android:id="@+id/txt_prefix_imam_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/phone_prefix"
+                    android:textColor="@color/emerald_primary"
+                    android:fontFamily="@font/janna_it_bold_font" />
+
+                <EditText
+                    android:id="@+id/edt_imam_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_imam_phone"
+                    android:fontFamily="@font/janna_it_bold_font"
+                    android:inputType="phone"
+                    android:maxLength="10"
+                    android:textColor="@color/emerald_primary"
+                    android:textColorHint="@color/input_placeholder"
+                    android:background="@android:color/transparent"
+                    android:textCursorDrawable="@null"
+                    android:importantForAutofill="no" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/edt_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_email_address"
+                android:fontFamily="@font/janna_it_bold_font"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/emerald_primary"
+                android:textColorHint="@color/input_placeholder"
+                android:background="@android:color/transparent"
+                android:textCursorDrawable="@null"
+                android:importantForAutofill="no" />
+        </LinearLayout>
+
+        <!-- Container 3: Location Details -->
+        <LinearLayout
+            android:id="@+id/card_location_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <TextView
+                android:id="@+id/txt_label_location_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/section_location_info"
+                android:textColor="@color/emerald_primary"
+                android:fontFamily="@font/janna_it_bold_font" />
+
+            <!-- State Dropdown -->
+            <TextView
+                android:id="@+id/dropdown_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/hint_state"
+                android:fontFamily="@font/janna_it_bold_font"
+                android:textColor="@color/emerald_primary"
+                android:gravity="center_vertical"
+                android:background="@android:color/transparent"
+                android:textCursorDrawable="@null"
+                app:drawableEndCompat="@android:drawable/arrow_down_float" />
+
+            <EditText
+                android:id="@+id/edt_district"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_district"
+                android:fontFamily="@font/janna_it_bold_font"
+                android:inputType="text"
+                android:textColor="@color/emerald_primary"
+                android:textColorHint="@color/input_placeholder"
+                android:background="@android:color/transparent"
+                android:textCursorDrawable="@null"
+                android:importantForAutofill="no" />
+
+            <EditText
+                android:id="@+id/edt_pincode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_pin_code"
+                android:fontFamily="@font/janna_it_bold_font"
+                android:inputType="number"
+                android:maxLength="6"
+                android:textColor="@color/emerald_primary"
+                android:textColorHint="@color/input_placeholder"
+                android:background="@android:color/transparent"
+                android:textCursorDrawable="@null"
+                android:importantForAutofill="no" />
+
+            <EditText
+                android:id="@+id/edt_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_address"
+                android:fontFamily="@font/janna_it_bold_font"
+                android:inputType="textMultiLine"
+                android:minLines="4"
+                android:gravity="top"
+                android:textColor="@color/emerald_primary"
+                android:textColorHint="@color/input_placeholder"
+                android:background="@android:color/transparent"
+                android:textCursorDrawable="@null"
+                android:importantForAutofill="no" />
+        </LinearLayout>
+
+        <!-- Footer Section -->
+        <TextView
+            android:id="@+id/txt_verification_notice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_verification_notice"
+            android:textColor="@color/text_secondary"
+            android:fontFamily="@font/janna_it_bold_font"
+            android:gravity="center" />
+
+        <FrameLayout
+            android:id="@+id/btn_register_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_send_verification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_send_verification"
+                android:textAllCaps="false"
+                android:fontFamily="@font/saleha_font"
+                android:enabled="false"
+                app:backgroundTint="@color/emerald_primary" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_signin_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txt_already_registered"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_already_registered"
+                android:textColor="@color/text_secondary"
+                android:fontFamily="@font/janna_it_bold_font" />
+
+            <TextView
+                android:id="@+id/btn_goto_signin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_signin_link"
+                android:textColor="@color/emerald_primary"
+                android:fontFamily="@font/janna_it_bold_font"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

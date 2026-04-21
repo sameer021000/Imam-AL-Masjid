@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialog_search_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/txt_dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hint_state"
+        android:textColor="@color/emerald_primary"
+        android:fontFamily="@font/saleha_font" />
+
+    <LinearLayout
+        android:id="@+id/layout_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/img_search_icon"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_search"
+            app:tint="@color/emerald_primary" />
+
+        <EditText
+            android:id="@+id/edt_search_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_search_state"
+            android:fontFamily="@font/janna_it_bold_font"
+            android:inputType="text"
+            android:textColor="@color/emerald_primary"
+            android:textColorHint="@color/input_placeholder"
+            android:background="@android:color/transparent"
+            android:textCursorDrawable="@null"
+            android:importantForAutofill="no" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_states_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+
+</LinearLayout>
