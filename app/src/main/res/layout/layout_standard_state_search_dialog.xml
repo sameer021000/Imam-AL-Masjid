@@ -27,6 +27,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:src="@drawable/ic_search"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
             app:tint="@color/emerald_primary" />
 
         <EditText
