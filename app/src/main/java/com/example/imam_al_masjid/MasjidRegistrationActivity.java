@@ -119,12 +119,74 @@ public class MasjidRegistrationActivity extends AppCompatActivity {
 
         dropdownState.setOnClickListener(v -> showStateSearchDialog());
 
-        btnSubmit.setOnClickListener(v -> {
-            // Directly navigate to Home Screen for now
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finishAffinity(); // Clear task stack
+        btnSubmit.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case android.view.MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.96f).scaleY(0.96f).alpha(0.9f).setDuration(100).start();
+                    break;
+                case android.view.MotionEvent.ACTION_UP:
+                case android.view.MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setDuration(100).start();
+                    if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                        v.performClick();
+                    }
+                    break;
+            }
+            return true;
         });
+
+        btnSubmit.setOnClickListener(v -> {
+            if (performFullValidationPass()) {
+                // Directly navigate to Home Screen for now
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                finishAffinity(); // Clear task stack
+            }
+        });
+    }
+
+    private boolean performFullValidationPass() {
+        // Shared drawables for highlighting
+        Drawable correctBg = ScalingUtils.createInsetClayDrawable(this, 0.03f, 0.008f, 0.015f);
+        Drawable errorBg = ScalingUtils.createInsetClayDrawable(this, 0.03f, 0.008f, 0.015f,
+                ContextCompat.getColor(this, R.color.off_white_primary),
+                ContextCompat.getColor(this, R.color.error_red),
+                ContextCompat.getColor(this, R.color.clay_light_shadow));
+
+        boolean masjidNameValid = Pattern.matches("^[a-zA-Z()\\s-]{1,50}$", edtMasjidName.getText().toString().trim());
+        boolean imamNameValid = Pattern.matches("^[a-zA-Z()\\s-]{1,50}$", edtImamName.getText().toString().trim());
+        
+        String p1 = edtMasjidPhone.getText().toString().trim();
+        boolean masjidPhoneValid = (p1.length() == 10);
+        
+        String p2 = edtImamPhone.getText().toString().trim();
+        boolean imamPhoneValid = (p2.length() == 10);
+        
+        String email = edtEmail.getText().toString().trim();
+        boolean emailValid = email.isEmpty() || (email.contains("@") && email.endsWith(".com"));
+        
+        boolean stateValid = selectedState != null && !selectedState.isEmpty();
+        boolean pinValid = edtPinCode.getText().toString().length() == 6;
+        boolean districtValid = Pattern.matches("^[a-zA-Z\\s]{1,50}$", edtDistrict.getText().toString().trim());
+        boolean addressValid = !edtAddress.getText().toString().trim().isEmpty();
+
+        // Highlight fields
+        edtMasjidName.setBackground(masjidNameValid ? correctBg : errorBg);
+        edtImamName.setBackground(imamNameValid ? correctBg : errorBg);
+        findViewById(R.id.layout_masjid_phone_container).setBackground(masjidPhoneValid ? correctBg : errorBg);
+        findViewById(R.id.layout_imam_phone_container).setBackground(imamPhoneValid ? correctBg : errorBg);
+        edtEmail.setBackground(emailValid ? correctBg : errorBg);
+        edtDistrict.setBackground(districtValid ? correctBg : errorBg);
+        edtPinCode.setBackground(pinValid ? correctBg : errorBg);
+        edtAddress.setBackground(addressValid ? correctBg : errorBg);
+        
+        if (!stateValid) {
+            dropdownState.setTextColor(ContextCompat.getColor(this, R.color.error_red));
+        } else {
+            dropdownState.setTextColor(ContextCompat.getColor(this, R.color.emerald_primary));
+        }
+
+        return masjidNameValid && imamNameValid && (masjidPhoneValid || imamPhoneValid) && emailValid && stateValid && pinValid && districtValid && addressValid;
     }
 
     private void showStateSearchDialog() {
@@ -234,8 +296,7 @@ public class MasjidRegistrationActivity extends AppCompatActivity {
         setupFieldValidation(edtEmail, s -> {
             String val = s.toString().trim();
             if (val.isEmpty()) return true; // Optional
-            return Pattern.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\.com$", val) 
-                    || val.endsWith(".com"); // Simplified as per prompt "chars@chars.chars.com"
+            return Pattern.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]{1,}(\\.[A-Za-z0-9-]+)*\\.com$", val);
         }, errorBg, correctBg);
 
         // 5. Pin Code: 6 digits mandatory
@@ -296,26 +357,7 @@ public class MasjidRegistrationActivity extends AppCompatActivity {
     }
 
     private void validateForm() {
-        boolean masjidNameValid = Pattern.matches("^[a-zA-Z()\\s-]{1,50}$", edtMasjidName.getText().toString().trim());
-        boolean imamNameValid = Pattern.matches("^[a-zA-Z()\\s-]{1,50}$", edtImamName.getText().toString().trim());
-        
-        String p1 = edtMasjidPhone.getText().toString().trim();
-        String p2 = edtImamPhone.getText().toString().trim();
-        boolean phoneValid = (p1.length() == 10) || (p2.length() == 10);
-        
-        String email = edtEmail.getText().toString().trim();
-        boolean emailValid = email.isEmpty() || (email.contains("@") && email.endsWith(".com"));
-        
-        boolean stateValid = !selectedState.isEmpty();
-        boolean pinValid = edtPinCode.getText().toString().length() == 6;
-        boolean districtValid = Pattern.matches("^[a-zA-Z\\s]{1,20}$", edtDistrict.getText().toString().trim());
-        boolean addressValid = !edtAddress.getText().toString().trim().isEmpty();
-
-        boolean allValid = masjidNameValid && imamNameValid && phoneValid && emailValid && 
-                          stateValid && pinValid && districtValid && addressValid;
-
-        btnSubmit.setEnabled(allValid);
-        btnSubmit.setAlpha(allValid ? 1.0f : 0.5f);
+        // Button remains enabled per requirements. Real-time highlighting handles partial feedback.
     }
 
     private void applyDynamicScaling() {
@@ -371,8 +413,11 @@ public class MasjidRegistrationActivity extends AppCompatActivity {
         txtVerificationNotice.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.032f));
         ScalingUtils.applyScaledLayout(txtVerificationNotice, -1, -1, 0.02f, 0.02f, 0.08f, 0.08f);
         
-        ScalingUtils.applyScaledLayout(findViewById(R.id.btn_register_container), 0.60f, -1, 0.02f, 0.05f, 0, 0);
+        ScalingUtils.applyScaledLayout(findViewById(R.id.btn_register_container), 0.75f, -1, 0.02f, 0.05f, 0, 0);
         btnSubmit.setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.035f));
+        btnSubmit.setCornerRadius(ScalingUtils.getScaledSize(ctx, 0.035f));
+        btnSubmit.setEnabled(true);
+        btnSubmit.setAlpha(1.0f);
 
         ScalingUtils.applyScaledLayout(findViewById(R.id.layout_signin_link), -1, -1, 0, 0.05f, 0, 0);
         ((TextView)findViewById(R.id.txt_already_registered)).setTextSize(ScalingUtils.getScaledTextSize(ctx, 0.035f));
@@ -426,6 +471,15 @@ public class MasjidRegistrationActivity extends AppCompatActivity {
         cardImam.setBackground(raisedBg);
         cardLocation.setBackground(raisedBg);
         
+        // 4. Submit Button (Convex Clay) - Matched with Login Screen
+        int btnBodyColor = ContextCompat.getColor(this, R.color.emerald_primary);
+        int btnShadow = ContextCompat.getColor(this, R.color.clay_dark_shadow);
+        int btnHighlight = ContextCompat.getColor(this, R.color.clay_light_shadow);
+        
+        btnSubmit.setBackground(ScalingUtils.createClayDrawable(this, 0.035f, 0.015f, 0.01f, 0,
+                btnBodyColor, btnShadow, btnHighlight, 0));
+        btnSubmit.setTextColor(ContextCompat.getColor(this, R.color.off_white_primary));
+
         // Insets
         edtMasjidName.setBackground(insetBg);
         findViewById(R.id.layout_masjid_phone_container).setBackground(insetBg);

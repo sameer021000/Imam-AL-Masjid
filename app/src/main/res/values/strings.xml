@@ -257,7 +257,7 @@
     <string name="section_imam_info">Imam Information</string>
     <string name="section_location_info">Location Details</string>
     
-    <string name="hint_masjid_full_name">Masjid Full Name</string>
+    <string name="hint_masjid_full_name">Masjid Name</string>
     <string name="hint_imam_full_name">Imam\'s Full Name</string>
     <string name="hint_masjid_phone">Masjid Phone Number</string>
     <string name="hint_imam_phone">Imam\'s Phone Number</string>
